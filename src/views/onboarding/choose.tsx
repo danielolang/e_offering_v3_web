@@ -7,22 +7,35 @@ const icons = {
     retail: UserRound,
     institutional: Building2,
     tsp: Landmark,
-    regulator: ShieldCheck,
+    regulator: ShieldCheck
 };
 
 const badges: Record<string, string> = {
     retail: 'BVN Required',
     institutional: 'CAC Documentation',
     tsp: 'Registration Member',
-    regulator: 'Statutory Regulator',
+    regulator: 'Statutory Regulator'
 };
 
 const hints: Record<string, string> = {
     retail: 'Individual accounts',
     institutional: 'Corporate entities',
     tsp: 'Sponsoring institutions',
-    regulator: 'SEC / CBN officials',
+    regulator: 'SEC / CBN officials'
 };
+
+/** Bolds defined terms written as ("QII"), e.g. "QII", "Non-QII", "SEC", "CBN". */
+function emphasiseTerms(text: string) {
+    return text.split(/("[^"]+")/g).map((part, i) =>
+        /^"[^"]+"$/.test(part) ? (
+            <strong key={i} className="text-foreground font-semibold">
+                {part}
+            </strong>
+        ) : (
+            part
+        )
+    );
+}
 
 /** CR s3: four account types, each with a clear, compact card presentation fitting cleanly on screen. */
 export default function Choose({ accountTypes }: { accountTypes: Record<string, { label: string; description: string }> }) {
@@ -38,29 +51,32 @@ export default function Choose({ accountTypes }: { accountTypes: Record<string, 
                             key={key}
                             href={route('onboarding.form', key)}
                             className={cn(
-                                'group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-3.5 transition-all outline-hidden hover:-translate-y-0.5 hover:border-navy hover:shadow-md sm:p-4',
+                                'group bg-card flex flex-col justify-between rounded-xl border p-3.5 transition-all outline-hidden sm:p-4',
+                                'hover:border-navy hover:bg-primary/10 hover:-translate-y-0.5 hover:shadow-md',
+                                'dark:hover:border-primary dark:hover:bg-primary/15',
+                                'focus-visible:bg-primary/10 focus-visible:ring-navy/30 focus-visible:ring-4'
                             )}
                         >
                             <div>
                                 <div className="flex items-center justify-between gap-2">
-                                    <span className="flex size-9 items-center justify-center rounded-lg bg-slate-100 text-[#0c2356] transition-colors group-hover:bg-[#0c2356] group-hover:text-white sm:size-10">
+                                    <span className="bg-navy/10 text-navy group-hover:bg-navy flex size-9 items-center justify-center rounded-lg transition-colors group-hover:text-white sm:size-10 dark:text-white">
                                         <Icon className="size-4.5" />
                                     </span>
-                                    <span className="rounded-full border border-slate-200/90 bg-slate-50 px-2.5 py-0.5 text-[10.5px] font-semibold text-slate-600">
+                                    <span className="bg-muted text-muted-foreground rounded-full border px-2.5 py-0.5 text-[10.5px] font-semibold">
                                         {badges[key]}
                                     </span>
                                 </div>
-                                <h3 className="mt-2 text-sm font-bold text-slate-900 transition-colors group-hover:text-navy sm:text-[15px]">
+                                <h3 className="text-foreground group-hover:text-navy mt-2 text-sm font-bold transition-colors sm:text-[15px] dark:group-hover:text-white">
                                     {type.label}
                                 </h3>
-                                <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500">
-                                    {type.description}
+                                <p className="text-foreground mt-1 line-clamp-3 text-xs leading-relaxed">
+                                    {emphasiseTerms(type.description)}
                                 </p>
                             </div>
 
-                            <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-2 text-[11px]">
-                                <span className="font-medium text-slate-400">{hints[key]}</span>
-                                <span className="inline-flex items-center gap-1 font-bold text-navy transition-transform group-hover:translate-x-0.5">
+                            <div className="mt-3 flex items-center justify-between border-t pt-2 text-[11px]">
+                                <span className="text-muted-foreground font-medium">{hints[key]}</span>
+                                <span className="text-navy dark:text-gold-light inline-flex items-center gap-1 font-bold transition-transform group-hover:translate-x-0.5">
                                     Continue <ArrowRight className="size-3" />
                                 </span>
                             </div>
@@ -69,7 +85,7 @@ export default function Choose({ accountTypes }: { accountTypes: Record<string, 
                 })}
             </div>
 
-            <div className="mt-3.5 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[10.5px] text-slate-400">
+            <div className="text-muted-foreground mt-3.5 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[10.5px]">
                 <span>BVN · Bank Verification</span>
                 <span>•</span>
                 <span>CAC · Corporate Affairs</span>
@@ -79,9 +95,9 @@ export default function Choose({ accountTypes }: { accountTypes: Record<string, 
                 <span>TSP/RM · Sponsor</span>
             </div>
 
-            <p className="mt-3 text-center text-xs text-slate-600">
+            <p className="text-muted-foreground mt-3 text-center text-xs">
                 Already have an account?{' '}
-                <Link href={route('login')} className="font-bold text-slate-900 hover:underline">
+                <Link href={route('login')} className="text-foreground font-bold hover:underline">
                     Sign in
                 </Link>
             </p>

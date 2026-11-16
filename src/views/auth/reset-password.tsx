@@ -42,7 +42,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
         return (
             <AuthLayout title="Reset password" description="This reset link is invalid or incomplete.">
                 <Head title="Reset password" />
-                <p className="text-center text-xs text-slate-500">
+                <p className="text-center text-xs text-muted-foreground">
                     Open the link from your email again, or{' '}
                     <TextLink href={route('password.request')} className="font-semibold text-navy hover:underline">
                         request a new reset link
@@ -62,11 +62,11 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                 <InputError message={errors.email || errors.token} />
 
                 <div className="grid gap-1.5">
-                    <Label htmlFor="password" className="text-[11px] font-bold tracking-wider text-slate-500 uppercase">
+                    <Label htmlFor="password" className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
                         NEW PASSWORD
                     </Label>
                     <div className="relative">
-                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
                             <Lock className="size-4" />
                         </div>
                         <Input
@@ -78,12 +78,12 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                             autoFocus
                             onChange={(e) => setData('password', e.target.value)}
                             placeholder="••••••••••••"
-                            className="h-11 border-slate-200 bg-slate-50/70 pr-10 pl-9 text-sm text-slate-900 placeholder:text-slate-400 focus:border-navy focus:bg-white"
+                            className="h-11 border-border bg-muted/50/70 pr-10 pl-9 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
                         />
                         <button
                             type="button"
                             onClick={() => setShowPass(!showPass)}
-                            className="absolute top-1/2 right-2.5 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600"
+                            className="absolute top-1/2 right-2.5 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
                             aria-label={showPass ? 'Hide password' : 'Show password'}
                         >
                             {showPass ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -93,11 +93,11 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                 </div>
 
                 <div className="grid gap-1.5">
-                    <Label htmlFor="password_confirmation" className="text-[11px] font-bold tracking-wider text-slate-500 uppercase">
+                    <Label htmlFor="password_confirmation" className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
                         CONFIRM NEW PASSWORD
                     </Label>
                     <div className="relative">
-                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
                             <Lock className="size-4" />
                         </div>
                         <Input
@@ -108,12 +108,12 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                             value={data.password_confirmation}
                             onChange={(e) => setData('password_confirmation', e.target.value)}
                             placeholder="••••••••••••"
-                            className="h-11 border-slate-200 bg-slate-50/70 pr-10 pl-9 text-sm text-slate-900 placeholder:text-slate-400 focus:border-navy focus:bg-white"
+                            className="h-11 border-border bg-muted/50/70 pr-10 pl-9 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
                         />
                         <button
                             type="button"
                             onClick={() => setShowConfirm(!showConfirm)}
-                            className="absolute top-1/2 right-2.5 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600"
+                            className="absolute top-1/2 right-2.5 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
                             aria-label={showConfirm ? 'Hide password' : 'Show password'}
                         >
                             {showConfirm ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -132,7 +132,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                 </Button>
             </form>
 
-            <div className="mt-6 flex items-center justify-center gap-1.5 pt-2 text-[11px] font-medium text-slate-400">
+            <div className="mt-6 flex items-center justify-center gap-1.5 pt-2 text-[11px] font-medium text-muted-foreground">
                 <ShieldCheck className="size-3.5 shrink-0 text-emerald-600" />
                 <span>Bank-grade 256-bit SSL encrypted connection</span>
             </div>

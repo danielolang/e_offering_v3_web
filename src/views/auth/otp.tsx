@@ -59,7 +59,7 @@ export default function Otp({ email, ttl, status }: { email: string; ttl: number
         <AuthLayout title="Two-step verification" description={`We sent a ${LENGTH}-digit code to ${email}. It expires in ${ttl} minutes.`}>
             <Head title="Verify sign-in" />
 
-            <div className="mx-auto mb-5 flex size-12 items-center justify-center rounded-full bg-[#c79d51]/15 text-[#1d326d]">
+            <div className="mx-auto mb-5 flex size-12 items-center justify-center rounded-full bg-[#c79d51]/15 text-navy dark:text-gold-light">
                 <MailCheck className="size-6 text-[#c79d51]" />
             </div>
 
@@ -84,7 +84,7 @@ export default function Otp({ email, ttl, status }: { email: string; ttl: number
                                 onChange={(e) => onChange(i, e.target.value)}
                                 onKeyDown={(e) => onKeyDown(i, e)}
                                 onPaste={onPaste}
-                                className="size-11 rounded-lg border border-slate-200 bg-slate-50/50 text-center text-xl font-bold text-slate-800 outline-none transition focus:border-navy focus:bg-white focus:ring-2 focus:ring-navy/20 sm:size-12"
+                                className="size-11 rounded-lg border border-border bg-muted/50/50 text-center text-xl font-bold text-foreground outline-none transition focus:border-navy focus:bg-card focus:ring-2 focus:ring-navy/20 sm:size-12"
                             />
                         ))}
                     </div>
@@ -101,7 +101,7 @@ export default function Otp({ email, ttl, status }: { email: string; ttl: number
                 </Button>
             </form>
 
-            <div className="mt-5 flex items-center justify-between text-xs text-slate-500">
+            <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
                 <button
                     type="button"
                     onClick={resend}
@@ -110,12 +110,12 @@ export default function Otp({ email, ttl, status }: { email: string; ttl: number
                 >
                     {resending ? 'Sending…' : 'Resend code'}
                 </button>
-                <Link href={route('login')} className="hover:text-slate-800 hover:underline">
+                <Link href={route('login')} className="hover:text-foreground hover:underline">
                     Use a different account
                 </Link>
             </div>
 
-            <div className="mt-6 flex items-center justify-center gap-1.5 border-t border-slate-100 pt-4 text-[11px] font-medium text-slate-400">
+            <div className="mt-6 flex items-center justify-center gap-1.5 border-t border-border pt-4 text-[11px] font-medium text-muted-foreground">
                 <ShieldCheck className="size-3.5 shrink-0 text-emerald-600" />
                 <span>Bank-grade 256-bit SSL encrypted connection</span>
             </div>
