@@ -8,8 +8,21 @@ const hints: Record<string, string> = {
     retail: 'Get started with your valid Bank Verification Number (BVN).',
     institutional: 'Onboard your organisation with valid CAC documentation.',
     tsp: 'Onboard your organisation and its Inputter / Authoriser users.',
-    regulator: 'For SEC / CBN officers who review and approve allotments.',
+    regulator: 'For SEC / CBN officers who review and approve allotments.'
 };
+
+/** Bolds defined terms written as ("QII"), e.g. "QII", "Non-QII", "SEC", "CBN". */
+function emphasiseTerms(text: string) {
+    return text.split(/("[^"]+")/g).map((part, i) =>
+        /^"[^"]+"$/.test(part) ? (
+            <strong key={i} className="text-foreground font-semibold">
+                {part}
+            </strong>
+        ) : (
+            part
+        )
+    );
+}
 
 /** CR s3: four account types, each with a short description. */
 export default function Choose({ accountTypes }: { accountTypes: Record<string, { label: string; description: string }> }) {
@@ -24,14 +37,14 @@ export default function Choose({ accountTypes }: { accountTypes: Record<string, 
                             key={key}
                             href={route('onboarding.form', key)}
                             className={cn(
-                                'group hover:border-navy focus-visible:ring-navy/30 flex flex-col rounded-xl border p-5 transition outline-none hover:shadow-md focus-visible:ring-4',
+                                'group hover:border-navy hover:bg-primary/10 focus-visible:bg-primary/10 dark:hover:border-primary dark:hover:bg-primary/15 focus-visible:ring-navy/30 flex flex-col rounded-xl border p-5 transition outline-none hover:shadow-md focus-visible:ring-4'
                             )}
                         >
                             <span className="bg-navy/10 text-navy group-hover:bg-navy flex size-11 items-center justify-center rounded-lg transition group-hover:text-white dark:text-white">
                                 <Icon className="size-5" />
                             </span>
                             <span className="text-navy mt-4 font-semibold dark:text-white">{type.label}</span>
-                            <span className="text-muted-foreground mt-1 flex-1 text-sm">{type.description}</span>
+                            <span className="text-muted-foreground mt-1 flex-1 text-sm">{emphasiseTerms(type.description)}</span>
                             <span className="text-muted-foreground mt-3 text-xs">{hints[key]}</span>
                             <span className="text-navy mt-3 inline-flex items-center gap-1 text-sm font-medium dark:text-gold-light">
                                 Continue <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
@@ -41,8 +54,9 @@ export default function Choose({ accountTypes }: { accountTypes: Record<string, 
                 })}
             </div>
             <div className="bg-muted/50 text-muted-foreground mt-6 rounded-lg border p-3 text-[11px] leading-relaxed">
-                <strong>Abbreviations:</strong> BVN – Bank Verification Number; CAC – Corporate Affairs Commission; QII – Qualified Institutional Investor;
-                TSP/RM – Transaction Sponsor / Registration Member; SEC – Securities and Exchange Commission; CBN – Central Bank of Nigeria.
+                <strong>Abbreviations:</strong> BVN – Bank Verification Number; CAC – Corporate Affairs Commission; QII – Qualified
+                Institutional Investor; TSP/RM – Transaction Sponsor / Registration Member; SEC – Securities and Exchange Commission; CBN –
+                Central Bank of Nigeria.
             </div>
             <p className="text-muted-foreground mt-6 text-center text-sm">
                 Already have an account?{' '}
