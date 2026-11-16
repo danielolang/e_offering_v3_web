@@ -1,6 +1,5 @@
-// Components
 import { Head, useForm } from '@/lib/app';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, ShieldCheck } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import InputError from '@/components/input-error';
@@ -17,46 +16,61 @@ export default function ForgotPassword({ status }: { status?: string }) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
         post(route('password.email'));
     };
 
     return (
-        <AuthLayout title="Forgot password" description="Enter your email to receive a password reset link">
+        <AuthLayout title="Forgot password" description="Enter your registered email address to receive a password reset link.">
             <Head title="Forgot password" />
 
-            {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
+            {status && <div className="mb-4 rounded-md bg-emerald-50 px-3 py-2 text-center text-sm font-medium text-emerald-700">{status}</div>}
 
-            <div className="space-y-6">
-                <form onSubmit={submit}>
-                    <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
+            <form onSubmit={submit} className="flex flex-col gap-4">
+                <div className="grid gap-1.5">
+                    <Label htmlFor="email" className="text-[11px] font-bold tracking-wider text-slate-500 uppercase">
+                        EMAIL ADDRESS
+                    </Label>
+                    <div className="relative">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <div className="flex size-5 items-center justify-center rounded-full bg-slate-200/90 text-[11px] font-bold text-slate-500">
+                                @
+                            </div>
+                        </div>
                         <Input
                             id="email"
                             type="email"
                             name="email"
-                            autoComplete="off"
+                            autoComplete="email"
                             value={data.email}
                             autoFocus
                             onChange={(e) => setData('email', e.target.value)}
-                            placeholder="email@example.com"
+                            placeholder="name@company.com"
+                            className="h-11 border-slate-200 bg-slate-50/70 pl-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-navy focus:bg-white"
                         />
-
-                        <InputError message={errors.email} />
                     </div>
-
-                    <div className="my-6 flex items-center justify-start">
-                        <Button className="w-full" disabled={processing}>
-                            {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                            Email password reset link
-                        </Button>
-                    </div>
-                </form>
-
-                <div className="text-muted-foreground space-x-1 text-center text-sm">
-                    <span>Or, return to</span>
-                    <TextLink href={route('login')}>log in</TextLink>
+                    <InputError message={errors.email} />
                 </div>
+
+                <Button
+                    type="submit"
+                    className="mt-2 h-11 w-full rounded-lg bg-[#0e224e] py-2.5 text-sm font-semibold text-white shadow-md shadow-[#0e224e]/20 transition-all hover:bg-[#0a1838]"
+                    disabled={processing}
+                >
+                    {processing && <LoaderCircle className="mr-2 size-4 animate-spin" />}
+                    Email password reset link
+                </Button>
+            </form>
+
+            <div className="mt-5 space-x-1 text-center text-xs text-slate-600">
+                <span>Or, return to</span>
+                <TextLink href={route('login')} className="font-semibold text-slate-900 hover:underline">
+                    Sign in
+                </TextLink>
+            </div>
+
+            <div className="mt-6 flex items-center justify-center gap-1.5 pt-2 text-[11px] font-medium text-slate-400">
+                <ShieldCheck className="size-3.5 shrink-0 text-emerald-600" />
+                <span>Bank-grade 256-bit SSL encrypted connection</span>
             </div>
         </AuthLayout>
     );

@@ -1,8 +1,9 @@
-import AppLogoIcon from '@/components/app-logo-icon';
 import { FlashMessages } from '@/components/flash-messages';
-import { ThemeToggle } from '@/components/theme-toggle';
 import { Link } from '@/lib/app';
-import { Clock3, Handshake, LockKeyhole, Radio } from 'lucide-react';
+import { asset } from '@/lib/url';
+import { cn } from '@/lib/utils';
+import { Clock3, ShieldCheck, TrendingUp, Users, Zap } from 'lucide-react';
+import React from 'react';
 
 interface AuthLayoutProps {
     children: React.ReactNode;
@@ -12,80 +13,140 @@ interface AuthLayoutProps {
     wide?: boolean;
 }
 
-const NAVY = '#1d326d';
-const GOLD = '#c79d51';
-
 const highlights = [
-    { icon: Handshake, text: 'Efficient interaction between sponsors, investors, regulators and the depository.' },
-    { icon: LockKeyhole, text: 'Secure investments with two-step sign-in and a complete audit trail.' },
-    { icon: Radio, text: 'Real-time order book, allotment and lodgement updates.' },
-    { icon: Clock3, text: 'Broad access to primary-market offers, end to end.' },
+    {
+        icon: Users,
+        text: 'Efficient interaction between sponsors, investors, regulators and the depository.',
+    },
+    {
+        icon: ShieldCheck,
+        text: 'Secure investments with two-step sign-in and a complete audit trail.',
+    },
+    {
+        icon: TrendingUp,
+        text: 'Real-time order book, allotment and lodgement updates.',
+    },
+    {
+        icon: Clock3,
+        text: 'Broad access to primary-market offers, end to end.',
+    },
 ];
 
 /**
- * Legacy onboarding split screen, improved: the "e-Offering Platform" welcome panel in
- * navy and gold beside the form card. Panel colours are fixed so the brand reads the same
- * in dark mode; the form side follows the theme toggle.
+ * FMDQ Institutional Portal authentication & onboarding layout.
+ * Optimized to fit 100% within the viewport height (zero scrolling required on desktop):
+ * - Slim institutional header with FMDQ mark and SEC status pill
+ * - Deep navy blueprint hero with grid lines & architectural arcs
+ * - Left column with headline, description & 2x2 feature cards
+ * - Glass-framed floating white card for forms
+ * - Slim institutional footer bar
  */
 export default function AuthBrandLayout({ children, title, description, wide = false }: AuthLayoutProps) {
     return (
-        <div className="bg-background flex min-h-svh">
-            <aside className="relative hidden w-1/2 flex-col overflow-hidden p-10 text-white lg:flex xl:p-14" style={{ backgroundColor: NAVY }}>
-                <div aria-hidden className="pointer-events-none absolute -right-28 -bottom-36 size-[380px] rounded-full border-[26px] opacity-90" style={{ borderColor: GOLD }} />
-                <div aria-hidden className="pointer-events-none absolute -top-24 -left-24 size-64 rounded-full border-[18px] border-white/10" />
+        <div className="flex min-h-screen flex-col justify-between bg-white antialiased lg:h-screen lg:overflow-hidden">
+            {/* Top Header Bar */}
+            <header className="w-full shrink-0 border-b border-slate-200/80 bg-white px-6 py-2.5 sm:px-10 lg:px-16">
+                <div className="mx-auto flex max-w-[1600px] items-center justify-between">
+                    <Link
+                        href={route('home')}
+                        className="flex items-center transition hover:opacity-90"
+                    >
+                        <img src={asset('images/fmdq-logo.svg')} alt="FMDQ" className="h-6 w-auto" />
+                    </Link>
 
-                <Link href={route('home')} className="relative z-10 inline-flex w-fit items-center rounded-md bg-white px-3 py-2">
-                    <AppLogoIcon className="h-8 dark:bg-transparent dark:p-0" />
-                </Link>
-
-                <div className="relative z-10 my-auto max-w-lg">
-                    <p className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: GOLD }}>
-                        FMDQ e-Offering
-                    </p>
-                    <h2 className="mt-3 text-[35px] leading-tight font-semibold">e-Offering Platform</h2>
-                    <p className="mt-3 text-sm text-white/80">
-                        Unlocking investment opportunities through automated, standardised primary market transactions.
-                    </p>
-                    <ul className="mt-8 space-y-4 text-sm text-white/85">
-                        {highlights.map(({ icon: Icon, text }) => (
-                            <li key={text} className="flex items-start gap-3">
-                                <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: GOLD, color: NAVY }}>
-                                    <Icon className="size-4" />
-                                </span>
-                                <span>{text}</span>
-                            </li>
-                        ))}
-                    </ul>
+                    <div className="flex items-center gap-2 rounded-full border border-slate-200/90 bg-white px-3.5 py-1 text-xs font-medium text-slate-600 shadow-xs">
+                        <span className="size-2 rounded-full bg-emerald-500 ring-2 ring-emerald-500/20" />
+                        <span>e-Offering Platform</span>
+                    </div>
                 </div>
+            </header>
 
-                <p className="relative z-10 mt-10 text-xs text-white/60">
-                    Powered by iQx Consult Limited · &copy; {new Date().getFullYear()} FMDQ Group PLC
-                </p>
-            </aside>
+            {/* Main Hero & Auth Card Section */}
+            <main className="relative flex flex-1 items-center justify-center overflow-hidden bg-gradient-to-br from-[#0a1c4a] via-[#0d2566] to-[#071538] px-6 py-3 sm:px-10 lg:px-16 xl:px-20">
+                {/* Blueprint grid lines */}
+                <div
+                    className="pointer-events-none absolute inset-0 opacity-[0.06]"
+                    style={{
+                        backgroundImage: `
+                            linear-gradient(to right, #ffffff 1px, transparent 1px),
+                            linear-gradient(to bottom, #ffffff 1px, transparent 1px)
+                        `,
+                        backgroundSize: '40px 40px',
+                    }}
+                />
 
-            <main className="bg-muted/40 relative flex flex-1 flex-col">
-                <ThemeToggle className="absolute top-4 right-4 z-10" />
-                <div className="flex flex-1 flex-col items-center justify-center p-6 md:p-10">
-                    <div className={wide ? 'w-full max-w-3xl' : 'w-full max-w-lg'}>
-                        <Link href={route('home')} className="mb-8 flex justify-center lg:hidden">
-                            <AppLogoIcon className="h-10" />
-                        </Link>
-                        <FlashMessages />
-                        <div className="bg-card mt-2 rounded-2xl border p-6 shadow-md md:p-10">
-                            {(title || description) && (
-                                <div className="mb-6 space-y-1.5 text-center">
-                                    {title && <h1 className="text-navy text-2xl font-semibold dark:text-white">{title}</h1>}
-                                    {description && <p className="text-muted-foreground text-sm">{description}</p>}
+                {/* Concentric vector architectural circles */}
+                <svg className="pointer-events-none absolute inset-0 size-full opacity-15" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="15%" cy="50%" r="280" fill="none" stroke="white" strokeWidth="1" strokeDasharray="4 4" />
+                    <circle cx="15%" cy="50%" r="480" fill="none" stroke="white" strokeWidth="1" />
+                    <circle cx="85%" cy="40%" r="320" fill="none" stroke="white" strokeWidth="1" />
+                    <circle cx="85%" cy="40%" r="520" fill="none" stroke="white" strokeWidth="1" strokeDasharray="6 6" />
+                </svg>
+
+                <div className={cn('relative z-10 mx-auto flex w-full flex-col items-center justify-between gap-6 lg:flex-row lg:gap-10 xl:gap-14', wide ? 'max-w-[1550px]' : 'max-w-[1440px]')}>
+                    {/* Left Column (Brand Headline & 2x2 Feature Grid) */}
+                    <div className={cn('w-full text-white', wide ? 'lg:w-5/12 xl:w-5/12' : 'lg:w-1/2 xl:w-7/12')}>
+                        <div className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold tracking-wider text-white uppercase shadow-xs backdrop-blur-md">
+                            <Zap className="size-3.5 text-white/90" />
+                            <span>FMDQ E-OFFERING</span>
+                        </div>
+
+                        <h1 className="mt-3.5 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-[44px] xl:text-[50px] xl:leading-[1.1]">
+                            e-Offering Platform
+                        </h1>
+
+                        <p className="mt-2.5 max-w-xl text-xs leading-relaxed font-normal text-white/80 sm:text-sm lg:text-base">
+                            Unlocking investment opportunities through automated, standardised primary market transactions.
+                        </p>
+
+                        <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:gap-3">
+                            {highlights.map(({ icon: Icon, text }) => (
+                                <div
+                                    key={text}
+                                    className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.05] p-3 shadow-xs backdrop-blur-md transition hover:bg-white/[0.08]"
+                                >
+                                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#c79d51] text-[#0c2356] shadow-sm sm:size-10">
+                                        <Icon className="size-4.5" />
+                                    </div>
+                                    <span className="text-xs leading-snug font-medium text-white/95 sm:text-[13px]">{text}</span>
                                 </div>
-                            )}
-                            {children}
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Right Column (Glass-Framed Floating White Card) */}
+                    <div className={cn('flex w-full justify-center lg:justify-end', wide ? 'w-full lg:w-7/12 xl:w-7/12 max-w-3xl xl:max-w-4xl' : 'w-full lg:w-1/2 xl:w-5/12 max-w-[460px]')}>
+                        <div className="w-full rounded-[24px] border border-white/20 bg-white/10 p-2 shadow-2xl backdrop-blur-md">
+                            <div className="w-full rounded-2xl bg-white p-5 text-slate-800 shadow-sm sm:p-6 lg:p-7">
+                                {title && <h2 className="text-center text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">{title}</h2>}
+                                {description && <p className="mt-0.5 text-center text-xs text-slate-500">{description}</p>}
+                                <div className="mt-4">
+                                    <FlashMessages />
+                                    {children}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <p className="bg-navy-dark px-4 py-2 text-center text-[11px] text-[#e3c87a] italic">
-                    FMDQ Depository Limited is registered and regulated by the Securities and Exchange Commission, Nigeria
-                </p>
             </main>
+
+            {/* Bottom Institutional Footer Bar */}
+            <footer className="w-full shrink-0 border-t border-slate-200/80 bg-white px-6 py-2.5 text-xs text-slate-500 sm:px-10 lg:px-16">
+                <div className="mx-auto flex max-w-[1600px] flex-col items-center justify-between gap-2 sm:flex-row">
+                    <span>Powered by iQx Consult Limited · &copy; {new Date().getFullYear()} FMDQ Group PLC</span>
+                    <div className="flex items-center gap-6 font-medium text-slate-600 sm:gap-8">
+                        <a href="#" className="transition-colors hover:text-slate-900">
+                            Security Policy
+                        </a>
+                        <a href="#" className="transition-colors hover:text-slate-900">
+                            Terms of Service
+                        </a>
+                        <a href="#" className="transition-colors hover:text-slate-900">
+                            Depository Help Desk
+                        </a>
+                    </div>
+                </div>
+            </footer>
         </div>
     );
 }
