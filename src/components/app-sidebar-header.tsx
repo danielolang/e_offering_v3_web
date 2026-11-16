@@ -17,18 +17,23 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                 <SidebarTrigger className="-ml-1" aria-label="Toggle menu" />
                 <Breadcrumbs breadcrumbs={breadcrumbs} />
             </div>
-            <div className="ml-auto flex items-center gap-1.5">
+            <div className="ml-auto flex items-center gap-2.5">
                 {auth?.user && (
-                    <span className="border-gold/50 bg-gold/10 text-navy hidden rounded-full border px-3 py-1 text-xs font-medium sm:inline dark:text-gold-light">
-                        {auth.user.role_label}
-                        {auth.user.institution && auth.user.type !== 'regulator' ? ` · ${auth.user.institution.name}` : ''}
+                    <span className="hidden items-center gap-2 rounded-full border border-slate-200/90 bg-white px-3.5 py-1 text-xs font-medium text-slate-700 shadow-xs sm:inline-flex dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                        <span className="size-2 rounded-full bg-emerald-500 ring-2 ring-emerald-500/20" />
+                        <span className="font-semibold text-slate-800 dark:text-white">{auth.user.role_label}</span>
+                        {auth.user.institution && auth.user.type !== 'regulator' && (
+                            <span className="font-normal text-slate-500 dark:text-slate-400">
+                                {auth.user.institution.name}
+                            </span>
+                        )}
                     </span>
                 )}
                 <Button variant="ghost" size="icon" asChild className="relative" aria-label={`Notifications (${unread} unread)`}>
                     <Link href={route('notifications.index')}>
-                        <Bell className="size-5" />
+                        <Bell className="size-5 text-slate-600 dark:text-slate-300" />
                         {unread > 0 && (
-                            <span className="bg-gold text-navy-dark absolute -top-0.5 -right-0.5 flex min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-bold">
+                            <span className="absolute -top-0.5 -right-0.5 flex min-w-[18px] items-center justify-center rounded-full bg-amber-500 px-1 text-[10px] font-bold text-white shadow-xs">
                                 {unread > 99 ? '99+' : unread}
                             </span>
                         )}

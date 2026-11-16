@@ -81,11 +81,11 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
                             <TextField label="Role of contact person" required value={details.data.contact_role} onChange={(v) => details.setData('contact_role', v)} error={details.errors.contact_role} />
                             <TextField label="Contact number" required value={details.data.contact_phone} onChange={(v) => details.setData('contact_phone', v)} error={details.errors.contact_phone} />
                         </div>
-                        <p className="text-muted-foreground pt-2 text-xs font-medium tracking-wide uppercase">Default account for investor payments (optional)</p>
+                        <p className="text-muted-foreground pt-2 text-xs font-medium tracking-wide uppercase">Default account for investor payments</p>
                         <div className="grid gap-4 sm:grid-cols-3">
-                            <TextField label="Bank name" value={details.data.bank_name} onChange={(v) => details.setData('bank_name', v)} error={details.errors.bank_name} />
-                            <TextField label="Account name" value={details.data.bank_account_name} onChange={(v) => details.setData('bank_account_name', v)} error={details.errors.bank_account_name} />
-                            <TextField label="Account number" value={details.data.bank_account_number} onChange={(v) => details.setData('bank_account_number', v)} error={details.errors.bank_account_number} />
+                            <TextField label="Bank name" required value={details.data.bank_name} onChange={(v) => details.setData('bank_name', v)} error={details.errors.bank_name} />
+                            <TextField label="Account name" required value={details.data.bank_account_name} onChange={(v) => details.setData('bank_account_name', v)} error={details.errors.bank_account_name} />
+                            <TextField label="Account number" required placeholder="10-digit NUBAN" value={details.data.bank_account_number} onChange={(v) => details.setData('bank_account_number', v)} error={details.errors.bank_account_number} />
                         </div>
                         <div className="flex justify-end">
                             <Button type="submit" disabled={details.processing}>

@@ -13,7 +13,7 @@ import { postJson } from '@/lib/http';
 import { cn } from '@/lib/utils';
 import { type CoSponsor, type InvestorCategory, type Offer, type ReceivingAgent } from '@/types';
 import { Head, Link, useForm } from '@/lib/app';
-import { Download, LoaderCircle, Plus, Trash2, Upload } from 'lucide-react';
+import { AlertCircle, Download, LoaderCircle, Plus, Trash2, Upload } from 'lucide-react';
 import { FormEvent, useRef, useState } from 'react';
 
 interface SecurityType {
@@ -102,12 +102,16 @@ export default function OfferForm({ offer, options, sponsors, defaults }: Props)
     const [importErrors, setImportErrors] = useState<string[]>([]);
 
     const chooseType = (key: string) => {
-        const allowed = options.securityTypes[key].universe;
+        const secType = options.securityTypes[key];
+        const allowed = secType?.universe ?? [];
+        const hasTenor = secType?.has_tenor ?? false;
         form.setData((d) => ({
             ...d,
             security_type: key,
             investor_universe: d.investor_universe.length ? d.investor_universe.filter((u) => allowed.includes(u)) : allowed,
-            tenor: options.securityTypes[key].has_tenor ? d.tenor : '',
+            tenor: hasTenor ? d.tenor : '',
+            maturity_date: hasTenor ? d.maturity_date : '',
+            day_count_fraction: hasTenor ? d.day_count_fraction : '',
         }));
     };
 
@@ -161,8 +165,24 @@ export default function OfferForm({ offer, options, sponsors, defaults }: Props)
                     description="Saved as a draft. Upload the supporting documents next, then submit it to your Authoriser."
                 />
                 {errorCount > 0 && (
-                    <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800 dark:border-rose-900 dark:bg-rose-950 dark:text-rose-200">
-                        Please correct the {errorCount} highlighted field{errorCount > 1 ? 's' : ''} below.
+                    <div className="rounded-xl border border-rose-300 bg-rose-50 p-4 text-sm text-rose-900 shadow-xs dark:border-rose-800 dark:bg-rose-950/70 dark:text-rose-200">
+                        <div className="flex items-start gap-3">
+                            <AlertCircle className="mt-0.5 size-5 shrink-0 text-rose-600 dark:text-rose-400" />
+                            <div className="flex-1 space-y-1.5">
+                                <p className="font-semibold text-rose-900 dark:text-rose-100">
+                                    Please correct the {errorCount} error{errorCount > 1 ? 's' : ''} below:
+                                </p>
+                                <ul className="list-disc space-y-1 pl-4 text-xs sm:text-sm text-rose-800 dark:text-rose-200">
+                                    {Object.entries(errors).map(([field, msg]) => (
+                                        <li key={field}>
+                                            <span className="font-medium">
+                                                {typeof msg === 'string' ? msg : Array.isArray(msg) ? msg[0] : String(msg)}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 )}
                 <form onSubmit={submit} className="space-y-6">
@@ -288,8 +308,17 @@ export default function OfferForm({ offer, options, sponsors, defaults }: Props)
                                 )}
                                 <TextField label="Implied yield (%)" type="number" step="0.0001" required value={form.data.implied_yield} onChange={(v) => form.setData('implied_yield', v)} error={errors.implied_yield} />
                                 <MoneyField label="Issue price per unit" required value={form.data.issue_price} onChange={(v) => form.setData('issue_price', v)} error={errors.issue_price} />
-                                {(type?.has_tenor ?? true) && (
-                                    <TextField label="Indicative maturity date" type="date" required min={dayAfter(closeDay)} value={form.data.maturity_date} onChange={(v) => form.setData('maturity_date', v)} error={errors.maturity_date} hint={closeDay ? 'Must be after the offer close date.' : undefined} />
+                                {((type?.has_tenor ?? true) || Boolean(errors.maturity_date)) && (
+                                    <TextField
+                                        label="Indicative maturity date"
+                                        type="date"
+                                        required={type?.has_tenor ?? true}
+                                        min={dayAfter(closeDay)}
+                                        value={form.data.maturity_date}
+                                        onChange={(v) => form.setData('maturity_date', v)}
+                                        error={errors.maturity_date}
+                                        hint={closeDay ? 'Must be after the offer close date.' : undefined}
+                                    />
                                 )}
                                 <TextField label="Indicative allotment date" type="date" required min={closeDay} value={form.data.allotment_date} onChange={(v) => form.setData('allotment_date', v)} error={errors.allotment_date} hint={closeDay ? 'On or after the offer close date.' : undefined} />
                             </div>

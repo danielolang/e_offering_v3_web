@@ -9,7 +9,7 @@ import { toInputDateTime } from '@/lib/format';
 import { amendableLabels } from '@/lib/labels';
 import { type Offer } from '@/types';
 import { Head, Link, useForm } from '@/lib/app';
-import { Info, LoaderCircle } from 'lucide-react';
+import { AlertCircle, Info, LoaderCircle } from 'lucide-react';
 import { FormEvent } from 'react';
 
 /**
@@ -73,6 +73,27 @@ export default function AmendOffer({ offer, dayCounts, activeBidders }: { offer:
                         <strong>{activeBidders}</strong> investor{activeBidders === 1 ? '' : 's'} with active bids will be notified.
                     </p>
                 </div>
+                {Object.keys(errors).length > 0 && (
+                    <div className="rounded-xl border border-rose-300 bg-rose-50 p-4 text-sm text-rose-900 shadow-xs dark:border-rose-800 dark:bg-rose-950/70 dark:text-rose-200">
+                        <div className="flex items-start gap-3">
+                            <AlertCircle className="mt-0.5 size-5 shrink-0 text-rose-600 dark:text-rose-400" />
+                            <div className="flex-1 space-y-1.5">
+                                <p className="font-semibold text-rose-900 dark:text-rose-100">
+                                    Please correct the following errors:
+                                </p>
+                                <ul className="list-disc space-y-1 pl-4 text-xs sm:text-sm text-rose-800 dark:text-rose-200">
+                                    {Object.entries(errors).map(([field, msg]) => (
+                                        <li key={field}>
+                                            <span className="font-medium">
+                                                {typeof msg === 'string' ? msg : Array.isArray(msg) ? msg[0] : String(msg)}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                )}
                 <form onSubmit={submit} className="space-y-6">
                     <Section title="Dates">
                         <div className="grid gap-4 sm:grid-cols-2">
