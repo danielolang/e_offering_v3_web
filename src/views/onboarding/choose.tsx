@@ -69,7 +69,7 @@ export default function Choose({ accountTypes }: { accountTypes: Record<string, 
                                 <h3 className="text-foreground group-hover:text-navy mt-2 text-sm font-bold transition-colors sm:text-[15px] dark:group-hover:text-white">
                                     {type.label}
                                 </h3>
-                                <p className="text-muted-foreground mt-1 line-clamp-3 text-xs leading-relaxed">
+                                <p className="text-foreground mt-1 line-clamp-3 text-xs leading-relaxed">
                                     {emphasiseTerms(type.description)}
                                 </p>
                             </div>

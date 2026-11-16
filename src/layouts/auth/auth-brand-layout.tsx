@@ -68,7 +68,7 @@ export default function AuthBrandLayout({ children, title, description, wide = f
             </header>
 
             {/* Main Hero & Auth Card Section */}
-            <main className="relative flex flex-1 items-center justify-center overflow-hidden bg-gradient-to-br from-[#0a1c4a] via-[#0d2566] to-[#071538] px-6 py-3 sm:px-10 lg:px-16 xl:px-20">
+            <main className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-gradient-to-br from-[#0a1c4a] via-[#0d2566] to-[#071538] px-6 py-3 sm:px-10 lg:px-16 xl:px-20">
                 {/* Blueprint grid lines */}
                 <div
                     className="pointer-events-none absolute inset-0 opacity-[0.06]"
@@ -91,7 +91,7 @@ export default function AuthBrandLayout({ children, title, description, wide = f
 
                 <div
                     className={cn(
-                        'relative z-10 mx-auto flex w-full flex-col items-center justify-between gap-6 lg:flex-row lg:gap-10 xl:gap-14',
+                        'relative z-10 mx-auto flex w-full flex-col items-center justify-between gap-6 lg:h-full lg:flex-row lg:gap-10 xl:gap-14',
                         wide ? 'max-w-[1550px]' : 'max-w-[1440px]'
                     )}
                 >
@@ -128,12 +128,14 @@ export default function AuthBrandLayout({ children, title, description, wide = f
                     {/* Right Column (Glass-Framed Floating White Card) */}
                     <div
                         className={cn(
-                            'flex w-full justify-center lg:justify-end',
+                            // On desktop the page is locked to the viewport, so the card is capped to the
+                            // available height and only the form inside it scrolls.
+                            'flex w-full justify-center lg:h-full lg:items-center lg:justify-end',
                             wide ? 'w-full lg:w-7/12 xl:w-7/12 max-w-3xl xl:max-w-4xl' : 'w-full lg:w-1/2 xl:w-5/12 max-w-[460px]'
                         )}
                     >
-                        <div className="w-full rounded-[24px] border border-white/20 bg-white/10 p-2 shadow-2xl backdrop-blur-md">
-                            <div className="w-full rounded-2xl bg-card p-5 text-foreground shadow-sm sm:p-6 lg:p-7">
+                        <div className="w-full rounded-[24px] border border-white/20 bg-white/10 p-2 shadow-2xl backdrop-blur-md lg:flex lg:max-h-full lg:flex-col">
+                            <div className="w-full rounded-2xl bg-card p-5 text-foreground shadow-sm [scrollbar-width:thin] sm:p-6 lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain lg:p-7">
                                 {title && (
                                     <h2 className="text-center text-xl font-extrabold tracking-tight text-foreground sm:text-2xl">
                                         {title}
