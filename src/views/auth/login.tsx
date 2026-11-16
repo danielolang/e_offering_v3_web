@@ -34,12 +34,12 @@ export default function Login({ status }: { status?: string }) {
 
             <form className="flex flex-col gap-3.5" onSubmit={submit}>
                 <div className="grid gap-1.5">
-                    <Label htmlFor="email" className="text-[11px] font-bold tracking-wider text-slate-500 uppercase">
+                    <Label htmlFor="email" className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
                         EMAIL ADDRESS
                     </Label>
                     <div className="relative">
                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                            <div className="flex size-5 items-center justify-center rounded-full bg-slate-200/90 text-[11px] font-bold text-slate-600">
+                            <div className="flex size-5 items-center justify-center rounded-full bg-border/90 text-[11px] font-bold text-muted-foreground">
                                 @
                             </div>
                         </div>
@@ -52,7 +52,7 @@ export default function Login({ status }: { status?: string }) {
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             placeholder="u913128959"
-                            className="h-10.5 border-slate-200 bg-slate-50/70 pl-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-navy focus:bg-white"
+                            className="h-10.5 border-border bg-muted/50/70 pl-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
                         />
                     </div>
                     <InputError message={errors.email} />
@@ -60,15 +60,15 @@ export default function Login({ status }: { status?: string }) {
 
                 <div className="grid gap-1.5">
                     <div className="flex items-center justify-between">
-                        <Label htmlFor="password" className="text-[11px] font-bold tracking-wider text-slate-500 uppercase">
+                        <Label htmlFor="password" className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
                             PASSWORD
                         </Label>
-                        <TextLink href={route('password.request')} className="text-xs font-semibold text-slate-600 hover:text-navy hover:underline">
+                        <TextLink href={route('password.request')} className="text-xs font-semibold text-muted-foreground hover:text-navy hover:underline">
                             Forgot password?
                         </TextLink>
                     </div>
                     <div className="relative">
-                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
                             <Lock className="size-4" />
                         </div>
                         <Input
@@ -79,12 +79,12 @@ export default function Login({ status }: { status?: string }) {
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
                             placeholder="••••••••••••"
-                            className="h-10.5 border-slate-200 bg-slate-50/70 pr-10 pl-9 text-sm text-slate-900 placeholder:text-slate-400 focus:border-navy focus:bg-white"
+                            className="h-10.5 border-border bg-muted/50/70 pr-10 pl-9 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
                         />
                         <button
                             type="button"
                             onClick={() => setShow(!show)}
-                            className="absolute top-1/2 right-2.5 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600"
+                            className="absolute top-1/2 right-2.5 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
                             aria-label={show ? 'Hide password' : 'Show password'}
                         >
                             {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -98,9 +98,9 @@ export default function Login({ status }: { status?: string }) {
                         id="remember"
                         checked={data.remember}
                         onCheckedChange={(v) => setData('remember', v === true)}
-                        className="size-4 border-slate-300 data-[state=checked]:border-navy data-[state=checked]:bg-navy"
+                        className="size-4 border-border data-[state=checked]:border-navy data-[state=checked]:bg-navy"
                     />
-                    <Label htmlFor="remember" className="cursor-pointer text-xs font-normal text-slate-600">
+                    <Label htmlFor="remember" className="cursor-pointer text-xs font-normal text-muted-foreground">
                         Keep me signed in on this device
                     </Label>
                 </div>
@@ -115,14 +115,14 @@ export default function Login({ status }: { status?: string }) {
                 </Button>
             </form>
 
-            <p className="mt-3.5 text-center text-xs text-slate-600">
+            <p className="mt-3.5 text-center text-xs text-muted-foreground">
                 Don&apos;t have an account?{' '}
-                <Link href={route('onboarding.choose')} className="font-bold text-slate-900 hover:underline">
+                <Link href={route('onboarding.choose')} className="font-bold text-foreground hover:underline">
                     Sign up
                 </Link>
             </p>
 
-            <div className="mt-3.5 flex items-center justify-center gap-1.5 pt-2 text-[11px] font-medium text-slate-400">
+            <div className="mt-3.5 flex items-center justify-center gap-1.5 pt-2 text-[11px] font-medium text-muted-foreground">
                 <ShieldCheck className="size-3.5 shrink-0 text-emerald-600" />
                 <span>Bank-grade 256-bit SSL encrypted connection</span>
             </div>

@@ -30,11 +30,11 @@ export default function ConfirmPassword() {
 
             <form onSubmit={submit} className="flex flex-col gap-4">
                 <div className="grid gap-1.5">
-                    <Label htmlFor="password" className="text-[11px] font-bold tracking-wider text-slate-500 uppercase">
+                    <Label htmlFor="password" className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
                         PASSWORD
                     </Label>
                     <div className="relative">
-                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
                             <Lock className="size-4" />
                         </div>
                         <Input
@@ -46,12 +46,12 @@ export default function ConfirmPassword() {
                             value={data.password}
                             autoFocus
                             onChange={(e) => setData('password', e.target.value)}
-                            className="h-11 border-slate-200 bg-slate-50/70 pr-10 pl-9 text-sm text-slate-900 placeholder:text-slate-400 focus:border-navy focus:bg-white"
+                            className="h-11 border-border bg-muted/50/70 pr-10 pl-9 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
                         />
                         <button
                             type="button"
                             onClick={() => setShow(!show)}
-                            className="absolute top-1/2 right-2.5 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600"
+                            className="absolute top-1/2 right-2.5 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
                             aria-label={show ? 'Hide password' : 'Show password'}
                         >
                             {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -70,7 +70,7 @@ export default function ConfirmPassword() {
                 </Button>
             </form>
 
-            <div className="mt-6 flex items-center justify-center gap-1.5 pt-2 text-[11px] font-medium text-slate-400">
+            <div className="mt-6 flex items-center justify-center gap-1.5 pt-2 text-[11px] font-medium text-muted-foreground">
                 <ShieldCheck className="size-3.5 shrink-0 text-emerald-600" />
                 <span>Bank-grade 256-bit SSL encrypted connection</span>
             </div>

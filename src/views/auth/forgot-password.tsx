@@ -27,12 +27,12 @@ export default function ForgotPassword({ status }: { status?: string }) {
 
             <form onSubmit={submit} className="flex flex-col gap-4">
                 <div className="grid gap-1.5">
-                    <Label htmlFor="email" className="text-[11px] font-bold tracking-wider text-slate-500 uppercase">
+                    <Label htmlFor="email" className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
                         EMAIL ADDRESS
                     </Label>
                     <div className="relative">
                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                            <div className="flex size-5 items-center justify-center rounded-full bg-slate-200/90 text-[11px] font-bold text-slate-500">
+                            <div className="flex size-5 items-center justify-center rounded-full bg-border/90 text-[11px] font-bold text-muted-foreground">
                                 @
                             </div>
                         </div>
@@ -45,7 +45,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                             autoFocus
                             onChange={(e) => setData('email', e.target.value)}
                             placeholder="name@company.com"
-                            className="h-11 border-slate-200 bg-slate-50/70 pl-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-navy focus:bg-white"
+                            className="h-11 border-border bg-muted/50/70 pl-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
                         />
                     </div>
                     <InputError message={errors.email} />
@@ -61,14 +61,14 @@ export default function ForgotPassword({ status }: { status?: string }) {
                 </Button>
             </form>
 
-            <div className="mt-5 space-x-1 text-center text-xs text-slate-600">
+            <div className="mt-5 space-x-1 text-center text-xs text-muted-foreground">
                 <span>Or, return to</span>
-                <TextLink href={route('login')} className="font-semibold text-slate-900 hover:underline">
+                <TextLink href={route('login')} className="font-semibold text-foreground hover:underline">
                     Sign in
                 </TextLink>
             </div>
 
-            <div className="mt-6 flex items-center justify-center gap-1.5 pt-2 text-[11px] font-medium text-slate-400">
+            <div className="mt-6 flex items-center justify-center gap-1.5 pt-2 text-[11px] font-medium text-muted-foreground">
                 <ShieldCheck className="size-3.5 shrink-0 text-emerald-600" />
                 <span>Bank-grade 256-bit SSL encrypted connection</span>
             </div>
