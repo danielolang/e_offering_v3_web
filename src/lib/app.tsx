@@ -312,6 +312,16 @@ export function useForm<T extends Record<string, any>>(initial: T) {
         setValues((current) =>
             typeof key === 'string' ? { ...current, [key]: value } : typeof key === 'function' ? key(current) : { ...current, ...key }
         );
+        // A field the user has just changed should not keep showing the last submit's error.
+        const changed: string[] = typeof key === 'string' ? [key] : key && typeof key === 'object' ? Object.keys(key) : [];
+        if (changed.length)
+            setErrors((current) => {
+                const stale = Object.keys(current).filter((f) => changed.some((c) => f === c || f.startsWith(`${c}.`)));
+                if (!stale.length) return current;
+                const next = { ...current };
+                stale.forEach((f) => delete next[f]);
+                return next;
+            });
     }, []);
 
     const reset = useCallback((...fields: string[]) => {

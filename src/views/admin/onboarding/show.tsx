@@ -38,28 +38,7 @@ export default function OnboardingShow({
                         </span>
                     }
                     actions={
-                        pending ? (
-                            <>
-                                <DecisionDialog
-                                    href={route('admin.onboarding.reject', institution.id)}
-                                    title="Reject onboarding request"
-                                    description="The applicant is emailed the reason."
-                                    trigger="Reject"
-                                    triggerVariant="outline"
-                                    reasonField="reason"
-                                    reasonRequired
-                                    destructive
-                                    confirmLabel="Reject request"
-                                />
-                                <DecisionDialog
-                                    href={route('admin.onboarding.approve', institution.id)}
-                                    title="Approve onboarding request"
-                                    description="Every listed user is activated and emailed a link to set their password."
-                                    trigger="Approve"
-                                    confirmLabel="Approve"
-                                />
-                            </>
-                        ) : institution.status === 'approved' ? (
+                        institution.status === 'approved' ? (
                             <Button variant="outline" onClick={() => router.post(route('admin.onboarding.resend', institution.id))}>
                                 <Send className="size-4" /> Resend password links
                             </Button>
@@ -77,7 +56,7 @@ export default function OnboardingShow({
                     <Section title="Request details" className="lg:col-span-2">
                         <DetailList
                             items={[
-                                { label: 'Name', value: institution.name },
+                                { label: 'Institution Name', value: institution.name },
                                 { label: 'Email', value: institution.email },
                                 { label: 'Phone', value: institution.phone },
                                 { label: 'Registration number', value: institution.registration_number },
@@ -89,7 +68,7 @@ export default function OnboardingShow({
                             ]}
                         />
                     </Section>
-                    <Section title="Documents">
+                    <Section title="Document">
                         <ul className="space-y-2">
                             {files.map((f) => (
                                 <li key={f.url}>
@@ -108,6 +87,7 @@ export default function OnboardingShow({
                     <table className="w-full text-sm">
                         <thead className="bg-muted/60 text-muted-foreground text-left text-xs tracking-wide uppercase">
                             <tr>
+                                <th className="w-12 px-4 py-2.5">S/N</th>
                                 <th className="px-4 py-2.5">Name</th>
                                 <th className="px-4 py-2.5">Email</th>
                                 <th className="px-4 py-2.5">Phone</th>
@@ -116,8 +96,9 @@ export default function OnboardingShow({
                             </tr>
                         </thead>
                         <tbody>
-                            {(institution.users ?? []).map((u) => (
+                            {(institution.users ?? []).map((u, i) => (
                                 <tr key={u.id} className="border-b last:border-0">
+                                    <td className="text-muted-foreground px-4 py-3 tabular-nums">{i + 1}</td>
                                     <td className="px-4 py-3">{u.name}</td>
                                     <td className="px-4 py-3">{u.email}</td>
                                     <td className="px-4 py-3">{u.phone ?? '—'}</td>
@@ -128,6 +109,32 @@ export default function OnboardingShow({
                         </tbody>
                     </table>
                 </Section>
+
+                {/* Decision sits after the details, documents and users the admin reviews. */}
+                {pending && (
+                    <div className="bg-card flex justify-center rounded-xl border p-4">
+                        <div className="flex gap-2">
+                            <DecisionDialog
+                                href={route('admin.onboarding.reject', institution.id)}
+                                title="Reject onboarding request"
+                                description="The applicant is emailed the reason."
+                                trigger="Reject"
+                                triggerVariant="outline"
+                                reasonField="reason"
+                                reasonRequired
+                                destructive
+                                confirmLabel="Reject request"
+                            />
+                            <DecisionDialog
+                                href={route('admin.onboarding.approve', institution.id)}
+                                title="Approve onboarding request"
+                                description="Every listed user is activated and emailed a link to set their password."
+                                trigger="Approve"
+                                confirmLabel="Approve"
+                            />
+                        </div>
+                    </div>
+                )}
             </Page>
         </AppLayout>
     );

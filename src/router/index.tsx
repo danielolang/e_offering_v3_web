@@ -107,13 +107,20 @@ function Screen({ route }: { route: AppRoute }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.pathname, location.search, reloads]);
 
+    // Subscribed, so a page re-renders when its props arrive instead of keeping a stale snapshot.
+    const storeProps = usePageProps((s) => s.props);
+
     if (failure) return <NotAvailable message={failure} />;
     if (!ready) return <Loading />;
+
+    // Pages without an API call render on the first pass, before the effect above has stored
+    // their props, so their browser-side props (e.g. the reset link's token) are worked out here.
+    const props = route.api ? storeProps : (route.props?.(params, new URLSearchParams(location.search)) ?? {});
 
     const Component = screen(route.page);
     return (
         <Suspense fallback={<Loading />}>
-            <Component {...usePageProps.getState().props} />
+            <Component {...props} />
         </Suspense>
     );
 }

@@ -40,6 +40,13 @@ const rateLabel = (type: string) =>
     ({ equities: 'Share price', depository_receipts: 'Share price', commercial_papers: 'Discount rate', non_interest: 'Rental / profit-sharing rate' })[type] ?? 'Coupon rate';
 
 const dateOnly = (v: string | null | undefined) => (v ? v.slice(0, 10) : '');
+/** 'YYYY-MM-DD' of the next calendar day, built from parts so time zones cannot shift it. */
+const dayAfter = (day: string | undefined) => {
+    if (!day || !/^\d{4}-\d{2}-\d{2}$/.test(day)) return undefined;
+    const [y, m, d] = day.split('-').map(Number);
+    const next = new Date(y, m - 1, d + 1);
+    return `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, '0')}-${String(next.getDate()).padStart(2, '0')}`;
+};
 
 /** CR s4.1-4.3: offer details, price-discovery parameters, receiving agents and co-sponsors. */
 export default function OfferForm({ offer, options, sponsors, defaults }: Props) {
@@ -87,6 +94,7 @@ export default function OfferForm({ offer, options, sponsors, defaults }: Props)
         })),
     });
     const errors = form.errors as Record<string, string>;
+    const closeDay = dateOnly(form.data.close_at) || undefined;
     const type = options.securityTypes[form.data.security_type];
     const method = form.data.price_discovery_method;
     const fileRef = useRef<HTMLInputElement>(null);
@@ -202,7 +210,7 @@ export default function OfferForm({ offer, options, sponsors, defaults }: Props)
 
                     <Section title="2. Offer terms">
                         <div className="grid gap-4 sm:grid-cols-2">
-                            <MoneyField label="Offer size" prefix="Up to ₦" required value={form.data.offer_size} onChange={(v) => form.setData('offer_size', v)} error={errors.offer_size} className="[&_input]:pl-16" />
+                            <MoneyField label="Offer size" prefix="Up to ₦" required value={form.data.offer_size} onChange={(v) => form.setData('offer_size', v)} error={errors.offer_size} />
                             <TextField
                                 label="Minimum subscription threshold (%)"
                                 type="number"
@@ -281,9 +289,9 @@ export default function OfferForm({ offer, options, sponsors, defaults }: Props)
                                 <TextField label="Implied yield (%)" type="number" step="0.0001" required value={form.data.implied_yield} onChange={(v) => form.setData('implied_yield', v)} error={errors.implied_yield} />
                                 <MoneyField label="Issue price per unit" required value={form.data.issue_price} onChange={(v) => form.setData('issue_price', v)} error={errors.issue_price} />
                                 {(type?.has_tenor ?? true) && (
-                                    <TextField label="Indicative maturity date" type="date" required value={form.data.maturity_date} onChange={(v) => form.setData('maturity_date', v)} error={errors.maturity_date} />
+                                    <TextField label="Indicative maturity date" type="date" required min={dayAfter(closeDay)} value={form.data.maturity_date} onChange={(v) => form.setData('maturity_date', v)} error={errors.maturity_date} hint={closeDay ? 'Must be after the offer close date.' : undefined} />
                                 )}
-                                <TextField label="Indicative allotment date" type="date" required value={form.data.allotment_date} onChange={(v) => form.setData('allotment_date', v)} error={errors.allotment_date} />
+                                <TextField label="Indicative allotment date" type="date" required min={closeDay} value={form.data.allotment_date} onChange={(v) => form.setData('allotment_date', v)} error={errors.allotment_date} hint={closeDay ? 'On or after the offer close date.' : undefined} />
                             </div>
                         </div>
                     </Section>

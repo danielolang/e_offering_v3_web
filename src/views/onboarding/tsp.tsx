@@ -1,6 +1,6 @@
 import { FileField, TextField } from '@/components/form-field';
 import { ConsentNotice } from '@/components/onboarding/consent';
-import { defaultUsers, type OnboardUser, UsersEditor } from '@/components/onboarding/users-editor';
+import { defaultUsers, isEmail, type OnboardUser, UsersEditor, usersComplete } from '@/components/onboarding/users-editor';
 import { Steps } from '@/components/section';
 import { Button } from '@/components/ui/button';
 import AuthBrandLayout from '@/layouts/auth/auth-brand-layout';
@@ -20,6 +20,8 @@ export default function TspOnboarding() {
         users: OnboardUser[];
     }>({ consent: false, name: '', email: '', phone: '', registration_number: '', proof: null, users: defaultUsers });
     const errors = form.errors as Record<string, string>;
+    const d = form.data;
+    const canSubmit = d.consent && d.name.trim() !== '' && isEmail(d.email) && d.proof !== null && usersComplete(d.users);
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
@@ -60,10 +62,11 @@ export default function TspOnboarding() {
 
                 <ConsentNotice checked={form.data.consent} onChange={(v) => form.setData('consent', v)} error={errors.consent} />
 
-                <Button type="submit" className="w-full" disabled={form.processing}>
+                <Button type="submit" className="w-full" disabled={form.processing || !canSubmit}>
                     {form.processing && <LoaderCircle className="size-4 animate-spin" />}
                     Submit onboarding request
                 </Button>
+                {!canSubmit && <p className="text-muted-foreground -mt-3 text-center text-xs">Complete all required fields and accept the consent notice to submit.</p>}
             </form>
         </AuthBrandLayout>
     );

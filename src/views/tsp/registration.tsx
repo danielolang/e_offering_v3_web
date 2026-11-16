@@ -35,8 +35,8 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
         bank_account_name: institution.bank_account_name ?? '',
         bank_account_number: institution.bank_account_number ?? '',
     });
-    const [method, setMethod] = useState<string>('paystack');
-    const pay = useForm({ method: 'paystack' });
+    const [method, setMethod] = useState<string>(() => Object.keys(gateways)[0] ?? 'qpay');
+    const pay = useForm({ method });
     const transfer = useForm<{ evidence: File | null; reference: string }>({ evidence: null, reference: '' });
     const step = !registered ? 0 : fullAccess ? 2 : 1;
     const payable = invoice && (invoice.status === 'unpaid' || invoice.status === 'rejected');
@@ -109,7 +109,7 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
                             {invoice.review_comment && <p className="text-sm text-rose-600">FMDQ: {invoice.review_comment}</p>}
                             {payable && (
                                 <>
-                                    <div className="grid gap-2 sm:grid-cols-3" role="radiogroup">
+                                    <div className="grid gap-2 sm:grid-cols-2" role="radiogroup">
                                         {Object.entries(gateways).map(([k, label]) => (
                                             <button
                                                 type="button"

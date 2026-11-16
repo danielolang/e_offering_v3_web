@@ -2,6 +2,7 @@ import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { alertError } from '@/lib/alert';
 import { ChangeEvent, type ReactNode, useId } from 'react';
 
 /** Label + control + hint + inline error (legacy forms only showed errors in pop-ups). */
@@ -23,7 +24,7 @@ export function Field({
     htmlFor?: string;
 }) {
     return (
-        <div className={cn('grid gap-1.5', className)}>
+        <div className={cn('grid min-w-0 gap-1.5', className)}>
             <Label htmlFor={htmlFor}>
                 {label}
                 {required && <span className="text-destructive"> *</span>}
@@ -102,12 +103,18 @@ export function MoneyField({
 
     return (
         <Field label={label} error={error} hint={hint} required={required} className={className} htmlFor={id}>
-            <div className="relative">
-                <span className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm">{prefix}</span>
-                <Input
+            {/* The prefix sits in the flow beside the input, so any prefix length lines up without padding guesses. */}
+            <div
+                className={cn(
+                    'border-input bg-background ring-offset-background focus-within:ring-ring flex h-10 w-full items-center gap-1.5 rounded-md border px-3 focus-within:ring-2 focus-within:ring-offset-2',
+                    error && 'border-rose-400',
+                )}
+            >
+                <span className="text-muted-foreground shrink-0 text-base whitespace-nowrap select-none md:text-sm">{prefix}</span>
+                <input
                     id={id}
                     inputMode="decimal"
-                    className="pl-8 tabular-nums"
+                    className="h-full min-w-0 flex-1 bg-transparent text-base tabular-nums outline-hidden md:text-sm"
                     value={Number.isNaN(Number(whole)) ? raw : display}
                     required={required}
                     aria-invalid={!!error}
@@ -165,7 +172,17 @@ export function SelectField({
     );
 }
 
-/** File picker that shows the chosen file name and the accepted types / size. */
+/** '.pdf,.jpg,.jpeg,.png' → 'PDF, JPG or PNG' (JPEG folded into JPG). */
+function describeTypes(extensions: string[]): string {
+    const names = [...new Set(extensions.map((e) => (e === 'jpeg' ? 'JPG' : e === 'docx' ? 'DOC' : e === 'xlsx' ? 'XLS' : e.toUpperCase())))];
+    return names.length > 1 ? `${names.slice(0, -1).join(', ')} or ${names[names.length - 1]}` : (names[0] ?? '');
+}
+
+/**
+ * File picker that shows the chosen file name and the accepted types / size. A file of the
+ * wrong type or over the limit is refused on selection with a pop-up, before upload;
+ * the limits mirror the server's mimes / max rules for each upload.
+ */
 export function FileField({
     label,
     onChange,
@@ -173,6 +190,7 @@ export function FileField({
     hint,
     required,
     accept = '.pdf,.jpg,.jpeg,.png',
+    maxSizeMB = 5,
     file,
     className,
 }: {
@@ -182,23 +200,60 @@ export function FileField({
     hint?: ReactNode;
     required?: boolean;
     accept?: string;
+    maxSizeMB?: number;
     file?: File | null;
     className?: string;
 }) {
     const id = useId();
+    const extensions = accept
+        .split(',')
+        .map((e) => e.trim().replace(/^\./, '').toLowerCase())
+        .filter(Boolean);
+    const types = describeTypes(extensions);
+
+    const pick = (e: ChangeEvent<HTMLInputElement>) => {
+        const chosen = e.target.files?.[0] ?? null;
+        // Cleared so picking the same file again after a fix still fires onChange.
+        e.target.value = '';
+        if (!chosen) return;
+
+        const extension = chosen.name.includes('.') ? chosen.name.split('.').pop()!.toLowerCase() : '';
+        if (extensions.length && !extensions.includes(extension)) {
+            void alertError('Unsupported file type', `"${chosen.name}" is not an accepted file type. Please upload a ${types} file.`);
+            onChange(null);
+            return;
+        }
+        if (chosen.size > maxSizeMB * 1024 * 1024) {
+            void alertError('File too large', `"${chosen.name}" is ${(chosen.size / 1024 / 1024).toFixed(1)} MB. The maximum size is ${maxSizeMB} MB.`);
+            onChange(null);
+            return;
+        }
+        onChange(chosen);
+    };
+
     return (
-        <Field label={label} error={error} hint={hint} required={required} className={className} htmlFor={id}>
+        <Field
+            label={label}
+            error={error}
+            hint={hint ?? `${types}, up to ${maxSizeMB} MB.`}
+            required={required}
+            className={className}
+            htmlFor={id}
+        >
             <label
                 htmlFor={id}
                 className={cn(
-                    'hover:border-navy/50 flex cursor-pointer items-center gap-3 rounded-md border border-dashed px-3 py-2.5 text-sm transition',
+                    'hover:border-navy/50 flex min-w-0 cursor-pointer items-center gap-3 rounded-md border border-dashed px-3 py-2.5 text-sm transition',
                     error && 'border-rose-400',
                 )}
             >
-                <span className="bg-navy/10 text-navy rounded px-2 py-1 text-xs font-medium dark:text-white">Choose file</span>
-                <span className="text-muted-foreground truncate">{file ? file.name : 'No file selected'}</span>
+                <span className="bg-navy/10 text-navy shrink-0 rounded px-2 py-1 text-xs font-medium whitespace-nowrap dark:text-white">Choose file</span>
+                {/* min-w-0 lets a long name truncate instead of widening the field. */}
+                <span className="text-muted-foreground min-w-0 truncate" title={file?.name}>
+                    {file ? file.name : 'No file selected'}
+                </span>
             </label>
-            <input id={id} type="file" accept={accept} className="sr-only" onChange={(e) => onChange(e.target.files?.[0] ?? null)} />
+            <input id={id} type="file" accept={accept} className="sr-only" aria-invalid={!!error} onChange={pick} />
         </Field>
     );
 }

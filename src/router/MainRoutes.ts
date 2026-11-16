@@ -1,13 +1,18 @@
 import { router } from '@/lib/app';
 import type { AppRoute } from './index';
 
-/** Paystack / Flutterwave send the browser back here with a reference to confirm. */
+/**
+ * QPay returns to the URL registered for our service code (/tsp/registration?gateway=qpay)
+ * with a status; the API works out which invoice it was for and submits it for admin review.
+ */
 const finishGatewayPayment = (search: URLSearchParams, clearQuery: () => void) => {
-    const invoice = search.get('invoice');
-    const reference = search.get('reference') ?? search.get('tx_ref');
-    if (!invoice || !reference) return;
-    router.post(`/tsp/registration/fee/${invoice}/confirm`, { reference, transaction_id: search.get('transaction_id') });
-    clearQuery();
+    if (search.get('gateway') === 'qpay' || search.has('status') || search.has('newStatus')) {
+        router.post('/tsp/registration/fee/qpay/return', Object.fromEntries(search.entries()));
+        clearQuery();
+    } else if (search.get('payment') === 'success') {
+        clearQuery();
+        router.reload();
+    }
 };
 
 // `api: true` loads the page's data from the API path matching the screen address.

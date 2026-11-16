@@ -1,6 +1,6 @@
 import { Field, FileField, TextField } from '@/components/form-field';
 import { ConsentNotice } from '@/components/onboarding/consent';
-import { defaultUsers, type OnboardUser, UsersEditor } from '@/components/onboarding/users-editor';
+import { defaultUsers, isEmail, type OnboardUser, UsersEditor, usersComplete } from '@/components/onboarding/users-editor';
 import { Button } from '@/components/ui/button';
 import AuthBrandLayout from '@/layouts/auth/auth-brand-layout';
 import { cn } from '@/lib/utils';
@@ -38,6 +38,15 @@ export default function InstitutionalOnboarding() {
         users: defaultUsers,
     });
     const errors = form.errors as Record<string, string>;
+    const d = form.data;
+    const canSubmit =
+        d.consent &&
+        d.category !== '' &&
+        d.name.trim() !== '' &&
+        d.registration_number.trim() !== '' &&
+        isEmail(d.email) &&
+        d.certificate !== null &&
+        usersComplete(d.users);
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
@@ -82,7 +91,7 @@ export default function InstitutionalOnboarding() {
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                     <FileField label="Certificate of Incorporation" required file={form.data.certificate} onChange={(f) => form.setData('certificate', f)} error={errors.certificate} hint="PDF, JPG or PNG, up to 5 MB." />
-                    <FileField label="Memorandum & Articles of Association" accept=".pdf" file={form.data.memorandum} onChange={(f) => form.setData('memorandum', f)} error={errors.memorandum} />
+                    <FileField label="Memorandum & Articles of Association" accept=".pdf" maxSizeMB={10} file={form.data.memorandum} onChange={(f) => form.setData('memorandum', f)} error={errors.memorandum} />
                     <FileField label="CAC 7 (Directors)" file={form.data.cac_directors} onChange={(f) => form.setData('cac_directors', f)} error={errors.cac_directors} />
                     <FileField label="CAC 7 (Shareholders)" file={form.data.cac_shareholders} onChange={(f) => form.setData('cac_shareholders', f)} error={errors.cac_shareholders} />
                 </div>
@@ -91,10 +100,11 @@ export default function InstitutionalOnboarding() {
                     <UsersEditor users={form.data.users} onChange={(u) => form.setData('users', u)} errors={errors} />
                 </fieldset>
                 <ConsentNotice checked={form.data.consent} onChange={(v) => form.setData('consent', v)} error={errors.consent} />
-                <Button type="submit" className="w-full" disabled={form.processing}>
+                <Button type="submit" className="w-full" disabled={form.processing || !canSubmit}>
                     {form.processing && <LoaderCircle className="size-4 animate-spin" />}
                     Submit onboarding request
                 </Button>
+                {!canSubmit && <p className="text-muted-foreground -mt-3 text-center text-xs">Complete all required fields and accept the consent notice to submit.</p>}
             </form>
         </AuthBrandLayout>
     );

@@ -3,6 +3,7 @@ import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 import InputError from '@/components/input-error';
+import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -35,26 +36,28 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
         });
     };
 
+    // The emailed link carries both values; without them the reset cannot succeed.
+    if (!token || !email) {
+        return (
+            <AuthLayout title="Reset password" description="This reset link is invalid or incomplete.">
+                <Head title="Reset password" />
+                <p className="text-muted-foreground text-center text-sm">
+                    Open the link from your email again, or{' '}
+                    <TextLink href={route('password.request')}>request a new reset link</TextLink>.
+                </p>
+            </AuthLayout>
+        );
+    }
+
     return (
         <AuthLayout title="Reset password" description="Please enter your new password below">
             <Head title="Reset password" />
 
             <form onSubmit={submit}>
                 <div className="grid gap-6">
-                    <div className="grid gap-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            name="email"
-                            autoComplete="email"
-                            value={data.email}
-                            className="mt-1 block w-full"
-                            readOnly
-                            onChange={(e) => setData('email', e.target.value)}
-                        />
-                        <InputError message={errors.email} className="mt-2" />
-                    </div>
+                    {/* Sent with the request; kept for password managers but not shown. */}
+                    <input type="hidden" name="email" autoComplete="username" value={data.email} readOnly />
+                    <InputError message={errors.email || errors.token} />
 
                     <div className="grid gap-2">
                         <Label htmlFor="password">Password</Label>

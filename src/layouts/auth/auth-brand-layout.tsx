@@ -30,7 +30,7 @@ const highlights = [
 export default function AuthBrandLayout({ children, title, description, wide = false }: AuthLayoutProps) {
     return (
         <div className="bg-background flex min-h-svh">
-            <aside className="relative hidden w-[42%] max-w-xl flex-col overflow-hidden p-10 text-white lg:flex" style={{ backgroundColor: NAVY }}>
+            <aside className="relative hidden w-1/2 flex-col overflow-hidden p-10 text-white lg:flex xl:p-14" style={{ backgroundColor: NAVY }}>
                 <div aria-hidden className="pointer-events-none absolute -right-28 -bottom-36 size-[380px] rounded-full border-[26px] opacity-90" style={{ borderColor: GOLD }} />
                 <div aria-hidden className="pointer-events-none absolute -top-24 -left-24 size-64 rounded-full border-[18px] border-white/10" />
 
@@ -38,7 +38,7 @@ export default function AuthBrandLayout({ children, title, description, wide = f
                     <AppLogoIcon className="h-8 dark:bg-transparent dark:p-0" />
                 </Link>
 
-                <div className="relative z-10 my-auto max-w-md">
+                <div className="relative z-10 my-auto max-w-lg">
                     <p className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: GOLD }}>
                         FMDQ e-Offering
                     </p>
@@ -63,15 +63,15 @@ export default function AuthBrandLayout({ children, title, description, wide = f
                 </p>
             </aside>
 
-            <main className="relative flex flex-1 flex-col">
+            <main className="bg-muted/40 relative flex flex-1 flex-col">
                 <ThemeToggle className="absolute top-4 right-4 z-10" />
                 <div className="flex flex-1 flex-col items-center justify-center p-6 md:p-10">
-                    <div className={wide ? 'w-full max-w-3xl' : 'w-full max-w-md'}>
+                    <div className={wide ? 'w-full max-w-3xl' : 'w-full max-w-lg'}>
                         <Link href={route('home')} className="mb-8 flex justify-center lg:hidden">
                             <AppLogoIcon className="h-10" />
                         </Link>
                         <FlashMessages />
-                        <div className="bg-card mt-2 rounded-2xl border p-6 shadow-sm md:p-8">
+                        <div className="bg-card mt-2 rounded-2xl border p-6 shadow-md md:p-10">
                             {(title || description) && (
                                 <div className="mb-6 space-y-1.5 text-center">
                                     {title && <h1 className="text-navy text-2xl font-semibold dark:text-white">{title}</h1>}

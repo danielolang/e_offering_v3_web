@@ -294,13 +294,13 @@ function SecDocuments({ offer, allotment, editable }: { offer: Offer; allotment:
                         e.preventDefault();
                         form.post(route('tsp.allotments.documents', offer.id), { forceFormData: true, preserveScroll: true, onSuccess: () => form.reset('file') });
                     }}
-                    className="grid gap-3 sm:grid-cols-[1fr_1.4fr_auto] sm:items-end"
+                    className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_auto] sm:items-end"
                 >
                     <select value={form.data.document_type} onChange={(e) => form.setData('document_type', e.target.value)} aria-label="Document type" className="border-input bg-background h-9 rounded-md border px-2 text-sm">
                         <option>Letter from Sponsor</option>
                         <option>Supporting Document</option>
                     </select>
-                    <FileField label="File" file={form.data.file} accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" onChange={(f) => form.setData('file', f)} error={form.errors.file} />
+                    <FileField label="File" file={form.data.file} accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" maxSizeMB={20} onChange={(f) => form.setData('file', f)} error={form.errors.file} />
                     <Button type="submit" variant="outline" disabled={!form.data.file || form.processing}>
                         Attach
                     </Button>

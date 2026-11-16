@@ -1,6 +1,7 @@
 import { CopyButton } from '@/components/copy-button';
 import { DecisionDialog } from '@/components/decision-dialog';
 import { FileField } from '@/components/form-field';
+import InputError from '@/components/input-error';
 import { DetailList, Section } from '@/components/section';
 import { StatusBadge } from '@/components/status-badge';
 import { Button } from '@/components/ui/button';
@@ -8,8 +9,11 @@ import { formatDate, formatDateTime, formatMoney, formatRate } from '@/lib/forma
 import { amendableLabels, amendmentStatus, categoryLabel, stageLabel } from '@/lib/labels';
 import { type Amendment, type AuditLog, type Offer, type WorkflowAction } from '@/types';
 import { router, useForm } from '@/lib/app';
+import { cn } from '@/lib/utils';
 import { CheckCircle2, Circle, FileText, Trash2, XCircle } from 'lucide-react';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
+
+const OTHER = '__other__';
 
 export interface OfferDetailProps {
     offer: Offer;
@@ -148,13 +152,28 @@ export function AmendmentList({ amendments, reviewRoute }: { amendments: Amendme
 }
 
 export function DocumentsPanel({ offer, required, canUpload }: { offer: Offer; required: string[]; canUpload: boolean }) {
-    const form = useForm<{ document_type: string; file: File | null; visible_to_investors: boolean }>({ document_type: required[0] ?? '', file: null, visible_to_investors: true });
     const docs = offer.documents?.filter((d) => ['offer', 'amendment'].includes(d.category)) ?? [];
     const uploaded = new Set(docs.map((d) => d.document_type));
+    const nextMissing = (skip?: string) => required.find((r) => !uploaded.has(r) && r !== skip) ?? required[0] ?? '';
+    const form = useForm<{ document_type: string; file: File | null; visible_to_investors: boolean }>({ document_type: nextMissing(), file: null, visible_to_investors: true });
+    // "Other" lets a sponsor attach a document outside the required list under its own name.
+    const [custom, setCustom] = useState(required.length === 0);
+
+    const choose = (type: string) => {
+        setCustom(false);
+        form.setData('document_type', type);
+    };
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        form.post(route('tsp.offers.documents.store', offer.id), { forceFormData: true, preserveScroll: true, onSuccess: () => form.reset('file') });
+        const sent = form.data.document_type;
+        form.post(route('tsp.offers.documents.store', offer.id), {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                form.setData({ file: null, document_type: custom ? '' : nextMissing(sent) });
+            },
+        });
     };
 
     return (
@@ -162,8 +181,20 @@ export function DocumentsPanel({ offer, required, canUpload }: { offer: Offer; r
             {required.length > 0 && (
                 <ul className="grid gap-2 sm:grid-cols-2">
                     {required.map((r) => (
-                        <li key={r} className={`flex items-center gap-2 text-sm ${uploaded.has(r) ? 'text-emerald-600' : 'text-muted-foreground'}`}>
-                            {uploaded.has(r) ? <CheckCircle2 className="size-4" /> : <Circle className="size-4" />} {r}
+                        <li key={r}>
+                            <button
+                                type="button"
+                                disabled={!canUpload}
+                                onClick={() => choose(r)}
+                                title={canUpload ? `Upload ${r}` : undefined}
+                                className={cn(
+                                    'flex items-center gap-2 rounded text-left text-sm enabled:hover:underline',
+                                    uploaded.has(r) ? 'text-emerald-600' : 'text-muted-foreground',
+                                    canUpload && !custom && form.data.document_type === r && 'text-navy font-medium dark:text-white',
+                                )}
+                            >
+                                {uploaded.has(r) ? <CheckCircle2 className="size-4 shrink-0" /> : <Circle className="size-4 shrink-0" />} {r}
+                            </button>
                         </li>
                     ))}
                 </ul>
@@ -191,26 +222,46 @@ export function DocumentsPanel({ offer, required, canUpload }: { offer: Offer; r
                 {docs.length === 0 && <li className="text-muted-foreground px-3 py-3 text-sm">No documents uploaded.</li>}
             </ul>
             {canUpload && (
-                <form onSubmit={submit} className="grid gap-3 rounded-lg border border-dashed p-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+                <form onSubmit={submit} className="grid gap-3 rounded-lg border border-dashed p-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end">
                     <div className="grid gap-1.5">
                         <label className="text-sm font-medium" htmlFor="doc-type">
                             Document
                         </label>
-                        <input
-                            id="doc-type"
-                            list="doc-types"
-                            value={form.data.document_type}
-                            onChange={(e) => form.setData('document_type', e.target.value)}
-                            className="border-input bg-background h-9 rounded-md border px-3 text-sm"
-                            required
-                        />
-                        <datalist id="doc-types">
-                            {required.map((r) => (
-                                <option key={r} value={r} />
-                            ))}
-                        </datalist>
+                        {required.length > 0 && (
+                            <select
+                                id="doc-type"
+                                value={custom ? OTHER : form.data.document_type}
+                                onChange={(e) => {
+                                    if (e.target.value === OTHER) {
+                                        setCustom(true);
+                                        form.setData('document_type', '');
+                                    } else choose(e.target.value);
+                                }}
+                                className="border-input bg-background h-9 min-w-0 rounded-md border px-2 text-sm"
+                            >
+                                {required.map((r) => (
+                                    <option key={r} value={r}>
+                                        {r}
+                                        {uploaded.has(r) ? ' (uploaded)' : ''}
+                                    </option>
+                                ))}
+                                <option value={OTHER}>Other…</option>
+                            </select>
+                        )}
+                        {custom && (
+                            <input
+                                id={required.length > 0 ? undefined : 'doc-type'}
+                                aria-label="Document name"
+                                placeholder="Document name"
+                                value={form.data.document_type}
+                                onChange={(e) => form.setData('document_type', e.target.value)}
+                                className="border-input bg-background h-9 min-w-0 rounded-md border px-3 text-sm"
+                                required
+                            />
+                        )}
+                        <InputError message={form.errors.document_type} />
                     </div>
-                    <FileField label="File" file={form.data.file} accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" onChange={(f) => form.setData('file', f)} error={form.errors.file} />
+                    <FileField label="File" file={form.data.file} accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" maxSizeMB={20} onChange={(f) => form.setData('file', f)} error={form.errors.file} />
                     <Button type="submit" disabled={!form.data.file || form.processing}>
                         Upload
                     </Button>

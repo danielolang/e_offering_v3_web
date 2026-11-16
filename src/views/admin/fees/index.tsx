@@ -16,7 +16,7 @@ export default function FeesIndex({ invoices, filters, feeEnabled }: { invoices:
         <AppLayout breadcrumbs={[{ title: 'Platform Fees', href: route('admin.fees.index') }]}>
             <Head title="Platform fees" />
             <Page>
-                <PageHeader title="Platform Fees" description="Annual TSP/RM platform fee payments (Paystack, Flutterwave or bank transfer)." />
+                <PageHeader title="Platform Fees" description="Annual TSP/RM platform fee payments (QPay or bank transfer)." />
                 {!feeEnabled && (
                     <div className="rounded-lg border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200">
                         The annual platform fee is switched off (first year of launch). TSP/RMs get full access after registration.{' '}

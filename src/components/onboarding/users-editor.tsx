@@ -72,6 +72,20 @@ export function UsersEditor({
     );
 }
 
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** Client-side mirror of the server rules: names, valid emails, and one Inputter plus one Authoriser. */
+export function usersComplete(users: OnboardUser[]): boolean {
+    return (
+        users.length >= 2 &&
+        users.every((u) => u.name.trim() !== '' && EMAIL.test(u.email.trim())) &&
+        users.some((u) => u.access_level === 'inputter') &&
+        users.some((u) => u.access_level === 'authoriser')
+    );
+}
+
+export const isEmail = (value: string) => EMAIL.test(value.trim());
+
 export const defaultUsers: OnboardUser[] = [
     { name: '', email: '', phone: '', access_level: 'inputter' },
     { name: '', email: '', phone: '', access_level: 'authoriser' },
