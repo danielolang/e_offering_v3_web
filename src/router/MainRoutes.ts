@@ -3,15 +3,20 @@ import type { AppRoute } from './index';
 
 /**
  * QPay returns to the URL registered for our service code (/tsp/registration?gateway=qpay)
- * with a status; the API works out which invoice it was for and submits it for admin review.
+ * with a status; the API works out which invoice it was for and marks it as paid directly.
  */
 const finishGatewayPayment = (search: URLSearchParams, clearQuery: () => void) => {
-    if (search.get('gateway') === 'qpay' || search.has('status') || search.has('newStatus')) {
-        router.post('/tsp/registration/fee/qpay/return', Object.fromEntries(search.entries()));
+    if (
+        search.get('gateway') === 'qpay' ||
+        search.has('status') ||
+        search.has('newStatus') ||
+        search.get('payment') === 'success' ||
+        search.has('ref')
+    ) {
+        if (search.get('payment') !== 'failed') {
+            router.post('/tsp/registration/fee/qpay/return', Object.fromEntries(search.entries()));
+        }
         clearQuery();
-    } else if (search.get('payment') === 'success') {
-        clearQuery();
-        router.reload();
     }
 };
 

@@ -1,5 +1,5 @@
 import { Head, Link, useForm } from '@/lib/app';
-import { Eye, EyeOff, LoaderCircle } from 'lucide-react';
+import { Eye, EyeOff, LoaderCircle, Lock, ShieldCheck } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
 import InputError from '@/components/input-error';
@@ -30,32 +30,47 @@ export default function Login({ status }: { status?: string }) {
         <AuthLayout title="Sign in" description="Use your registered email address and password.">
             <Head title="Sign in" />
 
-            {status && <div className="mb-4 rounded-md bg-emerald-50 px-3 py-2 text-center text-sm font-medium text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">{status}</div>}
+            {status && <div className="mb-3 rounded-md bg-emerald-50 px-3 py-1.5 text-center text-xs font-medium text-emerald-700">{status}</div>}
 
-            <form className="flex flex-col gap-5" onSubmit={submit}>
-                <div className="grid gap-2">
-                    <Label htmlFor="email">Email address</Label>
-                    <Input
-                        id="email"
-                        type="email"
-                        required
-                        autoFocus
-                        autoComplete="email"
-                        value={data.email}
-                        onChange={(e) => setData('email', e.target.value)}
-                        placeholder="name@company.com"
-                    />
+            <form className="flex flex-col gap-3.5" onSubmit={submit}>
+                <div className="grid gap-1.5">
+                    <Label htmlFor="email" className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
+                        EMAIL ADDRESS
+                    </Label>
+                    <div className="relative">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <div className="flex size-5 items-center justify-center rounded-full bg-border/90 text-[11px] font-bold text-muted-foreground">
+                                @
+                            </div>
+                        </div>
+                        <Input
+                            id="email"
+                            type="email"
+                            required
+                            autoFocus
+                            autoComplete="email"
+                            value={data.email}
+                            onChange={(e) => setData('email', e.target.value)}
+                            placeholder="u913128959"
+                            className="h-10.5 border-border bg-muted/50/70 pl-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
+                        />
+                    </div>
                     <InputError message={errors.email} />
                 </div>
 
-                <div className="grid gap-2">
-                    <div className="flex items-center">
-                        <Label htmlFor="password">Password</Label>
-                        <TextLink href={route('password.request')} className="ml-auto text-sm">
+                <div className="grid gap-1.5">
+                    <div className="flex items-center justify-between">
+                        <Label htmlFor="password" className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
+                            PASSWORD
+                        </Label>
+                        <TextLink href={route('password.request')} className="text-xs font-semibold text-muted-foreground hover:text-navy hover:underline">
                             Forgot password?
                         </TextLink>
                     </div>
                     <div className="relative">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
+                            <Lock className="size-4" />
+                        </div>
                         <Input
                             id="password"
                             type={show ? 'text' : 'password'}
@@ -63,12 +78,13 @@ export default function Login({ status }: { status?: string }) {
                             autoComplete="current-password"
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
-                            className="pr-10"
+                            placeholder="••••••••••••"
+                            className="h-10.5 border-border bg-muted/50/70 pr-10 pl-9 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
                         />
                         <button
                             type="button"
                             onClick={() => setShow(!show)}
-                            className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2 -translate-y-1/2 p-1"
+                            className="absolute top-1/2 right-2.5 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
                             aria-label={show ? 'Hide password' : 'Show password'}
                         >
                             {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -77,25 +93,39 @@ export default function Login({ status }: { status?: string }) {
                     <InputError message={errors.password} />
                 </div>
 
-                <div className="flex items-center gap-2">
-                    <Checkbox id="remember" checked={data.remember} onCheckedChange={(v) => setData('remember', v === true)} />
-                    <Label htmlFor="remember" className="font-normal">
+                <div className="flex items-center gap-2 pt-0.5">
+                    <Checkbox
+                        id="remember"
+                        checked={data.remember}
+                        onCheckedChange={(v) => setData('remember', v === true)}
+                        className="size-4 border-border data-[state=checked]:border-navy data-[state=checked]:bg-navy"
+                    />
+                    <Label htmlFor="remember" className="cursor-pointer text-xs font-normal text-muted-foreground">
                         Keep me signed in on this device
                     </Label>
                 </div>
 
-                <Button type="submit" className="w-full" disabled={processing}>
-                    {processing && <LoaderCircle className="size-4 animate-spin" />}
-                    {processing ? 'Processing…' : 'Sign in'}
+                <Button
+                    type="submit"
+                    className="mt-1 h-10.5 w-full rounded-lg bg-[#0e224e] py-2.5 text-sm font-semibold text-white shadow-md shadow-[#0e224e]/20 transition-all hover:bg-[#0a1838]"
+                    disabled={processing}
+                >
+                    {processing && <LoaderCircle className="mr-2 size-4 animate-spin" />}
+                    {processing ? 'Signing in…' : 'Sign in'}
                 </Button>
             </form>
 
-            <p className="text-muted-foreground mt-6 text-center text-sm">
+            <p className="mt-3.5 text-center text-xs text-muted-foreground">
                 Don&apos;t have an account?{' '}
-                <Link href={route('onboarding.choose')} className="text-navy font-medium underline-offset-4 hover:underline dark:text-gold-light">
+                <Link href={route('onboarding.choose')} className="font-bold text-foreground hover:underline">
                     Sign up
                 </Link>
             </p>
+
+            <div className="mt-3.5 flex items-center justify-center gap-1.5 pt-2 text-[11px] font-medium text-muted-foreground">
+                <ShieldCheck className="size-3.5 shrink-0 text-emerald-600" />
+                <span>Bank-grade 256-bit SSL encrypted connection</span>
+            </div>
         </AuthLayout>
     );
 }
