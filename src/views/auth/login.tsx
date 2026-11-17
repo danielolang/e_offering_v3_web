@@ -18,7 +18,7 @@ export default function Login({ status }: { status?: string }) {
     const { data, setData, post, processing, errors, reset } = useForm<{ email: string; password: string; remember: boolean }>({
         email: '',
         password: '',
-        remember: false,
+        remember: false
     });
 
     const submit: FormEventHandler = (e) => {
@@ -27,10 +27,12 @@ export default function Login({ status }: { status?: string }) {
     };
 
     return (
-        <AuthLayout title="Sign in" description="Use your registered email address and password.">
-            <Head title="Sign in" />
+        <AuthLayout title="Sign In" description="Use your registered email address and password.">
+            <Head title="Sign In" />
 
-            {status && <div className="mb-3 rounded-md bg-emerald-50 px-3 py-1.5 text-center text-xs font-medium text-emerald-700">{status}</div>}
+            {status && (
+                <div className="mb-3 rounded-md bg-emerald-50 px-3 py-1.5 text-center text-xs font-medium text-emerald-700">{status}</div>
+            )}
 
             <form className="flex flex-col gap-3.5" onSubmit={submit}>
                 <div className="grid gap-1.5">
@@ -51,22 +53,17 @@ export default function Login({ status }: { status?: string }) {
                             autoComplete="email"
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
-                            placeholder="u913128959"
-                            className="h-10.5 border-border bg-muted/50/70 pl-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
+                            placeholder=""
+                            className="h-10.5 border-border bg-muted/35 pl-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
                         />
                     </div>
                     <InputError message={errors.email} />
                 </div>
 
                 <div className="grid gap-1.5">
-                    <div className="flex items-center justify-between">
-                        <Label htmlFor="password" className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
-                            PASSWORD
-                        </Label>
-                        <TextLink href={route('password.request')} className="text-xs font-semibold text-muted-foreground hover:text-navy hover:underline">
-                            Forgot password?
-                        </TextLink>
-                    </div>
+                    <Label htmlFor="password" className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
+                        PASSWORD
+                    </Label>
                     <div className="relative">
                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
                             <Lock className="size-4" />
@@ -78,8 +75,8 @@ export default function Login({ status }: { status?: string }) {
                             autoComplete="current-password"
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
-                            placeholder="••••••••••••"
-                            className="h-10.5 border-border bg-muted/50/70 pr-10 pl-9 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
+                            placeholder=""
+                            className="h-10.5 border-border bg-muted/35 pr-10 pl-9 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
                         />
                         <button
                             type="button"
@@ -91,9 +88,17 @@ export default function Login({ status }: { status?: string }) {
                         </button>
                     </div>
                     <InputError message={errors.password} />
+                    <div className="flex justify-end">
+                        <TextLink
+                            href={route('password.request')}
+                            className="text-xs font-semibold text-muted-foreground hover:text-navy hover:underline dark:hover:text-gold-light"
+                        >
+                            Forgot Password?
+                        </TextLink>
+                    </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-0.5">
+                {/* <div className="flex items-center gap-2 pt-0.5">
                     <Checkbox
                         id="remember"
                         checked={data.remember}
@@ -103,7 +108,7 @@ export default function Login({ status }: { status?: string }) {
                     <Label htmlFor="remember" className="cursor-pointer text-xs font-normal text-muted-foreground">
                         Keep me signed in on this device
                     </Label>
-                </div>
+                </div> */}
 
                 <Button
                     type="submit"
@@ -111,21 +116,16 @@ export default function Login({ status }: { status?: string }) {
                     disabled={processing}
                 >
                     {processing && <LoaderCircle className="mr-2 size-4 animate-spin" />}
-                    {processing ? 'Signing in…' : 'Sign in'}
+                    {processing ? 'Signing in…' : 'Sign In'}
                 </Button>
             </form>
 
             <p className="mt-3.5 text-center text-xs text-muted-foreground">
                 Don&apos;t have an account?{' '}
                 <Link href={route('onboarding.choose')} className="font-bold text-foreground hover:underline">
-                    Sign up
+                    Sign Up
                 </Link>
             </p>
-
-            <div className="mt-3.5 flex items-center justify-center gap-1.5 pt-2 text-[11px] font-medium text-muted-foreground">
-                <ShieldCheck className="size-3.5 shrink-0 text-emerald-600" />
-                <span>Bank-grade 256-bit SSL encrypted connection</span>
-            </div>
         </AuthLayout>
     );
 }

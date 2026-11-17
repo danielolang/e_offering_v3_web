@@ -84,7 +84,7 @@ export default function Otp({ email, ttl, status }: { email: string; ttl: number
                                 onChange={(e) => onChange(i, e.target.value)}
                                 onKeyDown={(e) => onKeyDown(i, e)}
                                 onPaste={onPaste}
-                                className="size-11 rounded-lg border border-border bg-muted/50/50 text-center text-xl font-bold text-foreground outline-none transition focus:border-navy focus:bg-card focus:ring-2 focus:ring-navy/20 sm:size-12"
+                                className="size-11 rounded-lg border border-border bg-muted/25 text-center text-xl font-bold text-foreground outline-none transition focus:border-navy focus:bg-card focus:ring-2 focus:ring-navy/20 sm:size-12"
                             />
                         ))}
                     </div>
@@ -115,10 +115,6 @@ export default function Otp({ email, ttl, status }: { email: string; ttl: number
                 </Link>
             </div>
 
-            <div className="mt-6 flex items-center justify-center gap-1.5 border-t border-border pt-4 text-[11px] font-medium text-muted-foreground">
-                <ShieldCheck className="size-3.5 shrink-0 text-emerald-600" />
-                <span>Bank-grade 256-bit SSL encrypted connection</span>
-            </div>
         </AuthLayout>
     );
 }

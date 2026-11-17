@@ -14,7 +14,7 @@ export default function AppLogo() {
                     <span className="size-1.5 rounded-full bg-[#c59a4c]" />
                 </div>
                 <span className="mt-0.5 text-[9px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
-                    E-OFFERING PLATFORM
+                    e-OFFERING PLATFORM
                 </span>
             </div>
         </div>

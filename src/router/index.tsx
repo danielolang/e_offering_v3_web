@@ -162,7 +162,7 @@ function NotAvailable({ message }: { message: string }) {
                         href="/auth/login"
                         className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex h-9 items-center justify-center rounded-md border px-4 py-2 text-sm font-medium shadow-sm"
                     >
-                        Sign in
+                        Sign In
                     </a>
                 </div>
             </div>
