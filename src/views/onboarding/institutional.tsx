@@ -54,7 +54,7 @@ export default function InstitutionalOnboarding() {
     };
 
     return (
-        <AuthBrandLayout title="QII / Non-QII Investor" description="Onboard your institution with valid CAC documentation." wide>
+        <AuthBrandLayout title="QII/Non-QII Investor" description="Onboard your institution with valid CAC documentation." wide>
             <Head title="Institutional investor onboarding" />
             <Link href={route('onboarding.choose')} className="text-muted-foreground mb-6 inline-flex items-center gap-1 text-sm hover:underline">
                 <ArrowLeft className="text-gold size-4" /> Account types

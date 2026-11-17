@@ -18,10 +18,10 @@ const badges: Record<string, string> = {
 };
 
 const hints: Record<string, string> = {
-    retail: 'Individual accounts',
-    institutional: 'Corporate entities',
-    tsp: 'Sponsoring institutions',
-    regulator: 'SEC / CBN officials'
+    retail: 'Individual Accounts',
+    institutional: 'Corporate Entities',
+    tsp: 'Sponsoring Institutions',
+    regulator: 'SEC/CBN Officials'
 };
 
 /** Bolds defined terms written as ("QII"), e.g. "QII", "Non-QII", "SEC", "CBN". */
