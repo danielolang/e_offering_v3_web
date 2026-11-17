@@ -99,7 +99,7 @@ export default function AuthBrandLayout({ children, title, description, wide = f
                     <div className={cn('w-full text-white', wide ? 'lg:w-5/12 xl:w-5/12' : 'lg:w-1/2 xl:w-7/12')}>
                         <div className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold tracking-wider text-white shadow-xs backdrop-blur-md">
                             <Zap className="size-3.5 text-white/90" />
-                            <span>FMDQ e-OFFERING</span>
+                            <span>FMDQ e-Offering</span>
                         </div>
 
                         <h1 className="mt-3.5 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-[44px] xl:text-[50px] xl:leading-[1.1]">
