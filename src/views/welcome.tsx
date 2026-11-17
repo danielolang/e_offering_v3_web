@@ -40,8 +40,8 @@ export default function Welcome({ stats }: WelcomeProps) {
                         <Link href={route('home')} className="flex items-center gap-3">
                             <img src={asset('images/fmdq-logo.svg')} alt="FMDQ" className="h-6 w-auto" />
                             <div className="h-4 w-px bg-slate-300" />
-                            <span className="text-[12px] font-bold tracking-wider text-slate-800 uppercase">
-                                e-OFFERING PLATFORM
+                            <span className="text-[12px] font-bold tracking-wider text-slate-800">
+                                e-Offering Platform
                             </span>
                         </Link>
                     </div>
@@ -181,7 +181,7 @@ export default function Welcome({ stats }: WelcomeProps) {
                             {/* Chip Badge */}
                             <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.08] px-3.5 py-1 text-xs font-semibold tracking-wider text-amber-300 uppercase backdrop-blur-sm">
                                 <span className="size-2 rounded-full bg-[#c59a4c] shadow-[0_0_8px_#c59a4c]" />
-                                <span>FMDQ e-OFFERING</span>
+                                <span>FMDQ e-Offering</span>
                             </div>
 
                             {/* Headline */}
@@ -292,7 +292,7 @@ export default function Welcome({ stats }: WelcomeProps) {
                 </div>
             </section>
 
-            {/* 3. WHY FMDQ e-OFFERING? SECTION */}
+            {/* 3. WHY FMDQ e-Offering? SECTION */}
             <section id="why-e-offering" className="bg-white py-20 px-6 sm:px-8 lg:px-12">
                 <div className="mx-auto max-w-7xl">
                     {/* Header */}
@@ -455,8 +455,8 @@ export default function Welcome({ stats }: WelcomeProps) {
                                     className="h-6 w-auto brightness-0 invert"
                                 />
                                 <div className="h-4 w-px bg-white/20" />
-                                <span className="text-xs font-bold uppercase tracking-wider text-white/90">
-                                    e-OFFERING PLATFORM
+                                <span className="text-xs font-bold tracking-wider text-white/90">
+                                    e-Offering Platform
                                 </span>
                             </div>
                             <p className="mt-4 max-w-md text-xs sm:text-sm leading-relaxed text-white/60">
