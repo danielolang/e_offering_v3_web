@@ -101,7 +101,7 @@ export default function OrderBookShow({ offer, bids, summary, filters, canConfir
         { key: 'received', header: 'Bid received', value: (b) => b.submitted_at, cell: (b) => <span className="text-xs whitespace-nowrap">{formatDateTime(b.submitted_at)}</span> },
         {
             key: 'csd',
-            header: 'CSD / account',
+            header: 'CSD/Account',
             value: (b) => b.csd_account_number,
             cell: (b) => (
                 <div className="text-xs">

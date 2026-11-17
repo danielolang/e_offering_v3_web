@@ -42,14 +42,14 @@ export function UsersEditor({
             {users.map((u, i) => (
                 <div key={i} className="grid gap-2 rounded-lg border p-3 sm:grid-cols-[1fr_1fr_0.8fr_0.9fr_auto] sm:items-start">
                     <div>
-                        <Input placeholder="Full name" value={u.name} onChange={(e) => set(i, { name: e.target.value })} aria-label={`User ${i + 1} name`} required />
+                        <Input placeholder="Full Name" value={u.name} onChange={(e) => set(i, { name: e.target.value })} aria-label={`User ${i + 1} name`} required />
                         <InputError message={errors[`users.${i}.name`]} />
                     </div>
                     <div>
-                        <Input type="email" placeholder="Email address" value={u.email} onChange={(e) => set(i, { email: e.target.value })} aria-label={`User ${i + 1} email`} required />
+                        <Input type="email" placeholder="Email Address" value={u.email} onChange={(e) => set(i, { email: e.target.value })} aria-label={`User ${i + 1} email`} required />
                         <InputError message={errors[`users.${i}.email`]} />
                     </div>
-                    <Input placeholder="Phone (optional)" value={u.phone} onChange={(e) => set(i, { phone: e.target.value })} aria-label={`User ${i + 1} phone`} />
+                    <Input placeholder="Phone (Optional)" value={u.phone} onChange={(e) => set(i, { phone: e.target.value })} aria-label={`User ${i + 1} phone`} />
                     <select
                         value={u.access_level}
                         onChange={(e) => set(i, { access_level: e.target.value as OnboardUser['access_level'] })}

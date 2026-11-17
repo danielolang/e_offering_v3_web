@@ -42,9 +42,9 @@ export default function RegulatorOnboarding() {
                         ))}
                     </div>
                 </Field>
-                <TextField label="Contact name" required value={form.data.name} onChange={(v) => form.setData('name', v)} error={errors.name} />
-                <TextField label="Official email address" type="email" required value={form.data.email} onChange={(v) => form.setData('email', v)} error={errors.email} />
-                <TextField label="Phone number" required value={form.data.phone} onChange={(v) => form.setData('phone', v)} error={errors.phone} />
+                <TextField label="Contact Name" required value={form.data.name} onChange={(v) => form.setData('name', v)} error={errors.name} />
+                <TextField label="Official Email Address" type="email" required value={form.data.email} onChange={(v) => form.setData('email', v)} error={errors.email} />
+                <TextField label="Phone Number" required value={form.data.phone} onChange={(v) => form.setData('phone', v)} error={errors.phone} />
                 <ConsentNotice checked={form.data.consent} onChange={(v) => form.setData('consent', v)} error={errors.consent} />
                 <Button type="submit" className="w-full" disabled={form.processing}>
                     {form.processing && <LoaderCircle className="size-4 animate-spin" />}

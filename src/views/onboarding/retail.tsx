@@ -64,9 +64,9 @@ export default function RetailOnboarding({ verified, usesIgree }: { verified: Ve
                     ) : (
                         <div className="grid gap-4 sm:grid-cols-2">
                             <TextField label="BVN" required inputMode="numeric" maxLength={11} value={verify.data.bvn} onChange={(v) => verify.setData('bvn', v.replace(/\D/g, ''))} error={vErrors.bvn} hint="11 digits" />
-                            <TextField label="Date of birth" type="date" value={verify.data.date_of_birth} onChange={(v) => verify.setData('date_of_birth', v)} error={vErrors.date_of_birth} />
-                            <TextField label="First name (as on BVN)" required value={verify.data.first_name} onChange={(v) => verify.setData('first_name', v)} error={vErrors.first_name} />
-                            <TextField label="Last name (as on BVN)" required value={verify.data.last_name} onChange={(v) => verify.setData('last_name', v)} error={vErrors.last_name} />
+                            <TextField label="Date of Birth" type="date" value={verify.data.date_of_birth} onChange={(v) => verify.setData('date_of_birth', v)} error={vErrors.date_of_birth} />
+                            <TextField label="First Name (as on BVN)" required value={verify.data.first_name} onChange={(v) => verify.setData('first_name', v)} error={vErrors.first_name} />
+                            <TextField label="Last Name (as on BVN)" required value={verify.data.last_name} onChange={(v) => verify.setData('last_name', v)} error={vErrors.last_name} />
                         </div>
                     )}
                     {usesIgree && <InputError message={vErrors.bvn} />}
@@ -98,14 +98,14 @@ export default function RetailOnboarding({ verified, usesIgree }: { verified: Ve
                         />
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2">
-                        <TextField label="Email address" type="email" required value={complete.data.email} onChange={(v) => complete.setData('email', v)} error={cErrors.email} />
-                        <TextField label="Phone number" required value={complete.data.phone} onChange={(v) => complete.setData('phone', v)} error={cErrors.phone} />
-                        <TextField label="Residential address" value={complete.data.address} onChange={(v) => complete.setData('address', v)} error={cErrors.address} className="sm:col-span-2" />
+                        <TextField label="Email Address" type="email" required value={complete.data.email} onChange={(v) => complete.setData('email', v)} error={cErrors.email} />
+                        <TextField label="Phone Number" required value={complete.data.phone} onChange={(v) => complete.setData('phone', v)} error={cErrors.phone} />
+                        <TextField label="Residential Address" value={complete.data.address} onChange={(v) => complete.setData('address', v)} error={cErrors.address} className="sm:col-span-2" />
                         <TextField label="CSD (e.g. CSCS, FMDQ Depository)" value={complete.data.csd_name} onChange={(v) => complete.setData('csd_name', v)} error={cErrors.csd_name} />
-                        <TextField label="CSD account number (CHN / BPID)" value={complete.data.csd_account_number} onChange={(v) => complete.setData('csd_account_number', v)} error={cErrors.csd_account_number} />
-                        <TextField label="Bank name" value={complete.data.bank_name} onChange={(v) => complete.setData('bank_name', v)} error={cErrors.bank_name} />
-                        <TextField label="Account number (NUBAN)" inputMode="numeric" maxLength={10} value={complete.data.bank_account_number} onChange={(v) => complete.setData('bank_account_number', v.replace(/\D/g, ''))} error={cErrors.bank_account_number} />
-                        <TextField label="Account name" value={complete.data.bank_account_name} onChange={(v) => complete.setData('bank_account_name', v)} error={cErrors.bank_account_name} className="sm:col-span-2" />
+                        <TextField label="CSD Account Number (CHN / BPID)" value={complete.data.csd_account_number} onChange={(v) => complete.setData('csd_account_number', v)} error={cErrors.csd_account_number} />
+                        <TextField label="Bank Name" value={complete.data.bank_name} onChange={(v) => complete.setData('bank_name', v)} error={cErrors.bank_name} />
+                        <TextField label="Account Number (NUBAN)" inputMode="numeric" maxLength={10} value={complete.data.bank_account_number} onChange={(v) => complete.setData('bank_account_number', v.replace(/\D/g, ''))} error={cErrors.bank_account_number} />
+                        <TextField label="Account Name" value={complete.data.bank_account_name} onChange={(v) => complete.setData('bank_account_name', v)} error={cErrors.bank_account_name} className="sm:col-span-2" />
                     </div>
                     <div className="flex items-start gap-2">
                         <Checkbox id="terms" checked={complete.data.terms} onCheckedChange={(v) => complete.setData('terms', v === true)} className="mt-0.5" />
