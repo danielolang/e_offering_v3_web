@@ -60,7 +60,7 @@ export default function InstitutionalOnboarding() {
                 <ArrowLeft className="text-gold size-4" /> Account types
             </Link>
             <form onSubmit={submit} className="space-y-6">
-                <Field label="Investor type" required error={errors.category}>
+                <Field label="Investor Type" required error={errors.category}>
                     <div className="grid gap-2 sm:grid-cols-2" role="radiogroup">
                         {[
                             ['qii', 'Qualified Institutional Investor (QII)'],
@@ -83,11 +83,11 @@ export default function InstitutionalOnboarding() {
                     </div>
                 </Field>
                 <div className="grid gap-4 sm:grid-cols-2">
-                    <TextField label="Registered institution name" required value={form.data.name} onChange={(v) => form.setData('name', v)} error={errors.name} className="sm:col-span-2" />
-                    <TextField label="CAC registration number" required value={form.data.registration_number} onChange={(v) => form.setData('registration_number', v)} error={errors.registration_number} />
-                    <TextField label="Institution email" type="email" required value={form.data.email} onChange={(v) => form.setData('email', v)} error={errors.email} />
-                    <TextField label="Phone number" value={form.data.phone} onChange={(v) => form.setData('phone', v)} error={errors.phone} />
-                    <TextField label="Registered address" value={form.data.address} onChange={(v) => form.setData('address', v)} error={errors.address} />
+                    <TextField label="Registered Institution Name" required value={form.data.name} onChange={(v) => form.setData('name', v)} error={errors.name} className="sm:col-span-2" />
+                    <TextField label="CAC Registration Number" required value={form.data.registration_number} onChange={(v) => form.setData('registration_number', v)} error={errors.registration_number} />
+                    <TextField label="Institution Email" type="email" required value={form.data.email} onChange={(v) => form.setData('email', v)} error={errors.email} />
+                    <TextField label="Phone Number" value={form.data.phone} onChange={(v) => form.setData('phone', v)} error={errors.phone} />
+                    <TextField label="Registered Address" value={form.data.address} onChange={(v) => form.setData('address', v)} error={errors.address} />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                     <FileField label="Certificate of Incorporation" required file={form.data.certificate} onChange={(f) => form.setData('certificate', f)} error={errors.certificate} hint="PDF, JPG or PNG, up to 5 MB." />

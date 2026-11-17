@@ -84,7 +84,7 @@ export default function UsersIndex({ users, requests, filters }: { users: Pagina
                                         onChange={(v) => form.setData('type', v)}
                                         options={[
                                             { value: 'admin', label: 'FMDQ Admin' },
-                                            { value: 'csd', label: 'CSD / FMDQ Depository' },
+                                            { value: 'csd', label: 'CSD/FMDQ Depository' },
                                         ]}
                                         error={form.errors.type}
                                     />

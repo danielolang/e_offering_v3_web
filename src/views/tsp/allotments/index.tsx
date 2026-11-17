@@ -42,7 +42,7 @@ export default function AllotmentsIndex({ offers }: { offers: Offer[] }) {
                             { key: 'rate', header: 'Final rate', align: 'right', value: (o) => toNumber(o.allotment?.final_rate), cell: (o) => formatRate(o.allotment?.final_rate ?? null) },
                             {
                                 key: 'status',
-                                header: 'Allotment / SEC status',
+                                header: 'Allotment/SEC status',
                                 value: (o) => o.allotment?.status ?? 'none',
                                 cell: (o) => (
                                     <div>
