@@ -10,7 +10,7 @@ export default function Receipt({ invoice }: { invoice: FeeInvoice }) {
     const rows: [string, string][] = [
         ['Receipt for invoice', invoice.reference],
         ['Received from', invoice.institution?.name ?? ''],
-        ['Description', `Annual e-Offering platform fee, ${formatDate(invoice.period_start)} to ${formatDate(invoice.period_end)}`],
+        ['Description', `Annual e-offering platform fee, ${formatDate(invoice.period_start)} to ${formatDate(invoice.period_end)}`],
         ['Payment method', (invoice.method ?? '').replace('_', ' ')],
         ['Payment reference', invoice.gateway_reference ?? '—'],
         ['Paid on', invoice.paid_at ? formatDateTime(invoice.paid_at) : '—'],

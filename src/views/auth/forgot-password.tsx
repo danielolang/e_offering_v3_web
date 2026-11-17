@@ -45,7 +45,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                             autoFocus
                             onChange={(e) => setData('email', e.target.value)}
                             placeholder="name@company.com"
-                            className="h-11 border-border bg-muted/50/70 pl-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
+                            className="h-11 border-border bg-muted/35 pl-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
                         />
                     </div>
                     <InputError message={errors.email} />
@@ -64,14 +64,10 @@ export default function ForgotPassword({ status }: { status?: string }) {
             <div className="mt-5 space-x-1 text-center text-xs text-muted-foreground">
                 <span>Or, return to</span>
                 <TextLink href={route('login')} className="font-semibold text-foreground hover:underline">
-                    Sign in
+                    Sign In
                 </TextLink>
             </div>
 
-            <div className="mt-6 flex items-center justify-center gap-1.5 pt-2 text-[11px] font-medium text-muted-foreground">
-                <ShieldCheck className="size-3.5 shrink-0 text-emerald-600" />
-                <span>Bank-grade 256-bit SSL encrypted connection</span>
-            </div>
         </AuthLayout>
     );
 }

@@ -41,7 +41,7 @@ export default function Welcome({ stats }: WelcomeProps) {
                             <img src={asset('images/fmdq-logo.svg')} alt="FMDQ" className="h-6 w-auto" />
                             <div className="h-4 w-px bg-slate-300" />
                             <span className="text-[12px] font-bold tracking-wider text-slate-800 uppercase">
-                                E-OFFERING PLATFORM
+                                e-OFFERING PLATFORM
                             </span>
                         </Link>
                     </div>
@@ -71,7 +71,7 @@ export default function Welcome({ stats }: WelcomeProps) {
                             href={route('login')}
                             className="text-[13px] font-semibold text-slate-700 transition hover:text-slate-950"
                         >
-                            Sign in
+                            Sign In
                         </Link>
                         <Link
                             href={route('onboarding.choose')}
@@ -139,7 +139,7 @@ export default function Welcome({ stats }: WelcomeProps) {
                                     href={route('login')}
                                     className="block rounded-lg py-2 text-center font-semibold text-slate-700 hover:bg-slate-50"
                                 >
-                                    Sign in
+                                    Sign In
                                 </Link>
                                 <Link
                                     href={route('onboarding.choose')}
@@ -181,7 +181,7 @@ export default function Welcome({ stats }: WelcomeProps) {
                             {/* Chip Badge */}
                             <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.08] px-3.5 py-1 text-xs font-semibold tracking-wider text-amber-300 uppercase backdrop-blur-sm">
                                 <span className="size-2 rounded-full bg-[#c59a4c] shadow-[0_0_8px_#c59a4c]" />
-                                <span>FMDQ E-OFFERING</span>
+                                <span>FMDQ e-OFFERING</span>
                             </div>
 
                             {/* Headline */}
@@ -215,7 +215,7 @@ export default function Welcome({ stats }: WelcomeProps) {
                                     href={route('login')}
                                     className="inline-flex items-center justify-center rounded-lg border border-white/25 bg-[#172b5a]/60 px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/10 hover:border-white/40"
                                 >
-                                    Sign in
+                                    Sign In
                                 </Link>
                             </div>
 
@@ -292,7 +292,7 @@ export default function Welcome({ stats }: WelcomeProps) {
                 </div>
             </section>
 
-            {/* 3. WHY FMDQ E-OFFERING? SECTION */}
+            {/* 3. WHY FMDQ e-OFFERING? SECTION */}
             <section id="why-e-offering" className="bg-white py-20 px-6 sm:px-8 lg:px-12">
                 <div className="mx-auto max-w-7xl">
                     {/* Header */}
@@ -456,7 +456,7 @@ export default function Welcome({ stats }: WelcomeProps) {
                                 />
                                 <div className="h-4 w-px bg-white/20" />
                                 <span className="text-xs font-bold uppercase tracking-wider text-white/90">
-                                    E-OFFERING PLATFORM
+                                    e-OFFERING PLATFORM
                                 </span>
                             </div>
                             <p className="mt-4 max-w-md text-xs sm:text-sm leading-relaxed text-white/60">

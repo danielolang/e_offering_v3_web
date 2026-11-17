@@ -46,7 +46,7 @@ export default function ConfirmPassword() {
                             value={data.password}
                             autoFocus
                             onChange={(e) => setData('password', e.target.value)}
-                            className="h-11 border-border bg-muted/50/70 pr-10 pl-9 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
+                            className="h-11 border-border bg-muted/35 pr-10 pl-9 text-sm text-foreground placeholder:text-muted-foreground focus:border-navy focus:bg-card"
                         />
                         <button
                             type="button"
@@ -70,10 +70,7 @@ export default function ConfirmPassword() {
                 </Button>
             </form>
 
-            <div className="mt-6 flex items-center justify-center gap-1.5 pt-2 text-[11px] font-medium text-muted-foreground">
-                <ShieldCheck className="size-3.5 shrink-0 text-emerald-600" />
-                <span>Bank-grade 256-bit SSL encrypted connection</span>
-            </div>
+
         </AuthLayout>
     );
 }

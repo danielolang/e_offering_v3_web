@@ -98,7 +98,7 @@ export default function Choose({ accountTypes }: { accountTypes: Record<string, 
             <p className="text-muted-foreground mt-3 text-center text-xs">
                 Already have an account?{' '}
                 <Link href={route('login')} className="text-foreground font-bold hover:underline">
-                    Sign in
+                    Sign In
                 </Link>
             </p>
         </AuthBrandLayout>
