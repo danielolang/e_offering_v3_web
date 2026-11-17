@@ -35,7 +35,7 @@ export default function Receipt({ invoice }: { invoice: FeeInvoice }) {
                     <AppLogoIcon className="h-10" />
                     <div className="text-right">
                         <p className="text-xl font-semibold text-[#1d326d]">PAYMENT RECEIPT</p>
-                        <p className="text-sm text-gray-500">FMDQ e-Offering Platform</p>
+                        <p className="text-sm text-gray-500">FMDQ e-offering Platform</p>
                     </div>
                 </div>
                 <div className="p-8">
