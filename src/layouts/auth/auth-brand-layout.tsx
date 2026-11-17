@@ -97,7 +97,7 @@ export default function AuthBrandLayout({ children, title, description, wide = f
                 >
                     {/* Left Column (Brand Headline & 2x2 Feature Grid) */}
                     <div className={cn('w-full text-white', wide ? 'lg:w-5/12 xl:w-5/12' : 'lg:w-1/2 xl:w-7/12')}>
-                        <div className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold tracking-wider text-white uppercase shadow-xs backdrop-blur-md">
+                        <div className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold tracking-wider text-white shadow-xs backdrop-blur-md">
                             <Zap className="size-3.5 text-white/90" />
                             <span>FMDQ e-OFFERING</span>
                         </div>
