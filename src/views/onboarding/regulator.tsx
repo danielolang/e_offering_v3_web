@@ -18,7 +18,7 @@ export default function RegulatorOnboarding() {
     };
 
     return (
-        <AuthBrandLayout title="Regulator (SEC / CBN)" description="For officers who review and approve offers requiring regulatory sign-off.">
+        <AuthBrandLayout title="Regulator (SEC/CBN)" description="For officers who review and approve offers requiring regulatory sign-off.">
             <Head title="Regulator onboarding" />
             <Link href={route('onboarding.choose')} className="text-muted-foreground mb-6 inline-flex items-center gap-1 text-sm hover:underline">
                 <ArrowLeft className="text-gold size-4" /> Account types

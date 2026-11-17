@@ -35,7 +35,7 @@ export default function OnboardingIndex({
         <AppLayout breadcrumbs={[{ title: 'Onboarding Requests', href: route('admin.onboarding.index') }]}>
             <Head title="Onboarding requests" />
             <Page>
-                <PageHeader title="Onboarding Requests" description="Review TSP/RM, QII / Non-QII and Regulator (SEC / CBN) requests." />
+                <PageHeader title="Onboarding Requests" description="Review TSP/RM, QII/Non-QII and Regulator (SEC/CBN) requests." />
                 <Section flush>
                     <div className="flex flex-col gap-3 border-b p-4 md:flex-row md:items-center md:justify-between">
                         <div className="flex flex-wrap gap-1" role="tablist">
