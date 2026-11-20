@@ -24,7 +24,7 @@ export function IdleLogoutGuard() {
                     <div className="bg-secondary/15 text-secondary mb-2 flex size-10 items-center justify-center rounded-full">
                         <TimerReset className="size-5" aria-hidden="true" />
                     </div>
-                    <DialogTitle>Are you still there?</DialogTitle>
+                    <DialogTitle>Are You Still There?</DialogTitle>
                     <DialogDescription>
                         For security you are signed out after {minutes} {minutes === 1 ? 'minute' : 'minutes'} without activity. You will be signed
                         out in{' '}
@@ -36,10 +36,10 @@ export function IdleLogoutGuard() {
                 </DialogHeader>
                 <DialogFooter className="gap-2 sm:gap-0">
                     <Button type="button" variant="outline" onClick={signOut}>
-                        Sign out now
+                        Sign Out Now
                     </Button>
                     <Button type="button" onClick={stay} autoFocus>
-                        Stay signed in
+                        Stay Signed In
                     </Button>
                 </DialogFooter>
             </DialogContent>

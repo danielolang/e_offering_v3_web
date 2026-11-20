@@ -20,6 +20,15 @@ const finishGatewayPayment = (search: URLSearchParams, clearQuery: () => void) =
     }
 };
 
+/**
+ * Bid payments use their own QPay service code, whose return URL is /investor/bids/qpay-return.
+ * The API matches the payment to the investor's bid, then opens it with a confirmation pop-up.
+ */
+const finishBidPayment = (search: URLSearchParams, clearQuery: () => void) => {
+    router.post('/investor/bids/qpay/return', Object.fromEntries(search.entries()));
+    clearQuery();
+};
+
 // `api: true` loads the page's data from the API path matching the screen address.
 const MainRoutes: AppRoute[] = [
     { path: '/settings/profile', page: 'settings/profile', auth: true },
@@ -28,6 +37,7 @@ const MainRoutes: AppRoute[] = [
     { path: '/notifications', page: 'notifications/index', api: true, auth: true },
 
     { path: '/offers/:reference', page: 'public/offer', api: true },
+    { path: '/investor/bids/qpay-return', page: 'investor/payment-return', auth: true, onArrive: finishBidPayment },
     { path: '/investor/audit-trail', page: 'audit/index', api: true, auth: true },
 
     { path: '/admin', page: 'admin/dashboard', api: true, auth: true },

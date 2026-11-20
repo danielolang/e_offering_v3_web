@@ -1,3 +1,4 @@
+import { confirmSubmit } from '@/lib/alert';
 import { SubscriptionMeter } from '@/components/charts';
 import { type Column, DataTable } from '@/components/data-table';
 import { DecisionDialog } from '@/components/decision-dialog';
@@ -96,12 +97,12 @@ function OverrideDialog({ item, editable }: { item: Item; editable: boolean }) {
             <DialogContent>
                 <form onSubmit={submit} className="space-y-4">
                     <DialogHeader>
-                        <DialogTitle>Override allotment · {item.bid.investor_name}</DialogTitle>
+                        <DialogTitle>Override Allotment · {item.bid.investor_name}</DialogTitle>
                     </DialogHeader>
                     <p className="text-muted-foreground text-sm">
                         Subscribed {formatMoney(item.subscribed)}. Other investors are recalculated automatically after the override.
                     </p>
-                    <MoneyField label="Allotted amount" required value={form.data.amount} onChange={(v) => form.setData('amount', v)} error={form.errors.amount} />
+                    <MoneyField label="Allotted Amount" required value={form.data.amount} onChange={(v) => form.setData('amount', v)} error={form.errors.amount} />
                     <div className="grid gap-1.5">
                         <Label htmlFor={`reason-${item.id}`}>
                             Reason <span className="text-destructive">*</span>
@@ -113,11 +114,11 @@ function OverrideDialog({ item, editable }: { item: Item; editable: boolean }) {
                     <DialogFooter>
                         {item.override_amount !== null && (
                             <Button type="button" variant="outline" onClick={clear}>
-                                Remove override
+                                Remove Override
                             </Button>
                         )}
                         <Button type="submit" disabled={form.processing}>
-                            Save override
+                            Save Override
                         </Button>
                     </DialogFooter>
                 </form>
@@ -145,9 +146,14 @@ function MethodForm({ offer, allotment, items, guaranteeClasses, editable }: { o
         (form.data.method === 'hybrid' && form.data.components.includes('rate'));
     const toggle = <T,>(list: T[], v: T) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
 
-    const submit = (e: FormEvent) => {
+    const submit = async (e: FormEvent) => {
         e.preventDefault();
-        form.put(route('tsp.allotments.configure', offer.id), { preserveScroll: true });
+        const confirmed = await confirmSubmit({
+            title: 'Apply This Allotment Method?',
+            text: 'The allotment schedule will be recalculated with the selected method and options.',
+            confirmText: 'Yes, Apply',
+        });
+        if (confirmed) form.put(route('tsp.allotments.configure', offer.id), { preserveScroll: true });
     };
 
     return (
@@ -264,7 +270,7 @@ function MethodForm({ offer, allotment, items, guaranteeClasses, editable }: { o
             </fieldset>
             {editable && (
                 <Button type="submit" disabled={form.processing}>
-                    <ListChecks className="size-4" /> Apply methodology and recalculate
+                    <ListChecks className="size-4" /> Apply Methodology and Recalculate
                 </Button>
             )}
         </form>
@@ -290,8 +296,9 @@ function SecDocuments({ offer, allotment, editable }: { offer: Offer; allotment:
             </ul>
             {editable && (
                 <form
-                    onSubmit={(e) => {
+                    onSubmit={async (e) => {
                         e.preventDefault();
+                        if (!(await confirmSubmit({ title: 'Attach This Document?', text: 'It will be included in the allotment pack the SEC reviews.', confirmText: 'Yes, Attach' }))) return;
                         form.post(route('tsp.allotments.documents', offer.id), { forceFormData: true, preserveScroll: true, onSuccess: () => form.reset('file') });
                     }}
                     className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_auto] sm:items-end"
@@ -337,8 +344,17 @@ export default function AllotmentShow({ offer, allotment, items, basis, validati
                                 Once the offer closes, initiate allotment from the order book. Offer details can be amended until then.
                             </p>
                             {canInitiate && (
-                                <Button onClick={() => router.post(route('tsp.allotments.initiate', offer.id))}>
-                                    <ListChecks className="size-4" /> Initiate allotment
+                                <Button
+                                    onClick={async () => {
+                                        const confirmed = await confirmSubmit({
+                                            title: 'Initiate Allotment?',
+                                            text: 'The allotment is built from the closed order book. Offer details can no longer be amended after this.',
+                                            confirmText: 'Yes, Initiate',
+                                        });
+                                        if (confirmed) router.post(route('tsp.allotments.initiate', offer.id));
+                                    }}
+                                >
+                                    <ListChecks className="size-4" /> Initiate Allotment
                                 </Button>
                             )}
                         </div>
@@ -393,20 +409,20 @@ export default function AllotmentShow({ offer, allotment, items, basis, validati
                         <>
                             <Button variant="outline" asChild>
                                 <a href={route('tsp.allotments.export', { offer: offer.id, format: 'xlsx' })}>
-                                    <Download className="size-4" /> Allotment schedule
+                                    <Download className="size-4" /> Allotment Schedule
                                 </a>
                             </Button>
                             {allotment.status === 'lodged' && (
                                 <Button variant="outline" asChild>
                                     <a href={route('tsp.allotments.export', { offer: offer.id, type: 'lodgement', format: 'xlsx' })}>
-                                        <Download className="size-4" /> Lodgement summary
+                                        <Download className="size-4" /> Lodgement Summary
                                     </a>
                                 </Button>
                             )}
                             {inputter && editable && (
                                 <DecisionDialog
                                     href={route('tsp.allotments.submit', offer.id)}
-                                    title="Submit allotment for approval"
+                                    title="Submit Allotment for Approval"
                                     description={
                                         validationErrors.length > 0
                                             ? `Fix first: ${validationErrors.join(' ')}`
@@ -417,7 +433,7 @@ export default function AllotmentShow({ offer, allotment, items, basis, validati
                                     data={{ continue_below_minimum: allotment.subscription_status === 'below_minimum' }}
                                     trigger={
                                         <>
-                                            <Send className="size-4" /> Submit for approval
+                                            <Send className="size-4" /> Submit for Approval
                                         </>
                                     }
                                     confirmLabel="Submit"
@@ -427,7 +443,7 @@ export default function AllotmentShow({ offer, allotment, items, basis, validati
                                 <>
                                     <DecisionDialog
                                         href={route('tsp.allotments.authorise', offer.id)}
-                                        title="Return allotment to the Inputter"
+                                        title="Return Allotment to the Inputter"
                                         trigger="Return"
                                         triggerVariant="outline"
                                         data={{ approve: false }}
@@ -437,23 +453,21 @@ export default function AllotmentShow({ offer, allotment, items, basis, validati
                                     />
                                     <DecisionDialog
                                         href={route('tsp.allotments.authorise', offer.id)}
-                                        title="Approve and send to SEC"
+                                        title="Approve and Send to SEC"
                                         description="The schedule and attached documents go to SEC with the status SEC Pending."
                                         trigger="Approve"
                                         data={{ approve: true }}
-                                        reasonField="reason"
-                                        reasonLabel="Note (optional)"
                                     />
                                 </>
                             )}
                             {inputter && allotment.status === 'approved' && (
                                 <DecisionDialog
                                     href={route('tsp.allotments.lodge', offer.id)}
-                                    title="Initiate lodgement"
+                                    title="Initiate Lodgement"
                                     description="The lodgement report is transmitted to the CSD; both you and the CSD can download the summary."
                                     trigger={
                                         <>
-                                            <Truck className="size-4" /> Initiate lodgement
+                                            <Truck className="size-4" /> Initiate Lodgement
                                         </>
                                     }
                                     confirmLabel="Transmit to CSD"
@@ -504,15 +518,15 @@ export default function AllotmentShow({ offer, allotment, items, basis, validati
                                     {inputter && editable && (
                                         <DecisionDialog
                                             href={route('tsp.allotments.cancel', offer.id)}
-                                            title="Cancel the offer"
+                                            title="Cancel the Offer"
                                             description="Investors with active bids are notified. This cannot be undone."
-                                            trigger="Cancel offer"
+                                            trigger="Cancel Offer"
                                             triggerVariant="destructive"
                                             triggerSize="sm"
                                             reasonField="reason"
                                             reasonRequired
                                             destructive
-                                            confirmLabel="Cancel offer"
+                                            confirmLabel="Cancel Offer"
                                         />
                                     )}
                                 </div>

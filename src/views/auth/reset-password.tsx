@@ -128,7 +128,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                     disabled={processing}
                 >
                     {processing && <LoaderCircle className="mr-2 size-4 animate-spin" />}
-                    Reset password
+                    Reset Password
                 </Button>
             </form>
 

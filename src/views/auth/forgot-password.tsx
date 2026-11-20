@@ -57,7 +57,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                     disabled={processing}
                 >
                     {processing && <LoaderCircle className="mr-2 size-4 animate-spin" />}
-                    Email password reset link
+                    Email Password Reset Link
                 </Button>
             </form>
 

@@ -51,7 +51,7 @@ export default function PublicOfferPage({ offer }: { offer: PublicOffer }) {
                 ]}
             />
             <Button asChild className="mt-6 w-full">
-                <Link href={route('login')}>Sign in to subscribe</Link>
+                <Link href={route('login')}>Sign In to Subscribe</Link>
             </Button>
             <p className="text-muted-foreground mt-3 text-center text-sm">
                 New to e-Offering?{' '}

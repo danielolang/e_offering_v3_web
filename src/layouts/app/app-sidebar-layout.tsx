@@ -10,7 +10,7 @@ export default function AppSidebarLayout({ children, breadcrumbs = [] }: { child
     return (
         <AppShell variant="sidebar">
             <AppSidebar />
-            <AppContent variant="sidebar" className="flex min-h-svh flex-col">
+            <AppContent variant="sidebar" className="app-canvas dark:bg-background flex min-h-svh flex-col bg-[hsl(225_40%_98%)]">
                 <AppSidebarHeader breadcrumbs={breadcrumbs} />
                 <FlashMessages />
                 <div className="flex flex-1 flex-col">{children}</div>

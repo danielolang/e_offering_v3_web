@@ -202,5 +202,5 @@ export function SubscriptionMeter({ level }: { level: number }) {
 }
 
 function ChartEmpty() {
-    return <div className="text-muted-foreground flex h-40 items-center justify-center text-sm">No data yet</div>;
+    return <div className="text-muted-foreground flex h-40 items-center justify-center text-sm">No available data</div>;
 }

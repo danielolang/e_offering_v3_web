@@ -1,4 +1,5 @@
 import InputError from '@/components/input-error';
+import { DateTimePicker } from '@/components/ui/date-time-picker';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
@@ -13,7 +14,7 @@ export function Field({
     required,
     children,
     className,
-    htmlFor,
+    htmlFor
 }: {
     label: ReactNode;
     error?: string;
@@ -62,16 +63,32 @@ export function TextField({
     const id = useId();
     return (
         <Field label={label} error={error} hint={hint} required={required} className={className} htmlFor={id}>
-            <Input
-                id={id}
-                type={type}
-                value={value ?? ''}
-                required={required}
-                placeholder={placeholder}
-                aria-invalid={!!error}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
-                {...rest}
-            />
+            {type === 'date' ? (
+                // One date picker across the app instead of each browser's own calendar.
+                <DateTimePicker
+                    id={id}
+                    withTime={false}
+                    value={value == null ? '' : String(value)}
+                    onChange={onChange}
+                    min={rest.min as string | undefined}
+                    max={rest.max as string | undefined}
+                    required={required}
+                    placeholder={placeholder}
+                    aria-invalid={!!error}
+                    onBlur={rest.onBlur as (() => void) | undefined}
+                />
+            ) : (
+                <Input
+                    id={id}
+                    type={type}
+                    value={value ?? ''}
+                    required={required}
+                    placeholder={placeholder}
+                    aria-invalid={!!error}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
+                    {...rest}
+                />
+            )}
         </Field>
     );
 }
@@ -85,7 +102,7 @@ export function MoneyField({
     hint,
     required,
     prefix = '₦',
-    className,
+    className
 }: {
     label: ReactNode;
     value: string | number | null | undefined;
@@ -107,7 +124,7 @@ export function MoneyField({
             <div
                 className={cn(
                     'border-input bg-background ring-offset-background focus-within:ring-ring flex h-10 w-full items-center gap-1.5 rounded-md border px-3 focus-within:ring-2 focus-within:ring-offset-2',
-                    error && 'border-rose-400',
+                    error && 'border-rose-400'
                 )}
             >
                 <span className="text-muted-foreground shrink-0 text-base whitespace-nowrap select-none md:text-sm">{prefix}</span>
@@ -138,7 +155,7 @@ export function SelectField({
     hint,
     required,
     placeholder = 'Select…',
-    className,
+    className
 }: {
     label: ReactNode;
     value: string | number | null | undefined;
@@ -174,7 +191,9 @@ export function SelectField({
 
 /** '.pdf,.jpg,.jpeg,.png' → 'PDF, JPG or PNG' (JPEG folded into JPG). */
 function describeTypes(extensions: string[]): string {
-    const names = [...new Set(extensions.map((e) => (e === 'jpeg' ? 'JPG' : e === 'docx' ? 'DOC' : e === 'xlsx' ? 'XLS' : e.toUpperCase())))];
+    const names = [
+        ...new Set(extensions.map((e) => (e === 'jpeg' ? 'JPG' : e === 'docx' ? 'DOC' : e === 'xlsx' ? 'XLS' : e.toUpperCase())))
+    ];
     return names.length > 1 ? `${names.slice(0, -1).join(', ')} or ${names[names.length - 1]}` : (names[0] ?? '');
 }
 
@@ -193,9 +212,11 @@ export function FileField({
     maxSizeMB = 5,
     file,
     className,
+    disabled = false
 }: {
     label: ReactNode;
     onChange: (file: File | null) => void;
+    disabled?: boolean;
     error?: string;
     hint?: ReactNode;
     required?: boolean;
@@ -224,7 +245,10 @@ export function FileField({
             return;
         }
         if (chosen.size > maxSizeMB * 1024 * 1024) {
-            void alertError('File too large', `"${chosen.name}" is ${(chosen.size / 1024 / 1024).toFixed(1)} MB. The maximum size is ${maxSizeMB} MB.`);
+            void alertError(
+                'File too large',
+                `"${chosen.name}" is ${(chosen.size / 1024 / 1024).toFixed(1)} MB. The maximum size is ${maxSizeMB} MB.`
+            );
             onChange(null);
             return;
         }
@@ -240,20 +264,33 @@ export function FileField({
             className={className}
             htmlFor={id}
         >
+            {/* The real input comes first so the visible box can show its keyboard focus (peer-focus-visible). */}
+            <input
+                id={id}
+                type="file"
+                accept={accept}
+                disabled={disabled}
+                className="peer sr-only"
+                aria-invalid={!!error}
+                onChange={pick}
+            />
             <label
                 htmlFor={id}
                 className={cn(
-                    'hover:border-navy/50 flex min-w-0 cursor-pointer items-center gap-3 rounded-md border border-dashed px-3 py-2.5 text-sm transition',
+                    // Styled like the text inputs beside it: solid border, same height and focus ring.
+                    'border-input bg-background ring-offset-background hover:border-navy/50 peer-focus-visible:ring-ring flex h-10 min-w-0 cursor-pointer items-center gap-3 rounded-md border px-2 text-sm transition peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2',
                     error && 'border-rose-400',
+                    disabled && 'hover:border-input cursor-not-allowed opacity-60'
                 )}
             >
-                <span className="bg-navy/10 text-navy shrink-0 rounded px-2 py-1 text-xs font-medium whitespace-nowrap dark:text-white">Choose file</span>
+                <span className="bg-navy/10 text-navy shrink-0 rounded px-2 py-1 text-xs font-medium whitespace-nowrap dark:text-white">
+                    Choose file
+                </span>
                 {/* min-w-0 lets a long name truncate instead of widening the field. */}
                 <span className="text-muted-foreground min-w-0 truncate" title={file?.name}>
                     {file ? file.name : 'No file selected'}
                 </span>
             </label>
-            <input id={id} type="file" accept={accept} className="sr-only" aria-invalid={!!error} onChange={pick} />
         </Field>
     );
 }

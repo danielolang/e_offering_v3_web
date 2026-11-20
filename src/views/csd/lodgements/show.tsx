@@ -36,7 +36,7 @@ export default function LodgementShow({ allotment, headings, rows, documents }: 
                             </Button>
                             <Button asChild>
                                 <a href={route('csd.lodgements.download', { allotment: allotment.id, format: 'xlsx' })}>
-                                    <Download className="size-4" /> Lodgement summary
+                                    <Download className="size-4" /> Lodgement Summary
                                 </a>
                             </Button>
                         </>

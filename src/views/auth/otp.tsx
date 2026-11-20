@@ -97,7 +97,7 @@ export default function Otp({ email, ttl, status }: { email: string; ttl: number
                     disabled={processing || digits.join('').length !== LENGTH}
                 >
                     {processing && <LoaderCircle className="mr-2 size-4 animate-spin" />}
-                    Verify &amp; sign in
+                    Verify &amp; Sign In
                 </Button>
             </form>
 

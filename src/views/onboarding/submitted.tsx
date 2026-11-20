@@ -19,17 +19,12 @@ export default function Submitted({ kind, reference }: { kind: string; reference
                 ) : (
                     <>
                         <p className="text-muted-foreground text-sm">
-                            FMDQ will review your onboarding request. Each user receives an email to set a password once it is approved.
+                            FMDQ will review your onboarding request.
                         </p>
-                        {reference && (
-                            <p className="bg-muted rounded-md px-3 py-2 text-sm">
-                                Reference: <span className="font-mono font-semibold">{reference}</span>
-                            </p>
-                        )}
                     </>
                 )}
                 <Button asChild className="w-full">
-                    <Link href={route('login')}>Go to sign in</Link>
+                    <Link href={route('login')}>Go to Sign In</Link>
                 </Button>
             </div>
         </AuthBrandLayout>

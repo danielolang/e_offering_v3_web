@@ -5,7 +5,7 @@ import { Page, Section } from '@/components/section';
 import { StatusBadge } from '@/components/status-badge';
 import AppLayout from '@/layouts/app-layout';
 import { formatDate, formatDateTime, formatMoney } from '@/lib/format';
-import { feeStatus } from '@/lib/labels';
+import { feeStatus, paymentMethod } from '@/lib/labels';
 import { cn } from '@/lib/utils';
 import { type FeeInvoice, type Paginated } from '@/types';
 import { Head, Link, router } from '@/lib/app';
@@ -70,7 +70,7 @@ export default function FeesIndex({ invoices, filters, feeEnabled }: { invoices:
                                         </td>
                                         <td className="px-4 py-3 text-right tabular-nums">{formatMoney(i.amount)}</td>
                                         <td className="px-4 py-3 capitalize">
-                                            {i.method?.replace('_', ' ') ?? '—'}
+                                            {paymentMethod(i.method)}
                                             {i.evidence_url && (
                                                 <a href={i.evidence_url} target="_blank" rel="noreferrer" className="text-navy block text-xs underline dark:text-gold-light">
                                                     View evidence
@@ -87,7 +87,7 @@ export default function FeesIndex({ invoices, filters, feeEnabled }: { invoices:
                                                 <div className="flex justify-end gap-2">
                                                     <DecisionDialog
                                                         href={route('admin.fees.reject', i.id)}
-                                                        title="Reject payment"
+                                                        title="Reject Payment"
                                                         trigger="Reject"
                                                         triggerVariant="outline"
                                                         triggerSize="sm"
@@ -98,7 +98,7 @@ export default function FeesIndex({ invoices, filters, feeEnabled }: { invoices:
                                                     />
                                                     <DecisionDialog
                                                         href={route('admin.fees.approve', i.id)}
-                                                        title="Confirm payment"
+                                                        title="Confirm Payment"
                                                         description="The TSP/RM is notified, can download a receipt and gets full access for the year."
                                                         trigger="Confirm"
                                                         triggerSize="sm"

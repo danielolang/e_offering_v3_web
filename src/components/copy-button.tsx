@@ -1,4 +1,5 @@
 import { Button, type ButtonProps } from '@/components/ui/button';
+import { showCopyText } from '@/lib/alert';
 import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
 
@@ -11,7 +12,7 @@ export function CopyButton({ value, label = 'Copy link', ...props }: ButtonProps
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
         } catch {
-            window.prompt('Copy this link', value);
+            void showCopyText('Copy this link', value);
         }
     };
 

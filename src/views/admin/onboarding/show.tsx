@@ -1,4 +1,5 @@
 import { DecisionDialog } from '@/components/decision-dialog';
+import { confirmSubmit } from '@/lib/alert';
 import { PageHeader } from '@/components/page-header';
 import { DetailList, Page, Section } from '@/components/section';
 import { StatusBadge } from '@/components/status-badge';
@@ -13,7 +14,7 @@ import { FileText, Send } from 'lucide-react';
 export default function OnboardingShow({
     institution,
     files,
-    reviewer,
+    reviewer
 }: {
     institution: Institution & { type_label: string };
     files: { label: string; name?: string | null; url: string }[];
@@ -25,7 +26,7 @@ export default function OnboardingShow({
         <AppLayout
             breadcrumbs={[
                 { title: 'Onboarding Requests', href: route('admin.onboarding.index') },
-                { title: institution.reference, href: route('admin.onboarding.show', institution.id) },
+                { title: institution.reference, href: route('admin.onboarding.show', institution.id) }
             ]}
         >
             <Head title={institution.name} />
@@ -34,13 +35,24 @@ export default function OnboardingShow({
                     title={institution.name}
                     description={
                         <span className="flex items-center gap-2">
-                            {institution.type_label} · {institution.reference} <StatusBadge map={institutionStatus} value={institution.status} />
+                            {institution.type_label} · {institution.reference}{' '}
+                            <StatusBadge map={institutionStatus} value={institution.status} />
                         </span>
                     }
                     actions={
                         institution.status === 'approved' ? (
-                            <Button variant="outline" onClick={() => router.post(route('admin.onboarding.resend', institution.id))}>
-                                <Send className="size-4" /> Resend password links
+                            <Button
+                                variant="outline"
+                                onClick={async () => {
+                                    const confirmed = await confirmSubmit({
+                                        title: 'Resend Password Links?',
+                                        text: `Every user of ${institution.name} will be emailed a new link to set their password.`,
+                                        confirmText: 'Yes, Resend'
+                                    });
+                                    if (confirmed) router.post(route('admin.onboarding.resend', institution.id));
+                                }}
+                            >
+                                <Send className="size-4" /> Resend Password Links
                             </Button>
                         ) : null
                     }
@@ -63,8 +75,16 @@ export default function OnboardingShow({
                                 { label: 'Address', value: institution.address },
                                 { label: 'Contact person', value: institution.contact_name },
                                 { label: 'Submitted', value: formatDateTime(institution.created_at) },
-                                { label: 'Data privacy consent', value: institution.privacy_consent_at ? formatDateTime(institution.privacy_consent_at) : 'Not given' },
-                                { label: 'Reviewed', value: institution.reviewed_at ? `${formatDateTime(institution.reviewed_at)}${reviewer ? ` by ${reviewer}` : ''}` : null },
+                                {
+                                    label: 'Data privacy consent',
+                                    value: institution.privacy_consent_at ? formatDateTime(institution.privacy_consent_at) : 'Not given'
+                                },
+                                {
+                                    label: 'Reviewed',
+                                    value: institution.reviewed_at
+                                        ? `${formatDateTime(institution.reviewed_at)}${reviewer ? ` by ${reviewer}` : ''}`
+                                        : null
+                                }
                             ]}
                         />
                     </Section>
@@ -72,13 +92,20 @@ export default function OnboardingShow({
                         <ul className="space-y-2">
                             {files.map((f) => (
                                 <li key={f.url}>
-                                    <a href={f.url} target="_blank" rel="noreferrer" className="hover:bg-muted flex items-center gap-2 rounded-md border px-3 py-2 text-sm">
+                                    <a
+                                        href={f.url}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="hover:bg-muted flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
+                                    >
                                         <FileText className="text-gold size-4" />
                                         <span className="flex-1">{f.label}</span>
                                     </a>
                                 </li>
                             ))}
-                            {files.length === 0 && <li className="text-muted-foreground text-sm">No documents (not required for this account type).</li>}
+                            {files.length === 0 && (
+                                <li className="text-muted-foreground text-sm">No documents (not required for this account type).</li>
+                            )}
                         </ul>
                     </Section>
                 </div>
@@ -116,18 +143,18 @@ export default function OnboardingShow({
                         <div className="flex gap-2">
                             <DecisionDialog
                                 href={route('admin.onboarding.reject', institution.id)}
-                                title="Reject onboarding request"
-                                description="The applicant is emailed the reason."
+                                title="Reject Onboarding Request"
+                                description="The applicant and the institution are emailed the reason."
                                 trigger="Reject"
                                 triggerVariant="outline"
                                 reasonField="reason"
                                 reasonRequired
                                 destructive
-                                confirmLabel="Reject request"
+                                confirmLabel="Reject Request"
                             />
                             <DecisionDialog
                                 href={route('admin.onboarding.approve', institution.id)}
-                                title="Approve onboarding request"
+                                title="Approve Onboarding Request"
                                 description="Every listed user is activated and emailed a link to set their password."
                                 trigger="Approve"
                                 confirmLabel="Approve"

@@ -1,3 +1,4 @@
+import { titleCase } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { type ReactNode } from 'react';
 
@@ -23,12 +24,18 @@ export function Section({
     id?: string;
 }) {
     return (
-        <section id={id} className={cn('bg-card overflow-hidden rounded-xl border shadow-xs', className)}>
+        <section id={id} className={cn('bg-card overflow-hidden rounded-xl border shadow-[0_1px_2px_rgb(29_50_109/0.05),0_8px_24px_-12px_rgb(29_50_109/0.12)] transition-shadow hover:shadow-[0_1px_2px_rgb(29_50_109/0.06),0_14px_32px_-12px_rgb(29_50_109/0.2)] dark:shadow-none', className)}>
             {(title || actions) && (
-                <div className="flex flex-col gap-2 border-b px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="from-navy/[0.05] dark:from-primary/10 flex flex-col gap-2 border-b bg-linear-to-r to-transparent px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="min-w-0">
-                        {title && <h2 className="text-navy text-base font-semibold dark:text-white">{title}</h2>}
-                        {description && <p className="text-muted-foreground mt-0.5 text-sm">{description}</p>}
+                        {title && (
+                            <h2 className="text-navy flex items-center gap-2.5 text-base font-semibold dark:text-white">
+                                <span aria-hidden className="bg-gold h-4 w-1 shrink-0 rounded-full" />
+                                {/* Card headers are title case across the app; JSX titles are left as written. */}
+                                {typeof title === 'string' ? titleCase(title) : title}
+                            </h2>
+                        )}
+                        {description && <p className="text-muted-foreground mt-0.5 pl-3.5 text-sm">{description}</p>}
                     </div>
                     {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
                 </div>

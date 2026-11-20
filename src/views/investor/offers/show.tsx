@@ -40,7 +40,7 @@ export default function InvestorOfferShow({ offer, documents, myBids, canBid, am
                         canBid && (
                             <Button asChild>
                                 <Link href={route('investor.bids.create', offer.id)}>
-                                    <HandCoins className="size-4" /> Place a bid
+                                    <HandCoins className="size-4" /> Place a Bid
                                 </Link>
                             </Button>
                         )

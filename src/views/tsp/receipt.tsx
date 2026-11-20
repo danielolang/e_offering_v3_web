@@ -1,6 +1,7 @@
 import AppLogoIcon from '@/components/app-logo-icon';
 import { Button } from '@/components/ui/button';
 import { formatDate, formatDateTime, formatMoney } from '@/lib/format';
+import { paymentMethod } from '@/lib/labels';
 import { type FeeInvoice } from '@/types';
 import { Head, Link } from '@/lib/app';
 import { ArrowLeft, Printer } from 'lucide-react';
@@ -11,7 +12,7 @@ export default function Receipt({ invoice }: { invoice: FeeInvoice }) {
         ['Receipt for invoice', invoice.reference],
         ['Received from', invoice.institution?.name ?? ''],
         ['Description', `Annual e-offering platform fee, ${formatDate(invoice.period_start)} to ${formatDate(invoice.period_end)}`],
-        ['Payment method', (invoice.method ?? '').replace('_', ' ')],
+        ['Payment method', paymentMethod(invoice.method)],
         ['Payment reference', invoice.gateway_reference ?? '—'],
         ['Paid on', invoice.paid_at ? formatDateTime(invoice.paid_at) : '—'],
         ['Confirmed by FMDQ', invoice.reviewed_at ? `${formatDateTime(invoice.reviewed_at)}${invoice.reviewer ? ` (${invoice.reviewer.name})` : ''}` : '—'],
@@ -27,7 +28,7 @@ export default function Receipt({ invoice }: { invoice: FeeInvoice }) {
                     </Link>
                 </Button>
                 <Button onClick={() => window.print()}>
-                    <Printer className="size-4" /> Print / save as PDF
+                    <Printer className="size-4" /> Print / Save as PDF
                 </Button>
             </div>
             <div className="mx-auto max-w-2xl overflow-hidden rounded-xl border bg-white text-[#1f2937] shadow-sm print:border-0 print:shadow-none">

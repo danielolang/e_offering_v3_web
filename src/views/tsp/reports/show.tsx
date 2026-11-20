@@ -47,25 +47,25 @@ export default function ReportShow({ offer, summary, ranking, allotmentSummary, 
                         <>
                             <Button variant="outline" asChild>
                                 <a href={route('tsp.reports.summary-export', { offer: offer.id })}>
-                                    <Download className="size-4" /> Offer summary
+                                    <Download className="size-4" /> Offer Summary
                                 </a>
                             </Button>
                             <Button variant="outline" asChild>
                                 <a href={route('tsp.order-book.export', { offer: offer.id })}>
-                                    <Download className="size-4" /> Order book
+                                    <Download className="size-4" /> Order Book
                                 </a>
                             </Button>
                             {offer.allotment && (
                                 <Button variant="outline" asChild>
                                     <a href={route('tsp.allotments.export', { offer: offer.id })}>
-                                        <Download className="size-4" /> Allotment schedule
+                                        <Download className="size-4" /> Allotment Schedule
                                     </a>
                                 </Button>
                             )}
                             {offer.allotment?.status === 'lodged' && (
                                 <Button variant="outline" asChild>
                                     <a href={route('tsp.allotments.export', { offer: offer.id, type: 'lodgement' })}>
-                                        <Download className="size-4" /> Lodgement summary
+                                        <Download className="size-4" /> Lodgement Summary
                                     </a>
                                 </Button>
                             )}
@@ -74,8 +74,8 @@ export default function ReportShow({ offer, summary, ranking, allotmentSummary, 
                 />
 
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                    <StatCard variant="navy" label="Total subscription" value={formatCompact(summary.total_subscription)} hint={formatMoney(summary.total_subscription)} />
-                    <StatCard variant="gold" label="Offer size" value={formatCompact(summary.offer_size)} />
+                    <StatCard variant="navy" label="Total subscription" value={formatMoney(summary.total_subscription)} hint={formatMoney(summary.total_subscription)} />
+                    <StatCard variant="gold" label="Offer size" value={formatMoney(summary.offer_size)} />
                     <StatCard variant="navy" label="Bids / investors" value={`${summary.bids_count} / ${summary.investors_count}`} />
                     <StatCard variant="gold" label="Weighted average bid" value={formatRate(summary.weighted_average_rate, suffix)} hint={summary.final_rate !== null ? `Final ${formatRate(summary.final_rate, suffix)}` : undefined} />
                 </div>
@@ -151,48 +151,48 @@ export function ExceptionLists({ exceptions, offerLabel }: { exceptions: Excepti
     return (
         <div className="grid gap-6 lg:grid-cols-2">
             <div>
-                <h3 className="mb-2 text-sm font-semibold">Rejected payments ({exceptions.rejectedBids.length})</h3>
+                <h3 className="mb-2 text-sm font-semibold">Rejected Payments ({exceptions.rejectedBids.length})</h3>
                 {exceptions.rejectedBids.length === 0
                     ? empty
                     : exceptions.rejectedBids.map((b) => (
-                          <p key={b.id} className="border-b py-1.5 text-sm">
-                              {b.investor_name} · {formatMoney(b.amount, 0)} <span className="text-muted-foreground">— {b.payment_comment}</span>
-                          </p>
-                      ))}
+                        <p key={b.id} className="border-b py-1.5 text-sm">
+                            {b.investor_name} · {formatMoney(b.amount, 0)} <span className="text-muted-foreground">— {b.payment_comment}</span>
+                        </p>
+                    ))}
             </div>
             <div>
-                <h3 className="mb-2 text-sm font-semibold">Revoked bids ({exceptions.revokedBids.length})</h3>
+                <h3 className="mb-2 text-sm font-semibold">Revoked Bids ({exceptions.revokedBids.length})</h3>
                 {exceptions.revokedBids.length === 0
                     ? empty
                     : exceptions.revokedBids.map((b) => (
-                          <p key={b.id} className="border-b py-1.5 text-sm">
-                              {b.investor_name} · {formatMoney(b.amount, 0)} <span className="text-muted-foreground">· {formatDateTime(b.revoked_at)}</span>
-                          </p>
-                      ))}
+                        <p key={b.id} className="border-b py-1.5 text-sm">
+                            {b.investor_name} · {formatMoney(b.amount, 0)} <span className="text-muted-foreground">· {formatDateTime(b.revoked_at)}</span>
+                        </p>
+                    ))}
             </div>
             <div>
-                <h3 className="mb-2 text-sm font-semibold">Manual overrides ({exceptions.overrides.length})</h3>
+                <h3 className="mb-2 text-sm font-semibold">Manual Overrides ({exceptions.overrides.length})</h3>
                 {exceptions.overrides.length === 0
                     ? empty
                     : exceptions.overrides.map((o) => (
-                          <p key={o.id} className="border-b py-1.5 text-sm">
-                              {o.bid.investor_name}: {formatMoney(o.subscribed, 0)} → {formatMoney(o.override_amount, 0)}{' '}
-                              <span className="text-muted-foreground">
-                                  — {o.override_reason} ({o.overrider?.name}, {formatDateTime(o.overridden_at)})
-                              </span>
-                          </p>
-                      ))}
+                        <p key={o.id} className="border-b py-1.5 text-sm">
+                            {o.bid.investor_name}: {formatMoney(o.subscribed, 0)} → {formatMoney(o.override_amount, 0)}{' '}
+                            <span className="text-muted-foreground">
+                                — {o.override_reason} ({o.overrider?.name}, {formatDateTime(o.overridden_at)})
+                            </span>
+                        </p>
+                    ))}
             </div>
             <div>
                 <h3 className="mb-2 text-sm font-semibold">Returned / rejected ({exceptions.returns.length})</h3>
                 {exceptions.returns.length === 0
                     ? empty
                     : exceptions.returns.map((r) => (
-                          <p key={r.id} className="border-b py-1.5 text-sm">
-                              {offerLabel ? `${offerLabel(r.offer_id)} · ` : ''}
-                              {stageLabel[r.stage]} · {r.subject_type.split('\\').pop()} <span className="text-muted-foreground">— {r.reason} ({formatDateTime(r.created_at)})</span>
-                          </p>
-                      ))}
+                        <p key={r.id} className="border-b py-1.5 text-sm">
+                            {offerLabel ? `${offerLabel(r.offer_id)} · ` : ''}
+                            {stageLabel[r.stage]} · {r.subject_type.split('\\').pop()} <span className="text-muted-foreground">— {r.reason} ({formatDateTime(r.created_at)})</span>
+                        </p>
+                    ))}
             </div>
         </div>
     );

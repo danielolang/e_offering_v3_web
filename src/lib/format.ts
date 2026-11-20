@@ -5,9 +5,10 @@
  */
 export function parseWallClock(value: string | null | undefined): Date | null {
     if (!value) return null;
-    const m = value.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
+    // The time is optional: date-only values ("2026-12-01", e.g. maturity and allotment dates) are midnight.
+    const m = value.match(/^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2}))?/);
     if (!m) return null;
-    return new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]);
+    return new Date(+m[1], +m[2] - 1, +m[3], m[4] ? +m[4] : 0, m[5] ? +m[5] : 0);
 }
 
 /** App-wide date style: "October 5, 2026" (en-US so it reads the same in every browser). */
@@ -156,4 +157,15 @@ export function amountInWords(value: string | number | null | undefined): string
 export function toPickerValue(d: Date): string {
     const pad = (n: number) => String(n).padStart(2, '0');
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+const SMALL_WORDS = new Set(['a', 'an', 'and', 'as', 'at', 'by', 'for', 'in', 'of', 'on', 'or', 'per', 'the', 'to', 'via', 'with', 'from', 'vs']);
+/** "Bids received" -> "Bids Received"; keeps acronyms (SEC, FMDQ) and small joining words. */
+export function titleCase(text: string): string {
+    let first = true;
+    return text.replace(/[A-Za-z][A-Za-z'’-]*/g, (word) => {
+        const result = /[A-Z]/.test(word.slice(1)) ? word : !first && SMALL_WORDS.has(word.toLowerCase()) ? word.toLowerCase() : word[0].toUpperCase() + word.slice(1);
+        first = false;
+        return result;
+    });
 }
