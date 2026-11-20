@@ -51,11 +51,11 @@ export default function TspOfferShow(props: OfferDetailProps & { isOwner: boolea
                             {inputter && editable && (
                                 <DecisionDialog
                                     href={route('tsp.offers.submit', offer.id)}
-                                    title="Submit for approval"
+                                    title="Submit for Approval"
                                     description={missing.length > 0 ? `Still missing: ${missing.join(', ')}.` : 'Your Authoriser will be notified to review the offer.'}
                                     trigger={
                                         <>
-                                            <Send className="size-4" /> Submit for approval
+                                            <Send className="size-4" /> Submit for Approval
                                         </>
                                     }
                                     confirmLabel="Submit"
@@ -75,23 +75,21 @@ export default function TspOfferShow(props: OfferDetailProps & { isOwner: boolea
                                     />
                                     <DecisionDialog
                                         href={route('tsp.offers.authorise', offer.id)}
-                                        title="Approve offer"
+                                        title="Approve Offer"
                                         description="The Inputter is notified and can launch the offer."
                                         trigger="Approve"
                                         data={{ approve: true }}
-                                        reasonField="reason"
-                                        reasonLabel="Note (optional)"
                                     />
                                 </>
                             )}
                             {inputter && offer.status === 'approved' && (
                                 <DecisionDialog
                                     href={route('tsp.offers.launch', offer.id)}
-                                    title="Launch offer"
+                                    title="Launch Offer"
                                     description="The offer becomes visible to eligible investors and opens for bidding on its open date."
                                     trigger={
                                         <>
-                                            <Rocket className="size-4" /> Launch offer
+                                            <Rocket className="size-4" /> Launch Offer
                                         </>
                                     }
                                     confirmLabel="Launch"
@@ -100,30 +98,31 @@ export default function TspOfferShow(props: OfferDetailProps & { isOwner: boolea
                             {inputter && canBeAmended && (
                                 <Button variant="outline" asChild>
                                     <Link href={route('tsp.offers.amend', offer.id)}>
-                                        <PencilLine className="size-4" /> Amend offer
+                                        <PencilLine className="size-4" /> Amend Offer
                                     </Link>
                                 </Button>
                             )}
                             {offer.status === 'live' && (
                                 <Button asChild>
                                     <Link href={route('tsp.order-book.show', offer.id)}>
-                                        <BookOpenCheck className="size-4" /> Order book
+                                        <BookOpenCheck className="size-4" /> Order Book
                                     </Link>
                                 </Button>
                             )}
                         </>
                     }
                 />
-                <Section>
-                    <Steps steps={['Prepare offer', 'Authorisation', 'Launch', 'Live']} current={stepIndex[offer.status] ?? 0} />
-                </Section>
-                <ReturnedBanner offer={offer} />
-
+                {/* Key figures first, straight under the title; the workflow progress follows. */}
                 <div className="grid gap-4 sm:grid-cols-3">
-                    <StatCard variant="navy" label="Offer size" value={formatCompact(Number(offer.offer_size))} hint={`Up to ${formatMoney(offer.offer_size)}`} />
+                    <StatCard variant="navy" label="Offer size" value={formatMoney(Number(offer.offer_size))} hint={`Up to ${formatMoney(offer.offer_size)}`} />
                     <StatCard variant="gold" label="Bids received" value={props.bidStats.count} />
                     <StatCard variant="navy" label="Total subscribed" value={formatCompact(props.bidStats.total)} hint={formatMoney(props.bidStats.total)} />
                 </div>
+
+                <Section>
+                    <Steps steps={['Prepare Offer', 'Authorisation', 'Launch', 'Live']} current={stepIndex[offer.status] ?? 0} />
+                </Section>
+                <ReturnedBanner offer={offer} />
 
                 <Section title="Offer details">
                     <OfferFacts offer={offer} />

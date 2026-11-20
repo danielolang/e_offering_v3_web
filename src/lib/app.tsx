@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type ComponentProps, type Rea
 import { Link as RouterLink, useLocation, type NavigateFunction } from 'react-router-dom';
 import { create } from 'zustand';
 import { useAuthStore } from '@/stores/auth';
+import { alertSuccess, alertWarning } from '@/lib/alert';
 
 /**
  * The bridge between the screens and the JWT API: Link, Head, router, useForm and usePage.
@@ -199,7 +200,10 @@ function applyResult(path: string, result: any) {
         return;
     }
 
-    if (result?.message) app.setFlash('success', result.message);
+    // A milestone (e.g. full access unlocked) gets a pop-up on the page it opens, not a toast.
+    const popup = data.popup as { title?: string; text?: string; icon?: 'success' | 'warning' } | undefined;
+    if (popup) void (popup.icon === 'warning' ? alertWarning : alertSuccess)(popup.title ?? 'Success', popup.text ?? result?.message ?? '');
+    else if (result?.message) app.setFlash('success', result.message);
 
     if (data.challenge) {
         auth.setPending({ challenge: data.challenge, email: data.email, ttl: data.ttl });

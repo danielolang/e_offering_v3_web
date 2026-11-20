@@ -37,7 +37,7 @@ export default function OrderBookIndex({ offers }: { offers: Offer[] }) {
                                 header: '',
                                 cell: (o) => (
                                     <Button size="sm" asChild>
-                                        <Link href={route('tsp.order-book.show', o.id)}>View order book</Link>
+                                        <Link href={route('tsp.order-book.show', o.id)}>View Order Book</Link>
                                     </Button>
                                 ),
                             },

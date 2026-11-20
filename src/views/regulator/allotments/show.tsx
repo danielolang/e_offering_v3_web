@@ -74,7 +74,7 @@ export default function RegulatorReview({ allotment, offer, basis, schedule, rej
                                 <>
                                     <DecisionDialog
                                         href={route('regulator.allotments.decide', allotment.id)}
-                                        title="Reject the allotment"
+                                        title="Reject the Allotment"
                                         description="The sponsor sees the reason, updates the order book / schedule and resubmits."
                                         trigger="Reject"
                                         triggerVariant="outline"
@@ -85,12 +85,10 @@ export default function RegulatorReview({ allotment, offer, basis, schedule, rej
                                     />
                                     <DecisionDialog
                                         href={route('regulator.allotments.decide', allotment.id)}
-                                        title="Approve the allotment"
+                                        title="Approve the Allotment"
                                         description="The issue moves to Approved; the sponsor can then lodge with the CSD and investors are told their outcome."
                                         trigger="Approve"
                                         data={{ approve: true }}
-                                        reasonField="reason"
-                                        reasonLabel="Note (optional)"
                                     />
                                 </>
                             )}

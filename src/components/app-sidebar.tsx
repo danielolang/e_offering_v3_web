@@ -116,6 +116,10 @@ export function navigationFor(user: AuthUser | null | undefined): NavGroup[] {
     }
 }
 
+/** Nav item on the navy rail: soft highlight on hover, gold marker and icon when active. */
+const navItem =
+    "relative h-9 text-sidebar-foreground/85 transition-colors before:absolute before:inset-y-2 before:left-0 before:w-[3px] before:rounded-full before:bg-gold before:opacity-0 before:transition-opacity hover:bg-white/8 hover:text-white data-[active=true]:bg-white/12 data-[active=true]:font-semibold data-[active=true]:text-white data-[active=true]:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)] data-[active=true]:before:opacity-100 [&>svg]:transition-colors data-[active=true]:[&>svg]:text-gold-light";
+
 export function AppSidebar() {
     const { auth } = usePage<SharedData>().props;
     const page = usePage();
@@ -133,7 +137,7 @@ export function AppSidebar() {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild className="h-auto py-2">
+                        <SidebarMenuButton size="lg" asChild className="h-auto py-2 hover:bg-white/5 active:bg-white/5">
                             <Link href={route('dashboard')} prefetch>
                                 <AppLogo />
                             </Link>
@@ -145,10 +149,10 @@ export function AppSidebar() {
             <SidebarContent>
                 {groups.map((group) => (
                     <SidebarGroup key={group.title} className="px-2 py-0">
-                        <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
+                        <SidebarGroupLabel className="mt-3 text-[10px] font-bold tracking-[0.16em] text-white/45 uppercase">{group.title}</SidebarGroupLabel>
                         <SidebarMenu>
                             {group.items.map((item) => (
-                                <SidebarMenuButton key={item.url + item.title} asChild isActive={item.url === activeUrl} tooltip={item.title}>
+                                <SidebarMenuButton key={item.url + item.title} asChild isActive={item.url === activeUrl} tooltip={item.title} className={navItem}>
                                     <Link href={item.url} prefetch>
                                         {item.icon && <item.icon />}
                                         <span>{item.title}</span>

@@ -86,7 +86,7 @@ export default function Password({ directoryAccount = false }: PasswordProps) {
 
                     <form onSubmit={updatePassword} className="space-y-6">
                         <div className="grid gap-2">
-                            <Label htmlFor="current_password">Current password</Label>
+                            <Label htmlFor="current_password">Current Password</Label>
 
                             <Input
                                 id="current_password"
@@ -103,7 +103,7 @@ export default function Password({ directoryAccount = false }: PasswordProps) {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="password">New password</Label>
+                            <Label htmlFor="password">New Password</Label>
 
                             <Input
                                 id="password"
@@ -120,7 +120,7 @@ export default function Password({ directoryAccount = false }: PasswordProps) {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="password_confirmation">Confirm password</Label>
+                            <Label htmlFor="password_confirmation">Confirm Password</Label>
 
                             <Input
                                 id="password_confirmation"
@@ -136,7 +136,7 @@ export default function Password({ directoryAccount = false }: PasswordProps) {
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <Button disabled={processing}>Save password</Button>
+                            <Button disabled={processing}>Save Password</Button>
 
                             <Transition
                                 show={recentlySuccessful}

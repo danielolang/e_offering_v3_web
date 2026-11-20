@@ -12,7 +12,7 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
     const unread = notifications?.unread ?? 0;
 
     return (
-        <header className="border-sidebar-border/50 bg-background/80 sticky top-0 z-20 flex h-16 shrink-0 items-center gap-2 border-b px-4 backdrop-blur transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-6">
+        <header className="border-border/70 bg-background/75 sticky top-0 z-20 flex h-16 shrink-0 items-center gap-2 border-b px-4 backdrop-blur transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-6">
             <div className="flex min-w-0 items-center gap-2">
                 <SidebarTrigger className="-ml-1" aria-label="Toggle menu" />
                 <Breadcrumbs breadcrumbs={breadcrumbs} />
@@ -41,6 +41,8 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                 </Button>
                 <ThemeToggle />
             </div>
+            {/* Brand hairline under the header. */}
+            <span aria-hidden className="from-navy via-gold dark:from-primary pointer-events-none absolute inset-x-0 -bottom-px h-px bg-linear-to-r to-transparent" />
         </header>
     );
 }

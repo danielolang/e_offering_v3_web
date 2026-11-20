@@ -124,3 +124,10 @@ export const amendableLabels: Record<string, string> = {
     bank_account_name: 'Payment account name',
     bank_account_number: 'Payment account number',
 };
+
+/** Platform-fee payment methods as people should read them ("qpay" is stored, "QPay" is shown). */
+export const paymentMethodLabel: Record<string, string> = {
+    qpay: 'QPay',
+    bank_transfer: 'Bank Transfer'
+};
+export const paymentMethod = (method?: string | null) => (method ? (paymentMethodLabel[method] ?? method.replace(/_/g, ' ')) : '—');

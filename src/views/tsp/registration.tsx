@@ -1,3 +1,4 @@
+import { confirmSubmit } from '@/lib/alert';
 import { FileField, TextField } from '@/components/form-field';
 import { PageHeader } from '@/components/page-header';
 import { DetailList, Page, Section, Steps } from '@/components/section';
@@ -9,7 +10,7 @@ import { feeStatus } from '@/lib/labels';
 import { cn } from '@/lib/utils';
 import { type FeeInvoice, type Institution } from '@/types';
 import { Head, Link, useForm } from '@/lib/app';
-import { CheckCircle2, CreditCard, Landmark, LoaderCircle, ReceiptText } from 'lucide-react';
+import { CheckCircle2, CreditCard, Landmark, LoaderCircle, Lock, ReceiptText } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 
 interface Props {
@@ -33,16 +34,26 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
         contact_phone: institution.contact_phone ?? '',
         bank_name: institution.bank_name ?? '',
         bank_account_name: institution.bank_account_name ?? '',
-        bank_account_number: institution.bank_account_number ?? '',
+        bank_account_number: institution.bank_account_number ?? ''
     });
     const [method, setMethod] = useState<string>(() => Object.keys(gateways)[0] ?? 'qpay');
     const pay = useForm({ method });
     const transfer = useForm<{ evidence: File | null; reference: string }>({ evidence: null, reference: '' });
     const step = !registered ? 0 : fullAccess ? 2 : 1;
+    // Submitted and fully active: the details are final (the API refuses changes too).
+    const locked = registered && fullAccess;
     const payable = invoice && (invoice.status === 'unpaid' || invoice.status === 'rejected');
 
-    const saveDetails = (e: FormEvent) => {
+    const saveDetails = async (e: FormEvent) => {
         e.preventDefault();
+        if (
+            !(await confirmSubmit({
+                title: 'Save Registration Details?',
+                text: "Your institution's registration details will be updated.",
+                confirmText: 'Yes, Save'
+            }))
+        )
+            return;
         details.put(route('tsp.registration.update'), { preserveScroll: true });
     };
 
@@ -51,13 +62,19 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
             <Head title="Registration" />
             <Page className="max-w-5xl">
                 <PageHeader title="Registration" description={`${institution.name} · ${institution.reference}`} />
-                <Section>
-                    <Steps steps={feeEnabled ? ['Registration details', 'Platform fee', 'Full access'] : ['Registration details', 'Full access']} current={feeEnabled ? step : step === 0 ? 0 : 1} />
+                <Section className="[&_ol]:tracking-wide [&_ol]:uppercase">
+                    <Steps
+                        steps={
+                            feeEnabled ? ['Registration details', 'Platform fee', 'Full access'] : ['Registration details', 'Full access']
+                        }
+                        current={feeEnabled ? step : step === 0 ? 0 : 1}
+                    />
                 </Section>
 
                 {institution.suspended_at && (
                     <div className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-900 dark:bg-rose-950 dark:text-rose-200">
-                        Access to the Transaction Sponsor modules is suspended because the annual platform fee was not paid by the due date. It is restored as soon as FMDQ confirms payment.
+                        Access to the Transaction Sponsor modules is suspended because the annual platform fee was not paid by the due date.
+                        It is restored as soon as FMDQ confirms payment.
                     </div>
                 )}
                 {fullAccess && (
@@ -67,36 +84,124 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
                             {institution.fee_paid_until ? ` until ${formatDate(institution.fee_paid_until)}` : ''}.
                         </span>
                         <Button size="sm" asChild>
-                            <Link href={route('tsp.dashboard')}>Go to dashboard</Link>
+                            <Link href={route('tsp.dashboard')}>Go to Dashboard</Link>
                         </Button>
                     </div>
                 )}
 
-                <Section title="Registration details" description="Registered name and address, and the contact person for your institution.">
-                    <form onSubmit={saveDetails} className="space-y-4">
-                        <div className="grid gap-4 sm:grid-cols-2">
-                            <TextField label="Registered name" required value={details.data.registered_name} onChange={(v) => details.setData('registered_name', v)} error={details.errors.registered_name} />
-                            <TextField label="Registered address" required value={details.data.registered_address} onChange={(v) => details.setData('registered_address', v)} error={details.errors.registered_address} />
-                            <TextField label="Contact person name" required value={details.data.contact_name} onChange={(v) => details.setData('contact_name', v)} error={details.errors.contact_name} />
-                            <TextField label="Role of contact person" required value={details.data.contact_role} onChange={(v) => details.setData('contact_role', v)} error={details.errors.contact_role} />
-                            <TextField label="Contact number" required value={details.data.contact_phone} onChange={(v) => details.setData('contact_phone', v)} error={details.errors.contact_phone} />
+                <Section
+                    className="[&_h2]:tracking-wide [&_h2]:uppercase"
+                    title="Registration details"
+                    description="Registered name and address, and the contact person for your institution."
+                >
+                    {locked ? (
+                        <div className="space-y-5">
+                            <DetailList
+                                items={[
+                                    { label: 'Registered Name', value: institution.registered_name },
+                                    { label: 'Registered Address', value: institution.registered_address },
+                                    { label: 'Contact Person Name', value: institution.contact_name },
+                                    { label: 'Role of Contact Person', value: institution.contact_role },
+                                    { label: 'Contact Number', value: institution.contact_phone }
+                                ]}
+                            />
+                            <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                                Default account for investor payments
+                            </p>
+                            <DetailList
+                                columns={3}
+                                items={[
+                                    { label: 'Bank Name', value: institution.bank_name },
+                                    { label: 'Account Name', value: institution.bank_account_name },
+                                    { label: 'Account Number', value: <span className="font-mono">{institution.bank_account_number}</span> }
+                                ]}
+                            />
+                            <p className="bg-muted/50 text-muted-foreground flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm">
+                                <Lock className="size-4 shrink-0" /> Your registration is complete, so these details can no longer be
+                                edited. Contact FMDQ if anything needs to change.
+                            </p>
                         </div>
-                        <p className="text-muted-foreground pt-2 text-xs font-medium tracking-wide uppercase">Default account for investor payments</p>
-                        <div className="grid gap-4 sm:grid-cols-3">
-                            <TextField label="Bank name" required value={details.data.bank_name} onChange={(v) => details.setData('bank_name', v)} error={details.errors.bank_name} />
-                            <TextField label="Account name" required value={details.data.bank_account_name} onChange={(v) => details.setData('bank_account_name', v)} error={details.errors.bank_account_name} />
-                            <TextField label="Account number" required placeholder="10-digit NUBAN" value={details.data.bank_account_number} onChange={(v) => details.setData('bank_account_number', v)} error={details.errors.bank_account_number} />
-                        </div>
-                        <div className="flex justify-end">
-                            <Button type="submit" disabled={details.processing}>
-                                {registered ? 'Save changes' : 'Submit registration'}
-                            </Button>
-                        </div>
-                    </form>
+                    ) : (
+                        <form onSubmit={saveDetails} className="space-y-4">
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                <TextField
+                                    label="Registered Name"
+                                    required
+                                    value={details.data.registered_name}
+                                    onChange={(v) => details.setData('registered_name', v)}
+                                    error={details.errors.registered_name}
+                                />
+                                <TextField
+                                    label="Registered Address"
+                                    required
+                                    value={details.data.registered_address}
+                                    onChange={(v) => details.setData('registered_address', v)}
+                                    error={details.errors.registered_address}
+                                />
+                                <TextField
+                                    label="Contact Person Name"
+                                    required
+                                    value={details.data.contact_name}
+                                    onChange={(v) => details.setData('contact_name', v)}
+                                    error={details.errors.contact_name}
+                                />
+                                <TextField
+                                    label="Role of Contact Person"
+                                    required
+                                    value={details.data.contact_role}
+                                    onChange={(v) => details.setData('contact_role', v)}
+                                    error={details.errors.contact_role}
+                                />
+                                <TextField
+                                    label="Contact Number"
+                                    required
+                                    value={details.data.contact_phone}
+                                    onChange={(v) => details.setData('contact_phone', v)}
+                                    error={details.errors.contact_phone}
+                                />
+                            </div>
+                            <p className="text-muted-foreground pt-2 text-xs font-medium tracking-wide uppercase">
+                                Default account for investor payments
+                            </p>
+                            <div className="grid gap-4 sm:grid-cols-3">
+                                <TextField
+                                    label="Bank Name"
+                                    required
+                                    value={details.data.bank_name}
+                                    onChange={(v) => details.setData('bank_name', v)}
+                                    error={details.errors.bank_name}
+                                />
+                                <TextField
+                                    label="Account Name"
+                                    required
+                                    value={details.data.bank_account_name}
+                                    onChange={(v) => details.setData('bank_account_name', v)}
+                                    error={details.errors.bank_account_name}
+                                />
+                                <TextField
+                                    label="Account Number"
+                                    required
+                                    placeholder="10-digit NUBAN"
+                                    value={details.data.bank_account_number}
+                                    onChange={(v) => details.setData('bank_account_number', v)}
+                                    error={details.errors.bank_account_number}
+                                />
+                            </div>
+                            <div className="flex justify-end">
+                                <Button type="submit" disabled={details.processing}>
+                                    {registered ? 'Save Changes' : 'Submit Registration'}
+                                </Button>
+                            </div>
+                        </form>
+                    )}
                 </Section>
 
                 {feeEnabled && registered && invoice && (
-                    <Section title="Annual platform fee" description={`Invoice ${invoice.reference} · ${formatDate(invoice.period_start)} to ${formatDate(invoice.period_end)}`}>
+                    <Section
+                        className="[&_h2]:tracking-wide [&_h2]:uppercase"
+                        title="Annual platform fee"
+                        description={`Invoice ${invoice.reference} · ${formatDate(invoice.period_start)} to ${formatDate(invoice.period_end)}`}
+                    >
                         <div className="space-y-5">
                             <div className="flex flex-wrap items-center justify-between gap-3">
                                 <div>
@@ -117,17 +222,33 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
                                                 role="radio"
                                                 aria-checked={method === k}
                                                 onClick={() => setMethod(k)}
-                                                className={cn('flex items-center gap-2 rounded-lg border px-4 py-3 text-sm', method === k ? 'border-navy bg-navy/5 font-medium' : 'hover:border-navy/40')}
+                                                className={cn(
+                                                    'flex items-center gap-2 rounded-lg border px-4 py-3 text-sm',
+                                                    method === k ? 'border-navy bg-navy/5 font-medium' : 'hover:border-navy/40'
+                                                )}
                                             >
-                                                {k === 'bank_transfer' ? <Landmark className="size-4" /> : <CreditCard className="size-4" />} {label}
+                                                {k === 'bank_transfer' ? (
+                                                    <Landmark className="size-4" />
+                                                ) : (
+                                                    <CreditCard className="size-4" />
+                                                )}{' '}
+                                                {label}
                                             </button>
                                         ))}
                                     </div>
                                     {method === 'bank_transfer' ? (
                                         <form
-                                            onSubmit={(e) => {
+                                            onSubmit={async (e) => {
                                                 e.preventDefault();
-                                                transfer.post(route('tsp.registration.transfer', invoice.id), { forceFormData: true, preserveScroll: true });
+                                                const confirmed = await confirmSubmit({
+                                                    title: 'Submit Evidence of Payment?',
+                                                    text: `FMDQ will confirm your ${formatMoney(invoice.amount)} transfer before activating the registration.`
+                                                });
+                                                if (!confirmed) return;
+                                                transfer.post(route('tsp.registration.transfer', invoice.id), {
+                                                    forceFormData: true,
+                                                    preserveScroll: true
+                                                });
                                             }}
                                             className="space-y-4"
                                         >
@@ -136,23 +257,43 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
                                                     columns={3}
                                                     items={[
                                                         { label: 'Bank', value: bank.bank_name },
-                                                        { label: 'Account name', value: bank.account_name },
-                                                        { label: 'Account number', value: <span className="font-mono">{bank.account_number}</span> },
+                                                        { label: 'Account Name', value: bank.account_name },
+                                                        {
+                                                            label: 'Account Number',
+                                                            value: <span className="font-mono">{bank.account_number}</span>
+                                                        }
                                                     ]}
                                                 />
                                             </div>
                                             <div className="grid gap-4 sm:grid-cols-2">
-                                                <TextField label="Transfer reference" value={transfer.data.reference} onChange={(v) => transfer.setData('reference', v)} error={transfer.errors.reference} />
-                                                <FileField label="Evidence of payment" required file={transfer.data.evidence} onChange={(f) => transfer.setData('evidence', f)} error={transfer.errors.evidence} />
+                                                <TextField
+                                                    label="Transfer Reference"
+                                                    value={transfer.data.reference}
+                                                    onChange={(v) => transfer.setData('reference', v)}
+                                                    error={transfer.errors.reference}
+                                                />
+                                                <FileField
+                                                    label="Evidence of Payment"
+                                                    required
+                                                    file={transfer.data.evidence}
+                                                    onChange={(f) => transfer.setData('evidence', f)}
+                                                    error={transfer.errors.evidence}
+                                                />
                                             </div>
                                             <Button type="submit" disabled={!transfer.data.evidence || transfer.processing}>
-                                                Submit evidence of payment
+                                                Submit Evidence of Payment
                                             </Button>
                                         </form>
                                     ) : (
                                         <Button
                                             disabled={pay.processing}
-                                            onClick={() => {
+                                            onClick={async () => {
+                                                const confirmed = await confirmSubmit({
+                                                    title: `Pay ${formatMoney(invoice.amount)}?`,
+                                                    text: `You will be taken to ${gateways[method]} to complete the payment.`,
+                                                    confirmText: 'Yes, Pay Now'
+                                                });
+                                                if (!confirmed) return;
                                                 pay.transform(() => ({ method }));
                                                 pay.post(route('tsp.registration.pay', invoice.id));
                                             }}
@@ -161,16 +302,22 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
                                             Pay {formatMoney(invoice.amount)} with {gateways[method]}
                                         </Button>
                                     )}
-                                    {(pay.errors as Record<string, string>).method && <p className="text-sm text-rose-600">{(pay.errors as Record<string, string>).method}</p>}
+                                    {(pay.errors as Record<string, string>).method && (
+                                        <p className="text-sm text-rose-600">{(pay.errors as Record<string, string>).method}</p>
+                                    )}
                                 </>
                             )}
-                            {invoice.status === 'pending_review' && <p className="text-muted-foreground text-sm">Payment received on {formatDateTime(invoice.paid_at)}; FMDQ is confirming it.</p>}
+                            {invoice.status === 'pending_review' && (
+                                <p className="text-muted-foreground text-sm">
+                                    Payment received on {formatDateTime(invoice.paid_at)}; FMDQ is confirming it.
+                                </p>
+                            )}
                         </div>
                     </Section>
                 )}
 
                 {invoices.length > 0 && (
-                    <Section title="Payment history" flush>
+                    <Section className="[&_h2]:tracking-wide [&_h2]:uppercase" title="Payment history" flush>
                         <table className="w-full text-sm">
                             <thead className="bg-muted/60 text-muted-foreground text-left text-xs tracking-wide uppercase">
                                 <tr>

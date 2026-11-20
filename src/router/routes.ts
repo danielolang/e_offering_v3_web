@@ -36,6 +36,8 @@ export const routes: Record<string, string> = {
     "investor.bids.create": "/investor/offers/{offer}/bid",
     "investor.bids.edit": "/investor/bids/{bid}/edit",
     "investor.bids.evidence": "/investor/bids/{bid}/evidence",
+    "investor.bids.qpay": "/investor/bids/{bid}/qpay",
+    "investor.bids.qpay-return": "/investor/bids/qpay/return",
     "investor.bids.revoke": "/investor/bids/{bid}/revoke",
     "investor.bids.show": "/investor/bids/{bid}",
     "investor.bids.store": "/investor/offers/{offer}/bids",

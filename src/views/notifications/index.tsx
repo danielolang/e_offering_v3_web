@@ -23,7 +23,7 @@ export default function Notifications({ notifications }: { notifications: Pagina
                     actions={
                         unread && (
                             <Button variant="outline" onClick={() => router.post(route('notifications.read-all'), {}, { preserveScroll: true })}>
-                                <CheckCheck className="size-4" /> Mark all as read
+                                <CheckCheck className="size-4" /> Mark All as Read
                             </Button>
                         )
                     }

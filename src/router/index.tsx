@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useLayoutEffect, useState, type ComponentType } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { PageLoader } from '@/components/page-loader';
 import AppLayout from '@/layouts/app-layout';
 import { api, ApiError, apiPath, installDownloadLinks, setNavigate, useAppState, usePageProps } from '@/lib/app';
 import '@/lib/url';
@@ -50,11 +51,7 @@ function homeFor(user: AuthUser | null): string {
 }
 
 function Loading() {
-    return (
-        <div role="status" className="text-muted-foreground flex min-h-svh items-center justify-center text-sm">
-            Loading…
-        </div>
-    );
+    return <PageLoader />;
 }
 
 function Screen({ route }: { route: AppRoute }) {

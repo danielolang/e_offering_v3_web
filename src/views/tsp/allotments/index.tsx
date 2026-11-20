@@ -59,7 +59,7 @@ export default function AllotmentsIndex({ offers }: { offers: Offer[] }) {
                                     const closed = new Date(o.close_at.replace(' ', 'T')) < new Date();
                                     return (
                                         <Button size="sm" variant={o.allotment ? 'default' : 'outline'} asChild disabled={!closed && !o.allotment}>
-                                            <Link href={route('tsp.allotments.show', o.id)}>{o.allotment ? 'Open' : closed ? 'Initiate' : 'Not closed'}</Link>
+                                            <Link href={route('tsp.allotments.show', o.id)}>{o.allotment ? 'Open' : closed ? 'Initiate' : 'Not Closed'}</Link>
                                         </Button>
                                     );
                                 },

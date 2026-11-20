@@ -116,7 +116,7 @@ export default function Login({ status }: { status?: string }) {
                     disabled={processing}
                 >
                     {processing && <LoaderCircle className="mr-2 size-4 animate-spin" />}
-                    {processing ? 'Signing in…' : 'Sign In'}
+                    {processing ? 'Signing In…' : 'Sign In'}
                 </Button>
             </form>
 

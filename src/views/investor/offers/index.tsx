@@ -99,7 +99,7 @@ export default function InvestorOffers({
                     </div>
                     {offers.data.length === 0 ? (
                         <div className="text-muted-foreground flex flex-col items-center gap-2 py-12 text-sm">
-                            <Landmark className="size-8 opacity-50" /> No offers match.
+                            <Landmark className="size-8 opacity-50" /> No available data
                         </div>
                     ) : (
                         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">

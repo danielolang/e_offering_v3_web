@@ -85,12 +85,12 @@ export default function InvestorDashboard({ stats, portfolio, openOffers, bids, 
                     description="Offers open for bidding that match your investor profile."
                     actions={
                         <Button variant="outline" size="sm" asChild>
-                            <Link href={route('investor.offers.index')}>All offers</Link>
+                            <Link href={route('investor.offers.index')}>All Offers</Link>
                         </Button>
                     }
                 >
                     {openOffers.length === 0 ? (
-                        <p className="text-muted-foreground text-sm">No offers are open for bidding right now.</p>
+                        <p className="text-muted-foreground text-sm">No available data</p>
                     ) : (
                         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                             {openOffers.map((o) => (
@@ -101,8 +101,8 @@ export default function InvestorDashboard({ stats, portfolio, openOffers, bids, 
                 </Section>
 
                 <div className="grid gap-6 xl:grid-cols-3">
-                    <Section title="Bids and allotment outcomes" className="xl:col-span-2" flush actions={<Button variant="outline" size="sm" asChild><Link href={route('investor.history')}>Full history</Link></Button>}>
-                        <DataTable rows={bids} rowKey={(b) => b.id} emptyTitle="You have not placed any bids yet" columns={bidColumns()} />
+                    <Section title="Bids and allotment outcomes" className="xl:col-span-2" flush actions={<Button variant="outline" size="sm" asChild><Link href={route('investor.history')}>Full History</Link></Button>}>
+                        <DataTable rows={bids} rowKey={(b) => b.id} emptyTitle="No available data" columns={bidColumns()} />
                     </Section>
                     <div className="space-y-6">
                         <Section title="Portfolio by security type">

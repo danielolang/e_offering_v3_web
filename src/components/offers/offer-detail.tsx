@@ -1,3 +1,4 @@
+import { confirmSubmit } from '@/lib/alert';
 import { CopyButton } from '@/components/copy-button';
 import { DecisionDialog } from '@/components/decision-dialog';
 import { FileField } from '@/components/form-field';
@@ -10,7 +11,7 @@ import { amendableLabels, amendmentStatus, categoryLabel, stageLabel } from '@/l
 import { type Amendment, type AuditLog, type Offer, type WorkflowAction } from '@/types';
 import { router, useForm } from '@/lib/app';
 import { cn } from '@/lib/utils';
-import { CheckCircle2, Circle, FileText, Trash2, XCircle } from 'lucide-react';
+import { CheckCircle2, Circle, ExternalLink, FileText, Trash2, XCircle } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 
 const OTHER = '__other__';
@@ -29,8 +30,24 @@ export interface OfferDetailProps {
 export function rateSummary(offer: Offer): string {
     const suffix = offer.security_type === 'equities' || offer.security_type === 'depository_receipts' ? '' : '%';
     if (offer.price_discovery_method === 'fixed_rate') return formatRate(offer.rate, suffix);
-    if (offer.price_discovery_method === 'book_building') return `${formatRate(offer.rate_min, suffix)} – ${formatRate(offer.rate_max, suffix)}`;
+    if (offer.price_discovery_method === 'book_building')
+        return `${formatRate(offer.rate_min, suffix)} – ${formatRate(offer.rate_max, suffix)}`;
     return 'Bids at investor rates (not captured at offer creation)';
+}
+
+/** The public page for a live offer: a button that opens it in a new tab, and one to copy the link. */
+function PublicOfferLink({ reference }: { reference: string }) {
+    const url = `${window.location.origin}/offers/${reference}`;
+    return (
+        <span className="flex items-center gap-2">
+            <Button variant="outline" size="sm" asChild>
+                <a href={url} target="_blank" rel="noopener noreferrer" title={url}>
+                    <ExternalLink className="size-4" /> Open Public Page
+                </a>
+            </Button>
+            <CopyButton variant="outline" size="sm" value={url} label="Copy public offer link" />
+        </span>
+    );
 }
 
 export function OfferFacts({ offer }: { offer: Offer }) {
@@ -38,14 +55,23 @@ export function OfferFacts({ offer }: { offer: Offer }) {
         <DetailList
             columns={3}
             items={[
-                ...(offer.status === 'live' ? [{ label: 'Public offer link', value: <CopyButton variant="outline" size="sm" value={`${window.location.origin}/offers/${offer.reference}`} /> }] : []),
+                ...(offer.status === 'live'
+                    ? [{ label: 'Public offer link', value: <PublicOfferLink reference={offer.reference} /> }]
+                    : []),
                 { label: "Issuer's registered name", value: offer.issuer_name },
                 { label: 'Issuer type', value: offer.issuer_type },
                 { label: 'Security type', value: offer.security_type_label },
-                { label: 'Issue description & series', value: `${offer.issue_description}${offer.issue_series ? ` (${offer.issue_series})` : ''}`, wide: true },
+                {
+                    label: 'Issue description & series',
+                    value: `${offer.issue_description}${offer.issue_series ? ` (${offer.issue_series})` : ''}`,
+                    wide: true
+                },
                 { label: 'Offer size', value: `Up to ${formatMoney(offer.offer_size)}` },
                 { label: 'Minimum subscription threshold', value: `${Number(offer.min_subscription_threshold)}%` },
-                { label: 'Minimum subscription / increments', value: `${formatMoney(offer.min_subscription_amount)} then ${formatMoney(offer.subsequent_increment)}` },
+                {
+                    label: 'Minimum subscription / increments',
+                    value: `${formatMoney(offer.min_subscription_amount)} then ${formatMoney(offer.subsequent_increment)}`
+                },
                 { label: 'Proposed open date', value: formatDateTime(offer.open_at) },
                 { label: 'Proposed close date', value: formatDateTime(offer.close_at) },
                 { label: 'Tenor', value: offer.tenor ?? 'Not applicable' },
@@ -57,7 +83,13 @@ export function OfferFacts({ offer }: { offer: Offer }) {
                 { label: 'Indicative maturity date', value: offer.maturity_date ? formatDate(offer.maturity_date) : null },
                 { label: 'Indicative allotment date', value: offer.allotment_date ? formatDate(offer.allotment_date) : null },
                 { label: 'Investor universe', value: offer.investor_universe.map((c) => categoryLabel[c]).join(', ') },
-                { label: 'Payment account', value: offer.bank_account_number ? `${offer.bank_name} · ${offer.bank_account_name} · ${offer.bank_account_number}` : null, wide: true },
+                {
+                    label: 'Payment account',
+                    value: offer.bank_account_number
+                        ? `${offer.bank_name} · ${offer.bank_account_name} · ${offer.bank_account_number}`
+                        : null,
+                    wide: true
+                }
             ]}
         />
     );
@@ -69,15 +101,25 @@ export function WorkflowTimeline({ actions }: { actions: WorkflowAction[] }) {
     return (
         <ol className="space-y-4">
             {actions.map((a) => {
-                const Icon = a.decision === 'rejected' || a.decision === 'cancelled' ? XCircle : a.decision === 'approved' ? CheckCircle2 : Circle;
-                const tone = a.decision === 'rejected' || a.decision === 'cancelled' ? 'text-rose-500' : a.decision === 'approved' ? 'text-emerald-500' : 'text-gold';
+                const Icon =
+                    a.decision === 'rejected' || a.decision === 'cancelled' ? XCircle : a.decision === 'approved' ? CheckCircle2 : Circle;
+                const tone =
+                    a.decision === 'rejected' || a.decision === 'cancelled'
+                        ? 'text-rose-500'
+                        : a.decision === 'approved'
+                          ? 'text-emerald-500'
+                          : 'text-gold';
                 return (
                     <li key={a.id} className="flex gap-3 text-sm">
                         <Icon className={`mt-0.5 size-4 shrink-0 ${tone}`} />
                         <div>
                             <p>
                                 <span className="font-medium">{stageLabel[a.stage]}</span> {a.decision}
-                                {a.subject_type.endsWith('OfferAmendment') ? ' an amendment' : a.subject_type.endsWith('Allotment') ? ' the allotment' : ''}
+                                {a.subject_type.endsWith('OfferAmendment')
+                                    ? ' an amendment'
+                                    : a.subject_type.endsWith('Allotment')
+                                      ? ' the allotment'
+                                      : ''}
                                 {a.user_name ? ` · ${a.user_name}` : ''}
                             </p>
                             {a.reason && <p className="text-muted-foreground">“{a.reason}”</p>}
@@ -108,16 +150,24 @@ export function AmendmentList({ amendments, reviewRoute }: { amendments: Amendme
                             </div>
                             {href && (
                                 <div className="flex gap-2">
-                                    <DecisionDialog href={href} title="Reject amendment" trigger="Reject" triggerVariant="outline" triggerSize="sm" data={{ approve: false }} reasonField="comment" reasonRequired destructive />
                                     <DecisionDialog
                                         href={href}
-                                        title="Approve amendment"
+                                        title="Reject Amendment"
+                                        trigger="Reject"
+                                        triggerVariant="outline"
+                                        triggerSize="sm"
+                                        data={{ approve: false }}
+                                        reasonField="comment"
+                                        reasonRequired
+                                        destructive
+                                    />
+                                    <DecisionDialog
+                                        href={href}
+                                        title="Approve Amendment"
                                         description="The changes apply immediately and every investor with an active bid is notified."
                                         trigger="Approve"
                                         triggerSize="sm"
                                         data={{ approve: true }}
-                                        reasonField="comment"
-                                        reasonLabel="Note (optional)"
                                     />
                                 </div>
                             )}
@@ -155,7 +205,11 @@ export function DocumentsPanel({ offer, required, canUpload }: { offer: Offer; r
     const docs = offer.documents?.filter((d) => ['offer', 'amendment'].includes(d.category)) ?? [];
     const uploaded = new Set(docs.map((d) => d.document_type));
     const nextMissing = (skip?: string) => required.find((r) => !uploaded.has(r) && r !== skip) ?? required[0] ?? '';
-    const form = useForm<{ document_type: string; file: File | null; visible_to_investors: boolean }>({ document_type: nextMissing(), file: null, visible_to_investors: true });
+    const form = useForm<{ document_type: string; file: File | null; visible_to_investors: boolean }>({
+        document_type: nextMissing(),
+        file: null,
+        visible_to_investors: true
+    });
     // "Other" lets a sponsor attach a document outside the required list under its own name.
     const [custom, setCustom] = useState(required.length === 0);
 
@@ -164,15 +218,23 @@ export function DocumentsPanel({ offer, required, canUpload }: { offer: Offer; r
         form.setData('document_type', type);
     };
 
-    const submit = (e: FormEvent) => {
+    const submit = async (e: FormEvent) => {
         e.preventDefault();
         const sent = form.data.document_type;
+        if (
+            !(await confirmSubmit({
+                title: 'Upload This Document?',
+                text: `"${form.data.file?.name ?? 'The file'}" will be attached to the offer as ${sent || 'a document'}.`,
+                confirmText: 'Yes, Upload'
+            }))
+        )
+            return;
         form.post(route('tsp.offers.documents.store', offer.id), {
             forceFormData: true,
             preserveScroll: true,
             onSuccess: () => {
                 form.setData({ file: null, document_type: custom ? '' : nextMissing(sent) });
-            },
+            }
         });
     };
 
@@ -190,10 +252,11 @@ export function DocumentsPanel({ offer, required, canUpload }: { offer: Offer; r
                                 className={cn(
                                     'flex items-center gap-2 rounded text-left text-sm enabled:hover:underline',
                                     uploaded.has(r) ? 'text-emerald-600' : 'text-muted-foreground',
-                                    canUpload && !custom && form.data.document_type === r && 'text-navy font-medium dark:text-white',
+                                    canUpload && !custom && form.data.document_type === r && 'text-navy font-medium dark:text-white'
                                 )}
                             >
-                                {uploaded.has(r) ? <CheckCircle2 className="size-4 shrink-0" /> : <Circle className="size-4 shrink-0" />} {r}
+                                {uploaded.has(r) ? <CheckCircle2 className="size-4 shrink-0" /> : <Circle className="size-4 shrink-0" />}{' '}
+                                {r}
                             </button>
                         </li>
                     ))}
@@ -204,7 +267,8 @@ export function DocumentsPanel({ offer, required, canUpload }: { offer: Offer; r
                     <li key={d.id} className="flex items-center gap-3 px-3 py-2 text-sm">
                         <FileText className="text-gold size-4 shrink-0" />
                         <a href={d.url} target="_blank" rel="noreferrer" className="flex-1 truncate hover:underline">
-                            <span className="font-medium">{d.document_type}</span> <span className="text-muted-foreground">· {d.original_name}</span>
+                            <span className="font-medium">{d.document_type}</span>{' '}
+                            <span className="text-muted-foreground">· {d.original_name}</span>
                         </a>
                         <span className="text-muted-foreground hidden text-xs sm:inline">{formatDate(d.created_at)}</span>
                         {canUpload && offer.status !== 'live' && (
@@ -212,7 +276,16 @@ export function DocumentsPanel({ offer, required, canUpload }: { offer: Offer; r
                                 size="icon"
                                 variant="ghost"
                                 aria-label={`Remove ${d.document_type}`}
-                                onClick={() => router.delete(route('tsp.offers.documents.destroy', [offer.id, d.id]), { preserveScroll: true })}
+                                onClick={async () => {
+                                    const confirmed = await confirmSubmit({
+                                        title: `Remove ${d.document_type}?`,
+                                        text: 'The document will be deleted from the offer. You can upload it again later.',
+                                        confirmText: 'Yes, Remove',
+                                        cancelText: 'Keep It'
+                                    });
+                                    if (confirmed)
+                                        router.delete(route('tsp.offers.documents.destroy', [offer.id, d.id]), { preserveScroll: true });
+                                }}
                             >
                                 <Trash2 className="size-4" />
                             </Button>
@@ -222,7 +295,10 @@ export function DocumentsPanel({ offer, required, canUpload }: { offer: Offer; r
                 {docs.length === 0 && <li className="text-muted-foreground px-3 py-3 text-sm">No documents uploaded.</li>}
             </ul>
             {canUpload && (
-                <form onSubmit={submit} className="grid gap-3 rounded-lg border border-dashed p-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end">
+                <form
+                    onSubmit={submit}
+                    className="grid gap-3 rounded-lg border border-dashed p-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end"
+                >
                     <div className="grid gap-1.5">
                         <label className="text-sm font-medium" htmlFor="doc-type">
                             Document
@@ -261,7 +337,14 @@ export function DocumentsPanel({ offer, required, canUpload }: { offer: Offer; r
                         )}
                         <InputError message={form.errors.document_type} />
                     </div>
-                    <FileField label="File" file={form.data.file} accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" maxSizeMB={20} onChange={(f) => form.setData('file', f)} error={form.errors.file} />
+                    <FileField
+                        label="File"
+                        file={form.data.file}
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                        maxSizeMB={20}
+                        onChange={(f) => form.setData('file', f)}
+                        error={form.errors.file}
+                    />
                     <Button type="submit" disabled={!form.data.file || form.processing}>
                         Upload
                     </Button>
@@ -275,7 +358,7 @@ export function PartiesPanel({ offer }: { offer: Offer }) {
     return (
         <div className="grid gap-6 lg:grid-cols-2">
             <div>
-                <h3 className="mb-2 text-sm font-semibold">Receiving agents</h3>
+                <h3 className="mb-2 text-sm font-semibold">Receiving Agents</h3>
                 {offer.receiving_agents && offer.receiving_agents.length > 0 ? (
                     <ul className="space-y-2 text-sm">
                         {offer.receiving_agents.map((a) => (
@@ -299,7 +382,8 @@ export function PartiesPanel({ offer }: { offer: Offer }) {
                             <li key={c.id ?? c.institution_id} className="rounded-md border px-3 py-2">
                                 <span className="font-medium">{c.institution?.name}</span>
                                 <span className="text-muted-foreground block text-xs">
-                                    {c.can_view_order_book ? 'Views order book' : 'No order book access'} · {c.can_confirm_payments ? 'Confirms payments' : 'Cannot confirm payments'}
+                                    {c.can_view_order_book ? 'Views order book' : 'No order book access'} ·{' '}
+                                    {c.can_confirm_payments ? 'Confirms payments' : 'Cannot confirm payments'}
                                     {c.bank_account_number ? ` · ${c.bank_name} ${c.bank_account_number}` : ''}
                                 </span>
                             </li>

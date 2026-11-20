@@ -66,7 +66,7 @@ export default function ConfirmPassword() {
                     disabled={processing}
                 >
                     {processing && <LoaderCircle className="mr-2 size-4 animate-spin" />}
-                    Confirm password
+                    Confirm Password
                 </Button>
             </form>
 

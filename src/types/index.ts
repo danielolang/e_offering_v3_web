@@ -256,6 +256,10 @@ export interface Bid {
     payment_status: 'pending' | 'paid' | 'invalid';
     payment_reference: string | null;
     payment_comment: string | null;
+    /** Legacy Standardised Commitment Form details (participant, allotment, orders, files). */
+    commitment?: (Record<string, unknown> & { orders?: { order: number; amount: string; rate: string | null }[] }) | null;
+    /** Signed links to the commitment form's signature / seal images. */
+    commitment_files?: Partial<Record<'signature_1' | 'signature_2' | 'official_seal', string>>;
     payment_uploaded_at: string | null;
     payment_reviewed_at: string | null;
     has_evidence: boolean;

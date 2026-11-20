@@ -60,44 +60,44 @@ export default function TspDashboard({ stats, byType = [], recentOffers = [], ta
         activity.length > 0
             ? activity
             : [
-                  {
-                      id: 1,
-                      description: 'Account login session initialized',
-                      subtext: 'Authenticated via FMDQ Single Sign-On (SSO)',
-                      created_at: 'Today, 08:30',
-                      color: 'bg-blue-500',
-                  },
-                  {
-                      id: 2,
-                      description: 'Portal credentials verified',
-                      subtext: 'Role: TSP/RM Inputter permissions granted',
-                      created_at: 'Yesterday',
-                      color: 'bg-emerald-500',
-                  },
-              ];
+                {
+                    id: 1,
+                    description: 'Account login session initialized',
+                    subtext: 'Authenticated via FMDQ Single Sign-On (SSO)',
+                    created_at: 'Today, 08:30',
+                    color: 'bg-blue-500',
+                },
+                {
+                    id: 2,
+                    description: 'Portal credentials verified',
+                    subtext: 'Role: TSP/RM Inputter permissions granted',
+                    created_at: 'Yesterday',
+                    color: 'bg-emerald-500',
+                },
+            ];
 
     // Mock/default team if none exists yet
     const displayTeam =
         team.length > 0
             ? team
             : [
-                  {
-                      id: 1,
-                      name: auth.user?.name || 'Joshua Ryan',
-                      subtext: `${institutionName} · Inputter`,
-                      badge: 'Active',
-                      badgeVariant: 'active',
-                      initials: 'JR',
-                  },
-                  {
-                      id: 2,
-                      name: 'Ronan Hood Reviewer',
-                      subtext: 'Lead Authoriser',
-                      badge: 'Authoriser',
-                      badgeVariant: 'authoriser',
-                      initials: 'RH',
-                  },
-              ];
+                {
+                    id: 1,
+                    name: auth.user?.name || 'Joshua Ryan',
+                    subtext: `${institutionName} · Inputter`,
+                    badge: 'Active',
+                    badgeVariant: 'active',
+                    initials: 'JR',
+                },
+                {
+                    id: 2,
+                    name: 'Ronan Hood Reviewer',
+                    subtext: 'Lead Authoriser',
+                    badge: 'Authoriser',
+                    badgeVariant: 'authoriser',
+                    initials: 'RH',
+                },
+            ];
 
     return (
         <AppLayout breadcrumbs={[{ title: 'Dashboard', href: route('tsp.dashboard') }]}>
@@ -123,7 +123,7 @@ export default function TspDashboard({ stats, byType = [], recentOffers = [], ta
                             className="inline-flex items-center gap-1.5 rounded-lg bg-[#0e224e] px-4 py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-[#16336e] active:scale-[0.99] sm:text-sm"
                         >
                             <Plus className="size-4" />
-                            <span>Create offer</span>
+                            <span>Create Offer</span>
                         </Link>
                     </div>
                 </div>
@@ -186,12 +186,9 @@ export default function TspDashboard({ stats, byType = [], recentOffers = [], ta
                         </div>
                         <div className="mt-4 flex items-baseline gap-2">
                             <span className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                                {stats?.total_subscribed ? formatCompact(stats.total_subscribed) : '₦0'}
+                                {stats?.total_subscribed ? formatMoney(stats.total_subscribed) : '₦0'}
                             </span>
                         </div>
-                        <p className="mt-1 text-[11px] text-white/60">
-                            {stats?.total_subscribed ? formatMoney(stats.total_subscribed) : '₦0.00'}
-                        </p>
                     </div>
 
                     {/* Card 4: ALL OFFERS (Amber/Gold) */}
@@ -225,7 +222,7 @@ export default function TspDashboard({ stats, byType = [], recentOffers = [], ta
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2.5">
                                     <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                                        Your work queue
+                                        Your Work Queue
                                     </h3>
                                     <span className="rounded-full border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
                                         {pending.length} pending
@@ -284,34 +281,32 @@ export default function TspDashboard({ stats, byType = [], recentOffers = [], ta
                         </div>
                     </div>
 
-                    {/* Right: Offerings by type */}
+                    {/* Right: Offering by type */}
                     <div className="flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
                         <div>
                             {/* Card Header */}
                             <div className="flex items-center justify-between">
                                 <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                                    Offerings by type
+                                    Offering by Type
                                 </h3>
                                 <div className="flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-xs dark:border-slate-700 dark:bg-slate-800">
                                     <button
                                         type="button"
                                         onClick={() => setChartMode('volume')}
-                                        className={`rounded-md px-2.5 py-1 font-semibold transition ${
-                                            chartMode === 'volume'
-                                                ? 'bg-white text-slate-800 shadow-xs dark:bg-slate-700 dark:text-white'
-                                                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
-                                        }`}
+                                        className={`rounded-md px-2.5 py-1 font-semibold transition ${chartMode === 'volume'
+                                            ? 'bg-white text-slate-800 shadow-xs dark:bg-slate-700 dark:text-white'
+                                            : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                                            }`}
                                     >
                                         Volume
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setChartMode('value')}
-                                        className={`rounded-md px-2.5 py-1 font-semibold transition ${
-                                            chartMode === 'value'
-                                                ? 'bg-white text-slate-800 shadow-xs dark:bg-slate-700 dark:text-white'
-                                                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
-                                        }`}
+                                        className={`rounded-md px-2.5 py-1 font-semibold transition ${chartMode === 'value'
+                                            ? 'bg-white text-slate-800 shadow-xs dark:bg-slate-700 dark:text-white'
+                                            : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                                            }`}
                                     >
                                         Value
                                     </button>
@@ -324,7 +319,7 @@ export default function TspDashboard({ stats, byType = [], recentOffers = [], ta
                                     <div className="mb-3 flex size-10 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
                                         <PieChartIcon className="size-5" />
                                     </div>
-                                    <h4 className="text-sm font-bold text-slate-900 dark:text-white">No data yet</h4>
+                                    <h4 className="text-sm font-bold text-slate-900 dark:text-white">No available data</h4>
                                     <p className="mt-1 max-w-sm text-xs text-slate-500 dark:text-slate-400">
                                         There are currently no active public offers or private bond issuances logged under
                                         your portfolio.
@@ -360,10 +355,7 @@ export default function TspDashboard({ stats, byType = [], recentOffers = [], ta
                     {/* Header */}
                     <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                         <div>
-                            <h3 className="text-base font-bold text-slate-900 dark:text-white">Offer reports</h3>
-                            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                                Consolidated summary records and distribution reports
-                            </p>
+                            <h3 className="text-base font-bold text-slate-900 dark:text-white">Offer Report</h3>
                         </div>
                         <Link
                             href={route('tsp.offers.index')}
@@ -380,7 +372,7 @@ export default function TspDashboard({ stats, byType = [], recentOffers = [], ta
                             <div className="mb-3 flex size-11 items-center justify-center rounded-xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
                                 <FileText className="size-5" />
                             </div>
-                            <h4 className="text-sm font-bold text-slate-900 dark:text-white">No offers yet</h4>
+                            <h4 className="text-sm font-bold text-slate-900 dark:text-white">No available data</h4>
                             <p className="mt-1 max-w-md text-xs text-slate-500 dark:text-slate-400">
                                 When offers are created, approved, or finalized, comprehensive execution and allotment
                                 reports will appear here automatically.
@@ -398,7 +390,7 @@ export default function TspDashboard({ stats, byType = [], recentOffers = [], ta
                             <DataTable
                                 rows={recentOffers}
                                 rowKey={(o) => o.id}
-                                emptyTitle="No offers yet"
+                                emptyTitle="No available data"
                                 columns={[
                                     {
                                         key: 'id',
@@ -469,7 +461,7 @@ export default function TspDashboard({ stats, byType = [], recentOffers = [], ta
                     <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
                         <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                             <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                                Recent activity (your institution)
+                                Recent Activity (Your Institution)
                             </h3>
                             <Link
                                 href={route('tsp.audit')}
@@ -484,9 +476,8 @@ export default function TspDashboard({ stats, byType = [], recentOffers = [], ta
                                 <div key={a.id} className="flex items-start justify-between gap-4">
                                     <div className="flex items-start gap-3">
                                         <span
-                                            className={`mt-1.5 size-2 shrink-0 rounded-full ${
-                                                a.color || 'bg-blue-500'
-                                            }`}
+                                            className={`mt-1.5 size-2 shrink-0 rounded-full ${a.color || 'bg-blue-500'
+                                                }`}
                                         />
                                         <div>
                                             <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
@@ -508,7 +499,7 @@ export default function TspDashboard({ stats, byType = [], recentOffers = [], ta
                     {/* Right: Your team */}
                     <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
                         <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
-                            <h3 className="text-base font-bold text-slate-900 dark:text-white">Your team</h3>
+                            <h3 className="text-base font-bold text-slate-900 dark:text-white">Your Team</h3>
                             <span className="text-xs font-semibold text-slate-500 transition hover:text-slate-900 cursor-pointer dark:text-slate-400 dark:hover:text-white">
                                 Directory
                             </span>
@@ -520,22 +511,21 @@ export default function TspDashboard({ stats, byType = [], recentOffers = [], ta
                                     m.initials ||
                                     (m.name
                                         ? m.name
-                                              .split(' ')
-                                              .map((p: string) => p[0])
-                                              .join('')
-                                              .toUpperCase()
-                                              .slice(0, 2)
+                                            .split(' ')
+                                            .map((p: string) => p[0])
+                                            .join('')
+                                            .toUpperCase()
+                                            .slice(0, 2)
                                         : 'US');
 
                                 return (
                                     <div key={m.id} className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                             <div
-                                                className={`flex size-8 items-center justify-center rounded-full text-xs font-bold text-white shadow-xs ${
-                                                    m.initials === 'RH' || m.access_level === 'authoriser'
-                                                        ? 'bg-slate-700'
-                                                        : 'bg-[#0e224e]'
-                                                }`}
+                                                className={`flex size-8 items-center justify-center rounded-full text-xs font-bold text-white shadow-xs ${m.initials === 'RH' || m.access_level === 'authoriser'
+                                                    ? 'bg-slate-700'
+                                                    : 'bg-[#0e224e]'
+                                                    }`}
                                             >
                                                 {initials}
                                             </div>

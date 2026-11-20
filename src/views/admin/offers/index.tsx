@@ -3,6 +3,7 @@ import { Pagination } from '@/components/pagination';
 import { SearchForm } from '@/components/search-form';
 import { Page, Section } from '@/components/section';
 import { StatusBadge } from '@/components/status-badge';
+import { DateTimePicker } from '@/components/ui/date-time-picker';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import { formatDate, formatMoney } from '@/lib/format';
@@ -29,9 +30,9 @@ export default function AdminOffers({ offers, filters }: { offers: Paginated<Off
                             ))}
                         </select>
                         <div className="flex items-center gap-2">
-                            <Input type="date" aria-label="Open from" value={filters.from ?? ''} onChange={(e) => go({ from: e.target.value || undefined })} />
+                            <DateTimePicker withTime={false} aria-label="Open from" placeholder="Open from" className="w-44" value={filters.from ?? ''} onChange={(v) => go({ from: v || undefined })} />
                             <span className="text-muted-foreground text-sm">to</span>
-                            <Input type="date" aria-label="Open to" value={filters.to ?? ''} onChange={(e) => go({ to: e.target.value || undefined })} />
+                            <DateTimePicker withTime={false} aria-label="Open to" placeholder="Open to" className="w-44" value={filters.to ?? ''} onChange={(v) => go({ to: v || undefined })} />
                         </div>
                         <div className="lg:ml-auto">
                             <SearchForm url={route('admin.offers.index')} initial={filters.search ?? ''} extra={{ status: filters.status, from: filters.from, to: filters.to }} placeholder="Offer ID or issuer" />
@@ -74,7 +75,7 @@ export default function AdminOffers({ offers, filters }: { offers: Paginated<Off
                                 {offers.data.length === 0 && (
                                     <tr>
                                         <td colSpan={7} className="text-muted-foreground px-4 py-10 text-center">
-                                            No offers match these filters.
+                                            No available data
                                         </td>
                                     </tr>
                                 )}

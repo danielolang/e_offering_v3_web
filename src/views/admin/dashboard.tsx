@@ -41,24 +41,13 @@ export default function AdminDashboard({ stats, offers, activity, adminReviewEna
                     <StatCard label="Platform fees to confirm" value={stats.pending_fees} href={route('admin.fees.index')} />
                     <StatCard label="Allotments pending SEC" value={stats.sec_pending} />
                     <StatCard
-                        label="Offers awaiting FMDQ review"
+                        label="Offers awaiting FMDQ Review"
                         value={stats.pending_admin_review}
-                        hint={adminReviewEnabled ? 'FMDQ review gate is ON' : 'FMDQ review gate is off (CR s4.4)'}
+                        hint={adminReviewEnabled ? 'FMDQ Review gate is ON' : 'FMDQ Review gate is off (CR s4.4)'}
                         href={route('admin.offers.index', { status: 'pending_admin_review' })}
                     />
                 </div>
 
-                {!adminReviewEnabled && (
-                    <div className="flex items-start gap-3 rounded-lg border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200">
-                        <AlertTriangle className="mt-0.5 size-4 shrink-0" />
-                        <p>
-                            The FMDQ Admin review step is built in but disabled, so TSP Authoriser approval alone lets sponsors launch offers.{' '}
-                            <Link href={route('admin.settings')} className="font-medium underline">
-                                Change in Settings
-                            </Link>
-                        </p>
-                    </div>
-                )}
 
                 <div className="grid gap-6 xl:grid-cols-3">
                     <Section
@@ -67,14 +56,14 @@ export default function AdminDashboard({ stats, offers, activity, adminReviewEna
                         flush
                         actions={
                             <Button variant="outline" size="sm" asChild>
-                                <Link href={route('admin.offers.index')}>View all</Link>
+                                <Link href={route('admin.offers.index')}>View All</Link>
                             </Button>
                         }
                     >
                         <DataTable
                             rows={offers}
                             rowKey={(o) => o.id}
-                            emptyTitle="No offers yet"
+                            emptyTitle="No available data"
                             columns={[
                                 {
                                     key: 'ref',

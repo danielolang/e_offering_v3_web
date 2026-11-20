@@ -28,6 +28,8 @@ export interface DateTimePickerProps {
     className?: string;
     'aria-invalid'?: boolean;
     'aria-describedby'?: string;
+    'aria-label'?: string;
+    onBlur?: () => void;
 }
 
 interface Parts {
@@ -58,6 +60,15 @@ export function formatDateTimeValue(p: Parts, withTime: boolean): string {
 
 const toDate = (p: Parts) => new Date(p.y, p.m - 1, p.d, p.h, p.mi);
 const fromDate = (d: Date): Parts => ({ y: d.getFullYear(), m: d.getMonth() + 1, d: d.getDate(), h: d.getHours(), mi: d.getMinutes() });
+/** Years offered in the Year list: follows min / max, so a date of birth can go back far enough. */
+function yearRange(today: Date, min: Date | null, max: Date | null, current: number): number[] {
+    const end = max ? max.getFullYear() : today.getFullYear() + 15;
+    const start = min ? min.getFullYear() : max && max < today ? end - 100 : today.getFullYear() - 5;
+    const from = Math.min(start, current);
+    const to = Math.max(end, current);
+    return Array.from({ length: to - from + 1 }, (_, i) => from + i);
+}
+
 const ymd = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const sameDay = (a: Date | null, b: Date | null) => !!a && !!b && ymd(a) === ymd(b);
 
@@ -83,6 +94,7 @@ export function DateTimePicker({
     required = false,
     disabled = false,
     className,
+    onBlur,
     ...aria
 }: DateTimePickerProps) {
     const selected = useMemo(() => parseDateTimeValue(value), [value]);
@@ -115,6 +127,8 @@ export function DateTimePicker({
                     disabled={disabled}
                     aria-invalid={aria['aria-invalid']}
                     aria-describedby={aria['aria-describedby']}
+                    aria-label={aria['aria-label']}
+                    onBlur={onBlur}
                     className={cn(
                         'flex h-10 w-full items-center gap-2 rounded-md border border-input bg-background px-3 py-2 text-left text-sm ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive',
                         !selected && 'text-muted-foreground',
@@ -298,7 +312,7 @@ function PickerPanel({ selected, withTime, minDate, maxDate, required, onChange,
                         value={view.year}
                         onChange={(e) => setView({ ...view, year: +e.target.value })}
                     >
-                        {Array.from({ length: 21 }, (_, i) => today.getFullYear() - 5 + i).map((y) => (
+                        {yearRange(today, minDate, maxDate, view.year).map((y) => (
                             <option key={y} value={y}>
                                 {y}
                             </option>

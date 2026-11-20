@@ -1,3 +1,4 @@
+import { confirmSubmit } from '@/lib/alert';
 import { SelectField, TextField } from '@/components/form-field';
 import { DecisionDialog } from '@/components/decision-dialog';
 import { PageHeader } from '@/components/page-header';
@@ -67,15 +68,15 @@ export default function UsersIndex({ users, requests, filters }: { users: Pagina
                         <Dialog open={open} onOpenChange={setOpen}>
                             <DialogTrigger asChild>
                                 <Button>
-                                    <UserPlus className="size-4" /> Add FMDQ user
+                                    <UserPlus className="size-4" /> Add FMDQ User
                                 </Button>
                             </DialogTrigger>
                             <DialogContent>
                                 <form onSubmit={submit} className="space-y-4">
                                     <DialogHeader>
-                                        <DialogTitle>Add FMDQ staff user</DialogTitle>
+                                        <DialogTitle>Add FMDQ Staff User</DialogTitle>
                                     </DialogHeader>
-                                    <TextField label="Full name" required value={form.data.name} onChange={(v) => form.setData('name', v)} error={form.errors.name} />
+                                    <TextField label="Full Name" required value={form.data.name} onChange={(v) => form.setData('name', v)} error={form.errors.name} />
                                     <TextField label="Email" type="email" required value={form.data.email} onChange={(v) => form.setData('email', v)} error={form.errors.email} />
                                     <SelectField
                                         label="Role"
@@ -90,7 +91,7 @@ export default function UsersIndex({ users, requests, filters }: { users: Pagina
                                     />
                                     <DialogFooter>
                                         <Button type="submit" disabled={form.processing}>
-                                            Submit for approval
+                                            Submit for Approval
                                         </Button>
                                     </DialogFooter>
                                 </form>
@@ -113,8 +114,8 @@ export default function UsersIndex({ users, requests, filters }: { users: Pagina
                                     </div>
                                     {r.can_review ? (
                                         <div className="flex gap-2">
-                                            <DecisionDialog href={route('admin.user-requests.reject', r.id)} title="Reject this change" trigger="Reject" triggerVariant="outline" triggerSize="sm" reasonField="comment" reasonRequired destructive confirmLabel="Reject" />
-                                            <DecisionDialog href={route('admin.user-requests.approve', r.id)} title="Approve this change" trigger="Approve" triggerSize="sm" confirmLabel="Approve" />
+                                            <DecisionDialog href={route('admin.user-requests.reject', r.id)} title="Reject This Change" trigger="Reject" triggerVariant="outline" triggerSize="sm" reasonField="comment" reasonRequired destructive confirmLabel="Reject" />
+                                            <DecisionDialog href={route('admin.user-requests.approve', r.id)} title="Approve This Change" trigger="Approve" triggerSize="sm" confirmLabel="Approve" />
                                         </div>
                                     ) : (
                                         <span className="text-muted-foreground text-xs">Waiting for another admin</span>
@@ -167,7 +168,15 @@ export default function UsersIndex({ users, requests, filters }: { users: Pagina
                                         </td>
                                         <td className="px-4 py-3 text-right">
                                             {u.status !== 'pending' && (
-                                                <Button size="sm" variant="outline" onClick={() => router.post(route('admin.users.status', u.id), {}, { preserveScroll: true })}>
+                                                <Button size="sm" variant="outline" onClick={async () => {
+                                                        const enabling = u.status === 'disabled';
+                                                        const confirmed = await confirmSubmit({
+                                                            title: `${enabling ? 'Enable' : 'Disable'} ${u.name}?`,
+                                                            text: enabling ? `${u.name} will be able to sign in again.` : `${u.name} will be signed out and unable to sign in until enabled again.`,
+                                                            confirmText: `Yes, ${enabling ? 'Enable' : 'Disable'}`,
+                                                        });
+                                                        if (confirmed) router.post(route('admin.users.status', u.id), {}, { preserveScroll: true });
+                                                    }}>
                                                     {u.status === 'disabled' ? 'Enable' : 'Disable'}
                                                 </Button>
                                             )}

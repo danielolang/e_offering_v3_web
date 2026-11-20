@@ -25,7 +25,7 @@ export default function TspOffers({ offers, filters }: { offers: Paginated<Offer
                         auth.user.access_level === 'inputter' && (
                             <Button asChild>
                                 <Link href={route('tsp.offers.create')}>
-                                    <FilePlus2 className="size-4" /> Create offer
+                                    <FilePlus2 className="size-4" /> Create Offer
                                 </Link>
                             </Button>
                         )
@@ -87,7 +87,7 @@ export default function TspOffers({ offers, filters }: { offers: Paginated<Offer
                                 {offers.data.length === 0 && (
                                     <tr>
                                         <td colSpan={7} className="text-muted-foreground px-4 py-10 text-center">
-                                            No offers yet.
+                                            No available data
                                         </td>
                                     </tr>
                                 )}

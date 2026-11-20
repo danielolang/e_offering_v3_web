@@ -1,3 +1,4 @@
+import { confirmSubmit } from '@/lib/alert';
 import { DecisionDialog } from '@/components/decision-dialog';
 import { AmendmentList, DocumentsPanel, OfferFacts, OfferHistory, type OfferDetailProps, PartiesPanel, ReturnedBanner, WorkflowTimeline } from '@/components/offers/offer-detail';
 import { PageHeader } from '@/components/page-header';
@@ -49,7 +50,7 @@ export default function AdminOfferShow(props: OfferDetailProps & { notes: OfferN
                             <>
                                 <DecisionDialog
                                     href={route('admin.offers.review', offer.id)}
-                                    title="Return offer to the TSP/RM"
+                                    title="Return Offer to the TSP/RM"
                                     trigger="Return"
                                     triggerVariant="outline"
                                     data={{ approve: false }}
@@ -59,12 +60,10 @@ export default function AdminOfferShow(props: OfferDetailProps & { notes: OfferN
                                 />
                                 <DecisionDialog
                                     href={route('admin.offers.review', offer.id)}
-                                    title="Approve offer"
+                                    title="Approve Offer"
                                     description="The TSP/RM is notified and can launch the offer."
                                     trigger="Approve"
                                     data={{ approve: true }}
-                                    reasonField="reason"
-                                    reasonLabel="Note (optional)"
                                 />
                             </>
                         )
@@ -72,7 +71,7 @@ export default function AdminOfferShow(props: OfferDetailProps & { notes: OfferN
                 />
                 <ReturnedBanner offer={offer} />
                 <div className="grid gap-4 sm:grid-cols-3">
-                    <StatCard variant="navy" label="Offer size" value={formatCompact(Number(offer.offer_size))} hint={formatMoney(offer.offer_size)} />
+                    <StatCard variant="navy" label="Offer size" value={formatMoney(Number(offer.offer_size))} hint={formatMoney(offer.offer_size)} />
                     <StatCard variant="gold" label="Bids" value={props.bidStats.count} />
                     <StatCard variant="navy" label="Total subscribed" value={formatCompact(props.bidStats.total)} />
                 </div>
@@ -102,8 +101,9 @@ export default function AdminOfferShow(props: OfferDetailProps & { notes: OfferN
                 <Section title="Commitment notes" description="Internal notes for FMDQ admins only.">
                     <form
                         className="space-y-3"
-                        onSubmit={(e) => {
+                        onSubmit={async (e) => {
                             e.preventDefault();
+                            if (!(await confirmSubmit({ title: 'Add This Note?', text: 'The note is saved to the offer for FMDQ admins only.', confirmText: 'Yes, Add Note' }))) return;
                             noteForm.post(route('admin.offers.notes', offer.id), { preserveScroll: true, onSuccess: () => noteForm.reset() });
                         }}
                     >
@@ -114,7 +114,7 @@ export default function AdminOfferShow(props: OfferDetailProps & { notes: OfferN
                             <InputError message={noteForm.errors.body} />
                         </div>
                         <Button type="submit" disabled={noteForm.processing}>
-                            Save note
+                            Save Note
                         </Button>
                     </form>
                     <ul className="mt-5 divide-y border-t">

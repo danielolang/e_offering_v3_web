@@ -20,7 +20,7 @@ export default function ReportsIndex({ offers }: { offers: Offer[] }) {
                     description="Book-building analytics, allotment summaries and downloadable reports."
                     actions={
                         <Button variant="outline" asChild>
-                            <Link href={route('tsp.reports.exceptions')}>Exception report</Link>
+                            <Link href={route('tsp.reports.exceptions')}>Exception Report</Link>
                         </Button>
                     }
                 />
@@ -61,7 +61,7 @@ export default function ReportsIndex({ offers }: { offers: Offer[] }) {
                                 sortable: false,
                                 cell: (o) => (
                                     <Button size="sm" asChild>
-                                        <Link href={route('tsp.reports.show', o.id)}>View report</Link>
+                                        <Link href={route('tsp.reports.show', o.id)}>View Report</Link>
                                     </Button>
                                 ),
                             },

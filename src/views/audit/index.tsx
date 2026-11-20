@@ -3,6 +3,7 @@ import { Pagination } from '@/components/pagination';
 import { SearchForm } from '@/components/search-form';
 import { Page, Section } from '@/components/section';
 import { Button } from '@/components/ui/button';
+import { DateTimePicker } from '@/components/ui/date-time-picker';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import { formatDateTime } from '@/lib/format';
@@ -63,9 +64,9 @@ export default function AuditIndex({
                             ))}
                         </select>
                         <div className="flex items-center gap-2">
-                            <Input type="date" aria-label="From" value={filters.from ?? ''} onChange={(e) => apply({ from: e.target.value || undefined })} />
+                            <DateTimePicker withTime={false} aria-label="From" placeholder="From" className="w-44" value={filters.from ?? ''} onChange={(v) => apply({ from: v || undefined })} />
                             <span className="text-muted-foreground text-sm">to</span>
-                            <Input type="date" aria-label="To" value={filters.to ?? ''} onChange={(e) => apply({ to: e.target.value || undefined })} />
+                            <DateTimePicker withTime={false} aria-label="To" placeholder="To" className="w-44" value={filters.to ?? ''} onChange={(v) => apply({ to: v || undefined })} />
                         </div>
                     </div>
                     <div className="overflow-x-auto">
