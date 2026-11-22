@@ -4,7 +4,7 @@ import { formatDate, formatDateTime, formatMoney } from '@/lib/format';
 import { paymentMethod } from '@/lib/labels';
 import { type FeeInvoice } from '@/types';
 import { Head, Link } from '@/lib/app';
-import { ArrowLeft, Printer } from 'lucide-react';
+import { ArrowLeft, Download, Printer } from 'lucide-react';
 
 /** Printable platform-fee receipt (CR s3.2 step 9). "Print" saves it as a PDF. */
 export default function Receipt({ invoice }: { invoice: FeeInvoice }) {
@@ -21,15 +21,28 @@ export default function Receipt({ invoice }: { invoice: FeeInvoice }) {
     return (
         <div className="bg-muted/40 min-h-svh p-6 print:bg-white print:p-0">
             <Head title={`Receipt ${invoice.reference}`} />
-            <div className="mx-auto mb-4 flex max-w-2xl justify-between print:hidden">
+            <div className="mx-auto mb-4 flex max-w-2xl justify-between items-center print:hidden">
                 <Button variant="outline" asChild>
                     <Link href={route('tsp.registration.show')}>
                         <ArrowLeft className="size-4" /> Back
                     </Link>
                 </Button>
-                <Button onClick={() => window.print()}>
-                    <Printer className="size-4" /> Print / Save as PDF
-                </Button>
+                <div className="flex items-center gap-2">
+                    {(invoice.receipt_pdf_url || invoice.gateway_reference) && (
+                        <Button variant="outline" asChild>
+                            <a
+                                href={invoice.receipt_pdf_url || route('tsp.registration.receipt-pdf', invoice.id)}
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                <Download className="size-4" /> Download Official Receipt (PDF)
+                            </a>
+                        </Button>
+                    )}
+                    <Button onClick={() => window.print()}>
+                        <Printer className="size-4" /> Print / Save as PDF
+                    </Button>
+                </div>
             </div>
             <div className="mx-auto max-w-2xl overflow-hidden rounded-xl border bg-white text-[#1f2937] shadow-sm print:border-0 print:shadow-none">
                 <div className="flex items-center justify-between border-b-4 border-[#c79d51] p-8">

@@ -252,8 +252,12 @@ export default function AdminSettings({
                                 <TextField
                                     label="Account Number"
                                     value={form.data.platform_fee_account_number}
-                                    onChange={(v) => form.setData('platform_fee_account_number', v)}
+                                    onChange={(v) => form.setData('platform_fee_account_number', v.replace(/\D/g, '').slice(0, 10))}
                                     error={form.errors.platform_fee_account_number}
+                                    maxLength={10}
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
+                                    placeholder="10-digit account number"
                                 />
                             </div>
                         </div>

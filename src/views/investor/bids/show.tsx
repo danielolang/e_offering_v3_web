@@ -10,7 +10,7 @@ import { formatDateTime, formatMoney, formatNumber, formatRate } from '@/lib/for
 import { allotmentStatus, bidStatus, paymentStatus } from '@/lib/labels';
 import { type Bid } from '@/types';
 import { Head, Link, useForm } from '@/lib/app';
-import { CreditCard, Info, LoaderCircle, PencilLine, Printer } from 'lucide-react';
+import { CreditCard, FileText, Info, LoaderCircle, PencilLine, Printer, ReceiptText } from 'lucide-react';
 import { CommitmentSheet, type CommitmentValues } from '@/components/bids/commitment-sheet';
 
 interface Props {
@@ -160,7 +160,43 @@ export default function BidShow({
                                         ) : (
                                             'Not uploaded'
                                         )
-                                    }
+                                    },
+                                    ...(bid.invoice_pdf_url || bid.payment_gateway_reference
+                                        ? [
+                                              {
+                                                  label: 'Payment Invoice',
+                                                  value: (
+                                                      <a
+                                                          href={bid.invoice_pdf_url || route('investor.bids.invoice-pdf', bid.id)}
+                                                          target="_blank"
+                                                          rel="noreferrer"
+                                                          className="inline-flex items-center gap-1.5 font-medium text-navy hover:underline dark:text-blue-400"
+                                                      >
+                                                          <FileText className="size-3.5" />
+                                                          Download Invoice (PDF)
+                                                      </a>
+                                                  )
+                                              }
+                                          ]
+                                        : []),
+                                    ...(bid.payment_status === 'paid' && (bid.receipt_pdf_url || bid.payment_gateway_reference)
+                                        ? [
+                                              {
+                                                  label: 'Payment Receipt',
+                                                  value: (
+                                                      <a
+                                                          href={bid.receipt_pdf_url || route('investor.bids.receipt-pdf', bid.id)}
+                                                          target="_blank"
+                                                          rel="noreferrer"
+                                                          className="inline-flex items-center gap-1.5 font-medium text-emerald-700 hover:underline dark:text-emerald-400"
+                                                      >
+                                                          <ReceiptText className="size-3.5" />
+                                                          Download Receipt (PDF)
+                                                      </a>
+                                                  )
+                                              }
+                                          ]
+                                        : [])
                                 ]}
                             />
                             {bid.payment_status === 'invalid' && bid.payment_comment && (

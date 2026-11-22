@@ -716,7 +716,7 @@ export default function OfferForm({ offer, documents = [], options, sponsors, de
                                         inputMode="numeric"
                                         maxLength={10}
                                         value={form.data.bank_account_number}
-                                        onChange={(v) => form.setData('bank_account_number', v.replace(/\D/g, ''))}
+                                        onChange={(v) => form.setData('bank_account_number', v.replace(/\D/g, '').slice(0, 10))}
                                         error={errors.bank_account_number}
                                     />
                                 </div>
@@ -783,7 +783,7 @@ export default function OfferForm({ offer, documents = [], options, sponsors, de
                                                         inputMode="numeric"
                                                         maxLength={10}
                                                         value={a.bank_account_number}
-                                                        onChange={(e) => setAgent(i, { bank_account_number: e.target.value.replace(/\D/g, '') })}
+                                                        onChange={(e) => setAgent(i, { bank_account_number: e.target.value.replace(/\D/g, '').slice(0, 10) })}
                                                         aria-label="Account number"
                                                     />
                                                     <Button
