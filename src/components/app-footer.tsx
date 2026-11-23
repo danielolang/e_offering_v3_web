@@ -37,7 +37,7 @@ export function AppFooter() {
                 </div>
             </div>
             <div className="bg-navy-dark px-4 py-2.5 text-center text-xs text-[#e3c87a] italic">
-                FMDQ Depository Limited is registered and regulated by the Securities and Exchange Commission, Nigeria
+                {/* FMDQ Depository Limited is registered and regulated by the Securities and Exchange Commission, Nigeria */}
             </div>
         </footer>
     );

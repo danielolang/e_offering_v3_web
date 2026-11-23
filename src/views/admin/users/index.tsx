@@ -1,4 +1,3 @@
-import { confirmSubmit } from '@/lib/alert';
 import { SelectField, TextField } from '@/components/form-field';
 import { DecisionDialog } from '@/components/decision-dialog';
 import { PageHeader } from '@/components/page-header';
@@ -10,8 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
 import { formatDateTime } from '@/lib/format';
-import { type Paginated } from '@/types';
-import { Head, router, useForm } from '@/lib/app';
+import { type Paginated, type SharedData } from '@/types';
+import { Head, router, useForm, usePage } from '@/lib/app';
 import { UserPlus } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 
@@ -33,7 +32,7 @@ const types = [
     ['csd', 'CSD'],
     ['tsp', 'TSP/RM'],
     ['investor', 'Investors'],
-    ['regulator', 'Regulators'],
+    ['regulator', 'Regulators']
 ];
 
 interface ChangeRequest {
@@ -41,6 +40,8 @@ interface ChangeRequest {
     action: string;
     target_name: string;
     target_email: string;
+    target_role: string | null;
+    note: string | null;
     created_at: string;
     requester: string | null;
     can_review: boolean;
@@ -48,9 +49,24 @@ interface ChangeRequest {
 
 const actionLabel: Record<string, string> = { create: 'New staff account', disable: 'Disable user', enable: 'Enable user' };
 
-export default function UsersIndex({ users, requests, filters }: { users: Paginated<Row>; requests: ChangeRequest[]; filters: { type?: string; search?: string } }) {
+/**
+ * FMDQ staff maker-checker: an Inputter adds staff and asks to disable or enable users (with a
+ * note); an Authoriser approves or rejects those requests.
+ */
+export default function UsersIndex({
+    users,
+    requests,
+    filters
+}: {
+    users: Paginated<Row>;
+    requests: ChangeRequest[];
+    filters: { type?: string; search?: string };
+}) {
+    const { auth } = usePage<SharedData>().props;
+    const isInputter = auth.user.access_level === 'inputter';
+    const isAuthoriser = auth.user.access_level === 'authoriser';
     const [open, setOpen] = useState(false);
-    const form = useForm({ name: '', email: '', type: 'admin' });
+    const form = useForm({ name: '', email: '', type: 'admin', access_level: 'inputter' });
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
@@ -65,60 +81,119 @@ export default function UsersIndex({ users, requests, filters }: { users: Pagina
                     title="Users"
                     description="Everyone with access to the platform. Add FMDQ staff here; external users join through onboarding."
                     actions={
-                        <Dialog open={open} onOpenChange={setOpen}>
-                            <DialogTrigger asChild>
-                                <Button>
-                                    <UserPlus className="size-4" /> Add FMDQ User
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <form onSubmit={submit} className="space-y-4">
-                                    <DialogHeader>
-                                        <DialogTitle>Add FMDQ Staff User</DialogTitle>
-                                    </DialogHeader>
-                                    <TextField label="Full Name" required value={form.data.name} onChange={(v) => form.setData('name', v)} error={form.errors.name} />
-                                    <TextField label="Email" type="email" required value={form.data.email} onChange={(v) => form.setData('email', v)} error={form.errors.email} />
-                                    <SelectField
-                                        label="Role"
-                                        required
-                                        value={form.data.type}
-                                        onChange={(v) => form.setData('type', v)}
-                                        options={[
-                                            { value: 'admin', label: 'FMDQ Admin' },
-                                            { value: 'csd', label: 'CSD/FMDQ Depository' },
-                                        ]}
-                                        error={form.errors.type}
-                                    />
-                                    <DialogFooter>
-                                        <Button type="submit" disabled={form.processing}>
-                                            Submit for Approval
-                                        </Button>
-                                    </DialogFooter>
-                                </form>
-                            </DialogContent>
-                        </Dialog>
+                        isInputter && (
+                            <Dialog open={open} onOpenChange={setOpen}>
+                                <DialogTrigger asChild>
+                                    <Button>
+                                        <UserPlus className="size-4" /> Add FMDQ User
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <form onSubmit={submit} className="space-y-4">
+                                        <DialogHeader>
+                                            <DialogTitle>Add FMDQ Staff User</DialogTitle>
+                                        </DialogHeader>
+                                        <TextField
+                                            label="Full Name"
+                                            required
+                                            value={form.data.name}
+                                            onChange={(v) => form.setData('name', v)}
+                                            error={form.errors.name}
+                                        />
+                                        <TextField
+                                            label="Email"
+                                            type="email"
+                                            required
+                                            value={form.data.email}
+                                            onChange={(v) => form.setData('email', v)}
+                                            error={form.errors.email}
+                                        />
+                                        <SelectField
+                                            label="Role"
+                                            required
+                                            value={form.data.type}
+                                            onChange={(v) => form.setData('type', v)}
+                                            options={[
+                                                { value: 'admin', label: 'FMDQ Admin' },
+                                                { value: 'csd', label: 'CSD/FMDQ Depository' }
+                                            ]}
+                                            error={form.errors.type}
+                                        />
+                                        <SelectField
+                                            label="Access Level"
+                                            required
+                                            value={form.data.access_level}
+                                            onChange={(v) => form.setData('access_level', v)}
+                                            options={[
+                                                { value: 'inputter', label: 'Inputter: raises requests' },
+                                                { value: 'authoriser', label: 'Authoriser: approves requests' }
+                                            ]}
+                                            error={form.errors.access_level}
+                                        />
+                                        <DialogFooter>
+                                            <Button type="submit" disabled={form.processing}>
+                                                Submit for Approval
+                                            </Button>
+                                        </DialogFooter>
+                                    </form>
+                                </DialogContent>
+                            </Dialog>
+                        )
                     }
                 />
                 {requests.length > 0 && (
-                    <Section title="Waiting for approval" description="A second admin must approve each staff account change." flush>
+                    <Section
+                        title="Waiting for approval"
+                        description="An Authoriser must approve each staff account change raised by an Inputter."
+                        flush
+                    >
                         <ul className="divide-y">
                             {requests.map((r) => (
-                                <li key={r.id} className="flex flex-col gap-3 px-5 py-4 text-sm sm:flex-row sm:items-center sm:justify-between">
-                                    <div>
+                                <li
+                                    key={r.id}
+                                    className="flex flex-col gap-3 px-5 py-4 text-sm sm:flex-row sm:items-center sm:justify-between"
+                                >
+                                    <div className="min-w-0">
                                         <p className="font-medium">
                                             {actionLabel[r.action] ?? r.action}: {r.target_name}
+                                            {r.target_role && <span className="text-muted-foreground font-normal"> · {r.target_role}</span>}
                                         </p>
                                         <p className="text-muted-foreground text-xs">
                                             {r.target_email} · requested by {r.requester} · {formatDateTime(r.created_at)}
                                         </p>
+                                        {r.note && (
+                                            <p className="bg-muted/50 mt-2 rounded-md border px-3 py-2 text-xs whitespace-pre-line">
+                                                <span className="font-medium">Note: </span>
+                                                {r.note}
+                                            </p>
+                                        )}
                                     </div>
                                     {r.can_review ? (
-                                        <div className="flex gap-2">
-                                            <DecisionDialog href={route('admin.user-requests.reject', r.id)} title="Reject This Change" trigger="Reject" triggerVariant="outline" triggerSize="sm" reasonField="comment" reasonRequired destructive confirmLabel="Reject" />
-                                            <DecisionDialog href={route('admin.user-requests.approve', r.id)} title="Approve This Change" trigger="Approve" triggerSize="sm" confirmLabel="Approve" />
+                                        <div className="flex shrink-0 gap-2">
+                                            <DecisionDialog
+                                                href={route('admin.user-requests.reject', r.id)}
+                                                title="Reject This Change"
+                                                trigger="Reject"
+                                                triggerVariant="outline"
+                                                triggerSize="sm"
+                                                reasonField="comment"
+                                                reasonRequired
+                                                destructive
+                                                confirmLabel="Reject"
+                                            />
+                                            <DecisionDialog
+                                                href={route('admin.user-requests.approve', r.id)}
+                                                title="Approve This Change"
+                                                description={r.note ? <>Inputter's note: {r.note}</> : undefined}
+                                                trigger="Approve"
+                                                triggerSize="sm"
+                                                confirmLabel="Approve"
+                                            />
                                         </div>
                                     ) : (
-                                        <span className="text-muted-foreground text-xs">Waiting for another admin</span>
+                                        <span className="text-muted-foreground shrink-0 text-xs">
+                                            {isAuthoriser ? 'You raised this request' : 'Waiting for an Authoriser'}
+                                        </span>
                                     )}
                                 </li>
                             ))}
@@ -129,7 +204,13 @@ export default function UsersIndex({ users, requests, filters }: { users: Pagina
                     <div className="flex flex-col gap-3 border-b p-4 md:flex-row md:items-center md:justify-between">
                         <select
                             value={filters.type ?? ''}
-                            onChange={(e) => router.get(route('admin.users.index'), { ...filters, type: e.target.value || undefined }, { preserveState: true })}
+                            onChange={(e) =>
+                                router.get(
+                                    route('admin.users.index'),
+                                    { ...filters, type: e.target.value || undefined },
+                                    { preserveState: true }
+                                )
+                            }
                             aria-label="User type"
                             className="border-input bg-background h-9 rounded-md border px-2 text-sm"
                         >
@@ -139,7 +220,12 @@ export default function UsersIndex({ users, requests, filters }: { users: Pagina
                                 </option>
                             ))}
                         </select>
-                        <SearchForm url={route('admin.users.index')} initial={filters.search ?? ''} extra={{ type: filters.type }} placeholder="Name or email" />
+                        <SearchForm
+                            url={route('admin.users.index')}
+                            initial={filters.search ?? ''}
+                            extra={{ type: filters.type }}
+                            placeholder="Name or email"
+                        />
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
@@ -162,24 +248,47 @@ export default function UsersIndex({ users, requests, filters }: { users: Pagina
                                         </td>
                                         <td className="px-4 py-3">{u.role_label}</td>
                                         <td className="px-4 py-3">{u.institution ?? '—'}</td>
-                                        <td className="px-4 py-3 whitespace-nowrap">{u.last_login_at ? formatDateTime(u.last_login_at) : 'Never'}</td>
+                                        <td className="px-4 py-3 whitespace-nowrap">
+                                            {u.last_login_at ? formatDateTime(u.last_login_at) : 'Never'}
+                                        </td>
                                         <td className="px-4 py-3">
-                                            <ToneBadge tone={u.status === 'active' ? 'success' : u.status === 'pending' ? 'warning' : 'neutral'}>{u.status}</ToneBadge>
+                                            <ToneBadge
+                                                tone={u.status === 'active' ? 'success' : u.status === 'pending' ? 'warning' : 'neutral'}
+                                            >
+                                                {u.status}
+                                            </ToneBadge>
                                         </td>
                                         <td className="px-4 py-3 text-right">
-                                            {u.status !== 'pending' && (
-                                                <Button size="sm" variant="outline" onClick={async () => {
-                                                        const enabling = u.status === 'disabled';
-                                                        const confirmed = await confirmSubmit({
-                                                            title: `${enabling ? 'Enable' : 'Disable'} ${u.name}?`,
-                                                            text: enabling ? `${u.name} will be able to sign in again.` : `${u.name} will be signed out and unable to sign in until enabled again.`,
-                                                            confirmText: `Yes, ${enabling ? 'Enable' : 'Disable'}`,
-                                                        });
-                                                        if (confirmed) router.post(route('admin.users.status', u.id), {}, { preserveScroll: true });
-                                                    }}>
-                                                    {u.status === 'disabled' ? 'Enable' : 'Disable'}
-                                                </Button>
-                                            )}
+                                            {isInputter &&
+                                                u.status !== 'pending' &&
+                                                u.id !== auth.user.id &&
+                                                (u.status === 'disabled' ? (
+                                                    <DecisionDialog
+                                                        href={route('admin.users.status', u.id)}
+                                                        title={`Enable ${u.name}?`}
+                                                        description={`${u.name} will be able to sign in again once an Authoriser approves.`}
+                                                        trigger="Enable"
+                                                        triggerVariant="outline"
+                                                        triggerSize="sm"
+                                                        reasonField="note"
+                                                        reasonLabel="Note for the Authoriser (optional)"
+                                                        confirmLabel="Submit for Approval"
+                                                    />
+                                                ) : (
+                                                    <DecisionDialog
+                                                        href={route('admin.users.status', u.id)}
+                                                        title={`Disable ${u.name}?`}
+                                                        description={`Once an Authoriser approves, ${u.name} will be signed out and unable to sign in until enabled again.`}
+                                                        trigger="Disable"
+                                                        triggerVariant="outline"
+                                                        triggerSize="sm"
+                                                        reasonField="note"
+                                                        reasonLabel="Note for the Authoriser"
+                                                        reasonRequired
+                                                        destructive
+                                                        confirmLabel="Submit for Approval"
+                                                    />
+                                                ))}
                                         </td>
                                     </tr>
                                 ))}

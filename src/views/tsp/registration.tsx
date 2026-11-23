@@ -10,7 +10,7 @@ import { feeStatus } from '@/lib/labels';
 import { cn } from '@/lib/utils';
 import { type FeeInvoice, type Institution } from '@/types';
 import { Head, Link, useForm } from '@/lib/app';
-import { CheckCircle2, CreditCard, FileText, Landmark, LoaderCircle, Lock, ReceiptText } from 'lucide-react';
+import { CheckCircle2, Clock, CreditCard, FileText, Landmark, LoaderCircle, Lock, ReceiptText } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 
 interface Props {
@@ -79,6 +79,25 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
                     <div className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-900 dark:bg-rose-950 dark:text-rose-200">
                         Access to the Transaction Sponsor modules is suspended because the annual platform fee was not paid by the due date.
                         It is restored as soon as FMDQ confirms payment.
+                    </div>
+                )}
+                {feeEnabled && invoice?.status === 'pending_review' && (
+                    <div
+                        role="status"
+                        className="flex items-start gap-3 rounded-lg border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-100"
+                    >
+                        <Clock className="mt-0.5 size-5 shrink-0" />
+                        <div className="space-y-1">
+                            <p className="font-semibold">Your application is pending FMDQ confirmation</p>
+                            <p className="text-sky-800 dark:text-sky-200">
+                                We received your proof of payment for {formatMoney(invoice.amount)}
+                                {invoice.paid_at ? ` on ${formatDateTime(invoice.paid_at)}` : ''} (invoice{' '}
+                                <span className="font-mono">{invoice.reference}</span>). FMDQ is reviewing it.
+                                {fullAccess
+                                    ? ' Your current access continues in the meantime.'
+                                    : ' You will get full access to the Transaction Sponsor modules, and an email, once it is confirmed.'}
+                            </p>
+                        </div>
                     </div>
                 )}
                 {fullAccess && (
@@ -185,7 +204,7 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
                                 <TextField
                                     label="Account Number"
                                     required
-                                    placeholder="10-digit NUBAN"
+                                    placeholder=""
                                     maxLength={10}
                                     inputMode="numeric"
                                     pattern="[0-9]*"
@@ -278,7 +297,9 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
                                                 if (!confirmed) return;
                                                 transfer.post(route('tsp.registration.transfer', invoice.id), {
                                                     forceFormData: true,
-                                                    preserveScroll: true
+                                                    preserveScroll: true,
+                                                    // Bring the "pending confirmation" panel into view.
+                                                    onSuccess: () => window.scrollTo({ top: 0, behavior: 'smooth' })
                                                 });
                                             }}
                                             className="space-y-4"

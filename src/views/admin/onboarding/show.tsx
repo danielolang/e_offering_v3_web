@@ -88,7 +88,7 @@ export default function OnboardingShow({
                                         ? `${formatDateTime(institution.reviewed_at)}${reviewer ? ` by ${reviewer}` : ''}`
                                         : null
                                 }
-                            ]}
+                            ].filter((item) => item.value !== null && item.value !== undefined && item.value !== '')}
                         />
                     </Section>
                     <Section title="Document">
