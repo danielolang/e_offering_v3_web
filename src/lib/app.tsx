@@ -215,7 +215,12 @@ function applyResult(path: string, result: any) {
         sessionStorage.setItem('eoffering_retail_verification', JSON.stringify(data));
         app.reload();
     } else if (typeof data.redirect === 'string' && /^https?:/.test(data.redirect)) {
-        window.location.assign(data.redirect);
+        if (data.redirect.includes('/api/')) {
+            const clientRoute = data.redirect.replace(/^https?:\/\/[^/]+.*?\/api\/?/, '/');
+            navigateTo(clientRoute.startsWith('/') ? clientRoute : `/${clientRoute}`);
+        } else {
+            window.location.assign(data.redirect);
+        }
     } else if (typeof data.redirect === 'string') {
         navigateTo(data.redirect);
     } else if (typeof data.url === 'string') {
