@@ -69,7 +69,7 @@ export default function Receipt({ invoice }: { invoice: FeeInvoice }) {
                     </div>
                 </div>
                 <p className="bg-[#1a2744] px-8 py-3 text-center text-xs text-[#e3c87a] italic">
-                    FMDQ Depository Limited is registered and regulated by the Securities and Exchange Commission, Nigeria
+                    {/* FMDQ Depository Limited is registered and regulated by the Securities and Exchange Commission, Nigeria */}
                 </p>
             </div>
         </div>
