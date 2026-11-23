@@ -13,3 +13,4 @@ export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => (
         <IdleLogoutGuard />
     </AppLayoutTemplate>
 );
+//
