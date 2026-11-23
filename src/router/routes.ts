@@ -19,6 +19,7 @@ export const routes: Record<string, string> = {
     "admin.onboarding.index": "/admin/onboarding",
     "admin.onboarding.reject": "/admin/onboarding/{institution}/reject",
     "admin.onboarding.resend": "/admin/onboarding/{institution}/resend",
+    "admin.onboarding.cac": "/admin/onboarding/{institution}/cac",
     "admin.onboarding.show": "/admin/onboarding/{institution}",
     "admin.settings": "/admin/settings",
     "admin.settings.update": "/admin/settings",

@@ -1,4 +1,5 @@
 import { DecisionDialog } from '@/components/decision-dialog';
+import { CacRecord, type CacLookup } from '@/components/onboarding/cac-record';
 import { confirmSubmit } from '@/lib/alert';
 import { PageHeader } from '@/components/page-header';
 import { DetailList, Page, Section } from '@/components/section';
@@ -14,11 +15,14 @@ import { FileText, Send } from 'lucide-react';
 export default function OnboardingShow({
     institution,
     files,
-    reviewer
+    reviewer,
+    cac
 }: {
     institution: Institution & { type_label: string };
     files: { label: string; name?: string | null; url: string }[];
     reviewer: string | null;
+    /** QII / Non-QII only: CAC register searches, newest first. */
+    cac: CacLookup[] | null;
 }) {
     const pending = institution.status === 'pending';
 
@@ -70,7 +74,6 @@ export default function OnboardingShow({
                             items={[
                                 { label: 'Institution Name', value: institution.name },
                                 { label: 'Email', value: institution.email },
-                                { label: 'Phone', value: institution.phone },
                                 { label: 'Registration number', value: institution.registration_number },
                                 { label: 'Address', value: institution.address },
                                 { label: 'Contact person', value: institution.contact_name },
@@ -110,15 +113,17 @@ export default function OnboardingShow({
                     </Section>
                 </div>
 
-                <Section title="Users" flush>
+                {cac && <CacRecord institutionId={institution.id} lookups={cac} />}
+
+                {/* Only TSP users have an Inputter / Authoriser access level; QII / Non-QII list representatives. */}
+                <Section title={institution.type === 'tsp' ? 'Users' : 'Representatives'} flush>
                     <table className="w-full text-sm">
                         <thead className="bg-muted/60 text-muted-foreground text-left text-xs tracking-wide uppercase">
                             <tr>
                                 <th className="w-12 px-4 py-2.5">S/N</th>
                                 <th className="px-4 py-2.5">Name</th>
                                 <th className="px-4 py-2.5">Email</th>
-                                <th className="px-4 py-2.5">Phone</th>
-                                <th className="px-4 py-2.5">Access level</th>
+                                {institution.type === 'tsp' && <th className="px-4 py-2.5">Access Level</th>}
                                 <th className="px-4 py-2.5">Status</th>
                             </tr>
                         </thead>
@@ -128,8 +133,7 @@ export default function OnboardingShow({
                                     <td className="text-muted-foreground px-4 py-3 tabular-nums">{i + 1}</td>
                                     <td className="px-4 py-3">{u.name}</td>
                                     <td className="px-4 py-3">{u.email}</td>
-                                    <td className="px-4 py-3">{u.phone ?? '—'}</td>
-                                    <td className="px-4 py-3 capitalize">{u.access_level ?? '—'}</td>
+                                    {institution.type === 'tsp' && <td className="px-4 py-3 capitalize">{u.access_level ?? '—'}</td>}
                                     <td className="px-4 py-3 capitalize">{u.status}</td>
                                 </tr>
                             ))}

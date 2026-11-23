@@ -1,6 +1,6 @@
 import { Field, FileField, TextField } from '@/components/form-field';
 import { ConsentNotice } from '@/components/onboarding/consent';
-import { defaultUsers, type OnboardUser, UsersEditor, usersErrors } from '@/components/onboarding/users-editor';
+import { defaultRepresentatives, type OnboardUser, UsersEditor, usersErrors } from '@/components/onboarding/users-editor';
 import { Button } from '@/components/ui/button';
 import AuthBrandLayout from '@/layouts/auth/auth-brand-layout';
 import { confirmSubmit } from '@/lib/alert';
@@ -39,7 +39,7 @@ export default function InstitutionalOnboarding() {
         memorandum: null,
         cac_directors: null,
         cac_shareholders: null,
-        users: defaultUsers
+        users: defaultRepresentatives
     });
     const d = form.data;
 
@@ -56,7 +56,7 @@ export default function InstitutionalOnboarding() {
                 certificate: [d.certificate, rules.required('Upload the Certificate of Incorporation.')],
                 consent: [d.consent, rules.accepted(CONSENT)]
             },
-            usersErrors(d.users)
+            usersErrors(d.users, false)
         )
     );
 
@@ -70,7 +70,7 @@ export default function InstitutionalOnboarding() {
         if (!live.validateAll()) return;
         const confirmed = await confirmSubmit({
             title: 'Submit Onboarding Request?',
-            text: `${d.name.trim()} (${d.category === 'qii' ? 'QII' : 'Non-QII'}) and its ${d.users.length} representatives will be sent to FMDQ for review. You cannot edit the request after submitting.`
+            text: `${d.name.trim()} (${d.category === 'qii' ? 'QII' : 'Non-QII'}) and its ${d.users.length} representative${d.users.length === 1 ? "" : "s"} will be sent to FMDQ for review. You cannot edit the request after submitting.`
         });
         if (confirmed) form.post(route('onboarding.institutional.store'), { forceFormData: true });
     };
@@ -177,7 +177,7 @@ export default function InstitutionalOnboarding() {
                 </div>
                 <fieldset className="space-y-2">
                     <legend className="text-navy text-center text-sm font-semibold uppercase dark:text-white">Representatives</legend>
-                    <UsersEditor users={d.users} onChange={(u) => form.setData('users', u)} errors={live.errors} onBlur={live.touch} />
+                    <UsersEditor accessLevels={false} users={d.users} onChange={(u) => form.setData('users', u)} errors={live.errors} onBlur={live.touch} />
                 </fieldset>
                 <ConsentNotice
                     checked={d.consent}
