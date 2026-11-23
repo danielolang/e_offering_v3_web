@@ -125,8 +125,9 @@ export async function api(method: string, path: string, body?: FormData | Record
  */
 export function installDownloadLinks(): () => void {
     const isDownload = (url: URL) =>
-        url.origin === window.location.origin &&
-        (/\/(export|download|summary|agents-template)$/.test(url.pathname) || url.searchParams.has('export'));
+        (url.origin === window.location.origin &&
+            (/\/(export|download|summary|agents-template|invoice-pdf|receipt-pdf)$/.test(url.pathname) || url.searchParams.has('export'))) ||
+        (/\/(invoice-pdf|receipt-pdf)$/.test(url.pathname) && !url.searchParams.has('signature'));
 
     const onClick = async (event: MouseEvent) => {
         const anchor = (event.target as Element).closest?.('a[href]') as HTMLAnchorElement | null;
@@ -365,7 +366,13 @@ export function useForm<T extends Record<string, any>>(initial: T) {
         processing,
         recentlySuccessful,
         reset,
-        clearErrors: () => setErrors({}),
+        clearErrors: (...fields: string[]) =>
+            setErrors((e) => {
+                if (!fields.length) return {};
+                const next = { ...e };
+                fields.forEach((f) => delete next[f]);
+                return next;
+            }),
         setError: (field: string, message: string) => setErrors((e) => ({ ...e, [field]: message })),
         transform: (fn: (values: T) => Record<string, unknown>) => {
             transformer.current = fn;

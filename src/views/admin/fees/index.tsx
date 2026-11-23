@@ -9,6 +9,7 @@ import { feeStatus, paymentMethod } from '@/lib/labels';
 import { cn } from '@/lib/utils';
 import { type FeeInvoice, type Paginated } from '@/types';
 import { Head, Link, router } from '@/lib/app';
+import { FileText, ReceiptText } from 'lucide-react';
 
 /** CR s3.2 step 8: FMDQ Admin reviews and approves the TSP/RM platform fee payment. */
 export default function FeesIndex({ invoices, filters, feeEnabled }: { invoices: Paginated<FeeInvoice>; filters: { status: string }; feeEnabled: boolean }) {
@@ -62,6 +63,26 @@ export default function FeesIndex({ invoices, filters, feeEnabled }: { invoices:
                                         <td className="px-4 py-3 font-mono text-xs">
                                             {i.reference}
                                             {i.gateway_reference && <span className="text-muted-foreground block">Ref: {i.gateway_reference}</span>}
+                                            {(i.invoice_pdf_url || i.gateway_reference) && (
+                                                <a
+                                                    href={i.invoice_pdf_url || route('admin.fees.invoice-pdf', i.id)}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="text-navy hover:underline text-xs mt-1 font-sans inline-flex items-center gap-1 dark:text-blue-400"
+                                                >
+                                                    <FileText className="size-3" /> Invoice PDF
+                                                </a>
+                                            )}
+                                            {i.status === 'paid' && (i.receipt_pdf_url || i.gateway_reference) && (
+                                                <a
+                                                    href={i.receipt_pdf_url || route('admin.fees.receipt-pdf', i.id)}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="text-emerald-700 hover:underline text-xs mt-1 font-sans inline-flex items-center gap-1 dark:text-emerald-400 block"
+                                                >
+                                                    <ReceiptText className="size-3" /> Receipt PDF
+                                                </a>
+                                            )}
                                         </td>
                                         <td className="px-4 py-3">{i.institution?.name}</td>
                                         <td className="px-4 py-3 whitespace-nowrap">

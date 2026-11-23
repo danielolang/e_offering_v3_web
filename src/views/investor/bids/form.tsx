@@ -715,7 +715,7 @@ export default function BidForm({
                                     inputMode="numeric"
                                     maxLength={10}
                                     value={d.bank_account_number}
-                                    onChange={(v) => form.setData('bank_account_number', v.replace(/\D/g, ''))}
+                                    onChange={(v) => form.setData('bank_account_number', v.replace(/\D/g, '').slice(0, 10))}
                                     error={errors.bank_account_number}
                                 />
                                 <TextField

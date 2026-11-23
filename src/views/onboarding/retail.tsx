@@ -233,7 +233,7 @@ export default function RetailOnboarding({ verified, usesIgree }: { verified: Ve
                             inputMode="numeric"
                             maxLength={10}
                             value={c.bank_account_number}
-                            onChange={(val) => complete.setData('bank_account_number', val.replace(/\D/g, ''))}
+                            onChange={(val) => complete.setData('bank_account_number', val.replace(/\D/g, '').slice(0, 10))}
                             {...completeLive.bind('bank_account_number')}
                         />
                         <TextField

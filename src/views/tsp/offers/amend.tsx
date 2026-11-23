@@ -271,7 +271,7 @@ export default function AmendOffer({ offer, dayCounts, activeBidders }: { offer:
                                     inputMode="numeric"
                                     maxLength={10}
                                     value={form.data.changes.bank_account_number}
-                                    onChange={(v) => set('bank_account_number', v.replace(/\D/g, ''))}
+                                    onChange={(v) => set('bank_account_number', v.replace(/\D/g, '').slice(0, 10))}
                                     error={errors['changes.bank_account_number']}
                                 />
                             </div>

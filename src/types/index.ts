@@ -255,6 +255,9 @@ export interface Bid {
     payee_account_number: string | null;
     payment_status: 'pending' | 'paid' | 'invalid';
     payment_reference: string | null;
+    payment_gateway_reference?: string | null;
+    invoice_pdf_url?: string | null;
+    receipt_pdf_url?: string | null;
     payment_comment: string | null;
     /** Legacy Standardised Commitment Form details (participant, allotment, orders, files). */
     commitment?: (Record<string, unknown> & { orders?: { order: number; amount: string; rate: string | null }[] }) | null;
@@ -346,6 +349,8 @@ export interface FeeInvoice {
     reviewed_at: string | null;
     review_comment: string | null;
     evidence_url?: string | null;
+    invoice_pdf_url?: string | null;
+    receipt_pdf_url?: string | null;
     institution?: Institution;
     reviewer?: { id: number; name: string } | null;
 }

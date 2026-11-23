@@ -10,7 +10,7 @@ import { feeStatus } from '@/lib/labels';
 import { cn } from '@/lib/utils';
 import { type FeeInvoice, type Institution } from '@/types';
 import { Head, Link, useForm } from '@/lib/app';
-import { CheckCircle2, CreditCard, Landmark, LoaderCircle, Lock, ReceiptText } from 'lucide-react';
+import { CheckCircle2, CreditCard, FileText, Landmark, LoaderCircle, Lock, ReceiptText } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 
 interface Props {
@@ -46,6 +46,10 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
 
     const saveDetails = async (e: FormEvent) => {
         e.preventDefault();
+        if (details.data.bank_account_number && !/^\d{10}$/.test(details.data.bank_account_number)) {
+            details.setError('bank_account_number', 'The account number must be exactly 10 digits.');
+            return;
+        }
         if (
             !(await confirmSubmit({
                 title: 'Save Registration Details?',
@@ -126,9 +130,9 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <TextField
                                     label="Registered Name"
-                                    required
+                                    readOnly
                                     value={details.data.registered_name}
-                                    onChange={(v) => details.setData('registered_name', v)}
+                                    onChange={() => {}}
                                     error={details.errors.registered_name}
                                 />
                                 <TextField
@@ -182,8 +186,11 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
                                     label="Account Number"
                                     required
                                     placeholder="10-digit NUBAN"
+                                    maxLength={10}
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
                                     value={details.data.bank_account_number}
-                                    onChange={(v) => details.setData('bank_account_number', v)}
+                                    onChange={(v) => details.setData('bank_account_number', v.replace(/\D/g, '').slice(0, 10))}
                                     error={details.errors.bank_account_number}
                                 />
                             </div>
@@ -209,7 +216,31 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
                                     <p className="text-navy text-3xl font-semibold dark:text-white">{formatMoney(invoice.amount)}</p>
                                     <p className="text-muted-foreground text-xs">Due {formatDate(invoice.due_date)}</p>
                                 </div>
-                                <StatusBadge map={feeStatus} value={invoice.status} />
+                                <div className="flex items-center gap-2">
+                                    {(invoice.invoice_pdf_url || invoice.gateway_reference) && (
+                                        <Button size="sm" variant="outline" asChild>
+                                            <a
+                                                href={invoice.invoice_pdf_url || route('tsp.registration.invoice-pdf', invoice.id)}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                            >
+                                                <FileText className="size-4" /> Download Invoice PDF
+                                            </a>
+                                        </Button>
+                                    )}
+                                    {invoice.status === 'paid' && (invoice.receipt_pdf_url || invoice.gateway_reference) && (
+                                        <Button size="sm" variant="outline" asChild>
+                                            <a
+                                                href={invoice.receipt_pdf_url || route('tsp.registration.receipt-pdf', invoice.id)}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                            >
+                                                <ReceiptText className="size-4" /> Receipt PDF
+                                            </a>
+                                        </Button>
+                                    )}
+                                    <StatusBadge map={feeStatus} value={invoice.status} />
+                                </div>
                             </div>
                             {invoice.review_comment && <p className="text-sm text-rose-600">FMDQ: {invoice.review_comment}</p>}
                             {payable && (
@@ -340,13 +371,26 @@ export default function Registration({ institution, feeEnabled, fullAccess, invo
                                             <StatusBadge map={feeStatus} value={i.status} />
                                         </td>
                                         <td className="px-4 py-3 text-right">
-                                            {i.status === 'paid' && (
-                                                <Button size="sm" variant="outline" asChild>
-                                                    <Link href={route('tsp.registration.receipt', i.id)}>
-                                                        <ReceiptText className="size-4" /> Receipt
-                                                    </Link>
-                                                </Button>
-                                            )}
+                                            <div className="flex items-center justify-end gap-2">
+                                                {(i.invoice_pdf_url || i.gateway_reference) && (
+                                                    <Button size="sm" variant="outline" asChild>
+                                                        <a
+                                                            href={i.invoice_pdf_url || route('tsp.registration.invoice-pdf', i.id)}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                        >
+                                                            <FileText className="size-4" /> Invoice PDF
+                                                        </a>
+                                                    </Button>
+                                                )}
+                                                {i.status === 'paid' && (
+                                                    <Button size="sm" variant="outline" asChild>
+                                                        <Link href={route('tsp.registration.receipt', i.id)}>
+                                                            <ReceiptText className="size-4" /> Receipt
+                                                        </Link>
+                                                    </Button>
+                                                )}
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
