@@ -75,9 +75,9 @@ export default function InvestorDashboard({ stats, portfolio, openOffers, bids, 
                 <PageHeader title={`Welcome, ${auth.user.institution?.name ?? auth.user.name.split(' ')[0]}`} description={auth.user.role_label} />
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                     <StatCard variant="navy" label="Active bids" value={stats.active_bids} href={route('investor.history')} />
-                    <StatCard variant="gold" label="Total subscribed" value={formatCompact(stats.subscribed)} hint={formatMoney(stats.subscribed)} />
-                    <StatCard variant="navy" label="Payments confirmed" value={formatCompact(stats.paid)} hint={formatMoney(stats.paid)} />
-                    <StatCard variant="gold" label="Portfolio (allotted)" value={formatCompact(stats.allotted)} hint={formatMoney(stats.allotted)} />
+                    <StatCard variant="gold" label="Total subscribed" value={formatMoney(stats.subscribed)} hint={formatMoney(stats.subscribed)} />
+                    <StatCard variant="navy" label="Payments confirmed" value={formatMoney(stats.paid)} hint={formatMoney(stats.paid)} />
+                    <StatCard variant="gold" label="Portfolio (allotted)" value={formatMoney(stats.allotted)} hint={formatMoney(stats.allotted)} />
                 </div>
 
                 <Section

@@ -189,6 +189,21 @@ interface VisitOptions {
     onFinish?: () => void;
 }
 
+/**
+ * Opening the address already on screen changes nothing the screen watches, so its data
+ * would stay stale (e.g. "Initiate Allotment" redirects back to the same allotment page).
+ * Such a redirect reloads the page's data instead.
+ */
+function goTo(target: string) {
+    const { pathname, search } = window.location;
+    const url = new URL(target, window.location.origin);
+    if (url.pathname.replace(/\/$/, '') === pathname.replace(/\/$/, '') && url.search === search) {
+        useAppState.getState().reload();
+    } else {
+        navigateTo(target);
+    }
+}
+
 /** After a successful action: follow what the API said, otherwise refresh the page's data. */
 function applyResult(path: string, result: any) {
     const app = useAppState.getState();
@@ -217,14 +232,14 @@ function applyResult(path: string, result: any) {
     } else if (typeof data.redirect === 'string' && /^https?:/.test(data.redirect)) {
         if (data.redirect.includes('/api/')) {
             const clientRoute = data.redirect.replace(/^https?:\/\/[^/]+.*?\/api\/?/, '/');
-            navigateTo(clientRoute.startsWith('/') ? clientRoute : `/${clientRoute}`);
+            goTo(clientRoute.startsWith('/') ? clientRoute : `/${clientRoute}`);
         } else {
             window.location.assign(data.redirect);
         }
     } else if (typeof data.redirect === 'string') {
-        navigateTo(data.redirect);
+        goTo(data.redirect);
     } else if (typeof data.url === 'string') {
-        navigateTo(new URL(data.url).pathname);
+        goTo(new URL(data.url).pathname);
     } else if (path === 'auth/reset-password') {
         navigateTo('/auth/login');
     } else {

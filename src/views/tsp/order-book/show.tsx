@@ -215,7 +215,7 @@ export default function OrderBookShow({ offer, bids, summary, filters, canConfir
                     <StatCard
                         variant="gold"
                         label="Payments"
-                        value={`${summary.paid_count} paid`}
+                        value={`${summary.paid_count}`}
                         hint={`${summary.pending_count} pending · ${summary.invalid_count} invalid`}
                     />
                     <StatCard
