@@ -102,9 +102,9 @@ export default function RegulatorReview({ allotment, offer, basis, schedule, rej
                 )}
 
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                    <StatCard variant="navy" label="Approved issue size" value={formatCompact(toNumber(allotment.issue_size))} hint={formatMoney(allotment.issue_size)} />
-                    <StatCard variant="gold" label="Valid demand" value={formatCompact(toNumber(allotment.valid_demand))} hint={`${Number(allotment.subscription_level)}% subscribed`} />
-                    <StatCard variant="navy" label="Total allotted" value={formatCompact(toNumber(allotment.total_allotted))} hint={formatMoney(allotment.total_allotted)} />
+                    <StatCard variant="navy" label="Approved issue size" value={formatMoney(toNumber(allotment.issue_size))} hint={formatMoney(allotment.issue_size)} />
+                    <StatCard variant="gold" label="Valid demand" value={formatMoney(toNumber(allotment.valid_demand))} hint={`${Number(allotment.subscription_level)}% subscribed`} />
+                    <StatCard variant="navy" label="Total allotted" value={formatMoney(toNumber(allotment.total_allotted))} hint={formatMoney(allotment.total_allotted)} />
                     <StatCard variant="gold" label="Final rate" value={formatRate(allotment.final_rate, suffix)} hint={`Payments: ${paymentSummary.paid} paid, ${paymentSummary.pending} pending, ${paymentSummary.invalid} invalid`} />
                 </div>
 

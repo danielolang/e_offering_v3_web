@@ -31,7 +31,7 @@ export default function TspOnboarding() {
             {
                 name: [d.name, rules.required('Enter the institution Name.'), rules.max(191)],
                 email: [d.email, rules.required("Enter the institution's Email Address."), rules.email(), rules.max(191)],
-                registration_number: [d.registration_number, rules.required('Enter the FMDQ Registration Number.'), rules.max(60)],
+                registration_number: [d.registration_number, rules.max(60)],
                 proof: [d.proof, rules.required('Upload the Proof of Registration.')],
                 consent: [d.consent, rules.accepted(CONSENT)]
             },
@@ -63,7 +63,9 @@ export default function TspOnboarding() {
                 >
                     <ArrowLeft className="text-gold size-4" /> Account types
                 </Link>
-                <div className="tracking-wide uppercase"><Steps steps={['Institution', 'Users', 'FMDQ Review']} current={form.data.name && form.data.proof ? 1 : 0} /></div>
+                <div className="tracking-wide uppercase">
+                    <Steps steps={['Institution', 'Users', 'FMDQ Review']} current={form.data.name && form.data.proof ? 1 : 0} />
+                </div>
             </div>
             <form onSubmit={submit} noValidate className="space-y-6">
                 <fieldset className="grid gap-4 pt-2 sm:grid-cols-2">
@@ -86,8 +88,7 @@ export default function TspOnboarding() {
                         {...live.bind('email')}
                     />
                     <TextField
-                        label="FMDQ Registration Number"
-                        required
+                        label="FMDQ Registration Number (optional)"
                         value={d.registration_number}
                         onChange={(v) => form.setData('registration_number', v)}
                         {...live.bind('registration_number')}

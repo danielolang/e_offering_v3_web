@@ -38,10 +38,11 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
         });
     };
 
+
     if (!token || !email) {
         return (
-            <AuthLayout title="Reset password" description="This reset link is invalid or incomplete.">
-                <Head title="Reset password" />
+            <AuthLayout title="Set Password" description="This reset link is invalid or incomplete.">
+                <Head title="Set Password" />
                 <p className="text-center text-xs text-muted-foreground">
                     Open the link from your email again, or{' '}
                     <TextLink href={route('password.request')} className="font-semibold text-navy hover:underline">
@@ -54,8 +55,8 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
     }
 
     return (
-        <AuthLayout title="Reset password" description="Please choose a strong password for your account.">
-            <Head title="Reset password" />
+        <AuthLayout title="Set Password" description="Please choose a strong password for your account.">
+            <Head title="Set Password" />
 
             <form onSubmit={submit} className="flex flex-col gap-4">
                 <input type="hidden" name="email" autoComplete="username" value={data.email} readOnly />
@@ -128,7 +129,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                     disabled={processing}
                 >
                     {processing && <LoaderCircle className="mr-2 size-4 animate-spin" />}
-                    Reset Password
+                    Set Password
                 </Button>
             </form>
 

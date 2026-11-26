@@ -427,8 +427,8 @@ export default function AllotmentShow({ offer, allotment, items, basis, validati
                                         validationErrors.length > 0
                                             ? `Fix first: ${validationErrors.join(' ')}`
                                             : allotment.subscription_status === 'below_minimum'
-                                              ? 'Subscription is below the minimum threshold. Submitting continues with the allotment.'
-                                              : 'Your Authoriser reviews the method, final rate and the full schedule.'
+                                                ? 'Subscription is below the minimum threshold. Submitting continues with the allotment.'
+                                                : 'Your Authoriser reviews the method, final rate and the full schedule.'
                                     }
                                     data={{ continue_below_minimum: allotment.subscription_status === 'below_minimum' }}
                                     trigger={
@@ -494,10 +494,10 @@ export default function AllotmentShow({ offer, allotment, items, basis, validati
                 )}
 
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-                    <StatCard variant="navy" label="Approved issue size" value={formatCompact(toNumber(allotment.issue_size))} hint={formatMoney(allotment.issue_size)} />
-                    <StatCard variant="gold" label="Total valid demand" value={formatCompact(toNumber(allotment.valid_demand))} hint={`Total demand ${formatMoney(allotment.total_demand, 0)}`} />
-                    <StatCard variant="navy" label="Total allotted" value={formatCompact(toNumber(allotment.total_allotted))} hint={formatMoney(allotment.total_allotted)} />
-                    <StatCard variant="gold" label="Total released" value={formatCompact(released)} hint={formatMoney(released)} />
+                    <StatCard variant="navy" label="Approved issue size" value={formatMoney(toNumber(allotment.issue_size))} hint={formatMoney(allotment.issue_size)} />
+                    <StatCard variant="gold" label="Total valid demand" value={formatMoney(toNumber(allotment.valid_demand))} hint={`Total demand ${formatMoney(allotment.total_demand, 0)}`} />
+                    <StatCard variant="navy" label="Total allotted" value={formatMoney(toNumber(allotment.total_allotted))} hint={formatMoney(allotment.total_allotted)} />
+                    <StatCard variant="gold" label="Total released" value={formatMoney(released)} hint={formatMoney(released)} />
                     <StatCard variant="navy" label="Final rate" value={formatRate(allotment.final_rate, suffix)} hint={offer.price_discovery_label} />
                 </div>
 
